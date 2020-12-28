@@ -1,0 +1,27 @@
+{
+  "name": "setup-chromium",
+  "version": "0.0.0",
+  "description": "Set up your GitHub Actions workflow with a specific version of chromium",
+  "main": "dist/index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ueokande/setup-chromium.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "setup",
+    "chromium"
+  ],
+  "author": "Shin'ya Ueoka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ueokande/setup-chromium/issues"
+  },
+  "homepage": "https://github.com/ueokande/setup-chromium#readme"
+}
