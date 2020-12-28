@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "description": "Set up your GitHub Actions workflow with a specific version of chromium",
   "main": "dist/index.js",
-  "dependencies": {},
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/io": "^1.0.2",
+    "@actions/tool-cache": "^1.6.1"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
