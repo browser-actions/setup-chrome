@@ -70,3 +70,9 @@ jobs:
           git add .
           git commit --message "Release for ${GITHUB_SHA}"
           git push origin latest
+
+  test-latest:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - uses: ueokande/setup-chromium@latest
