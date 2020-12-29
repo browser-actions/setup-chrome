@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "ncc build src/index.ts",
+    "package": "cp action.yml dist/",
     "lint": "eslint --ext .ts src/",
     "lint:fix": "eslint --fix --ext .ts src/"
   },
