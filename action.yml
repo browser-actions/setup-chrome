@@ -1,0 +1,10 @@
+name: 'Setup Chromium'
+description: 'Install and setup Chromium'
+author: "Shin'ya Ueoka"
+inputs:
+  chromium-version:
+    description: 'The Chromium version to install and use.'
+
+runs:
+  using: 'node12'
+  main: 'index.js'
