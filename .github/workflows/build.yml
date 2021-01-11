@@ -5,7 +5,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu, macos, windows]
+    runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
       - name: Get yarn cache directory path
@@ -24,6 +27,13 @@ jobs:
 
       # Test built action itself
       - uses: ./dist/
+      - if: runner.os == 'Linux'
+        run: chrome --version
+      - if: runner.os == 'macOS'
+        run: chromium --version
+      - if: runner.os == 'Windows'
+        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
+        # Unable to run with command-line option on windows
 
   deploy:
     runs-on: ubuntu-latest
