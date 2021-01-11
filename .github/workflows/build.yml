@@ -86,3 +86,4 @@ jobs:
     needs: [deploy]
     steps:
       - uses: browser-actions/setup-chromium@latest
+      - run: chrome --version
