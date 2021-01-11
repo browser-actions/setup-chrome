@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as installer from "./installer";
-import { getPlatform } from "./platform";
+import { getPlatform, OS } from "./platform";
 import path from "path";
 
 async function run(): Promise<void> {
@@ -18,7 +18,11 @@ async function run(): Promise<void> {
     core.addPath(path.join(installDir));
     core.info(`Successfully setup chromium version ${version}`);
 
-    await exec.exec(binName, ["--version"]);
+    if (platform.os === OS.WINDOWS) {
+      await exec.exec("(Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion");
+    } else if (platform.os === OS.DARWIN || platform.os === OS.LINUX) {
+      await exec.exec(binName, ["--version"]);
+    }
   } catch (error) {
     core.setFailed(error.message);
   }

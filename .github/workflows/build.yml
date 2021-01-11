@@ -27,10 +27,13 @@ jobs:
 
       # Test built action itself
       - uses: ./dist/
-      - if: runner.os == 'Linux' || runner.os == 'Windows'
+      - if: runner.os == 'Linux'
         run: chrome --version
-      - if: runner.os == 'macOs'
+      - if: runner.os == 'macOS'
         run: chromium --version
+      - if: runner.os == 'Windows'
+        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
+        # Unable to run with command-line option on windows
 
   deploy:
     runs-on: ubuntu-latest
