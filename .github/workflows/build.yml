@@ -27,7 +27,7 @@ jobs:
 
       # Test built action itself
       - uses: ./dist/
-      - run: chromium --version
+      - run: chrome --version
 
   deploy:
     runs-on: ubuntu-latest

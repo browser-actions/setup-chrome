@@ -11,12 +11,14 @@ async function run(): Promise<void> {
 
     core.info(`Setup chromium ${version}`);
 
-    const installDir = await installer.install(platform, version);
+    const binPath = await installer.install(platform, version);
+    const installDir = path.dirname(binPath);
+    const binName = path.basename(binPath);
 
     core.addPath(path.join(installDir));
     core.info(`Successfully setup chromium version ${version}`);
 
-    await exec.exec("chromium", ["--version"]);
+    await exec.exec(binName, ["--version"]);
   } catch (error) {
     core.setFailed(error.message);
   }

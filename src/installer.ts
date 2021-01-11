@@ -31,25 +31,25 @@ export const install = async (
 
   const archivePath = await tc.downloadTool(url);
   core.info("Extracting chromium...");
-  let extPath = await tc.extractZip(archivePath);
-  switch (platform.os) {
-    case OS.DARWIN:
-      extPath = path.join(extPath, "chrome-mac");
-      break;
-    case OS.LINUX:
-      extPath = path.join(extPath, "chrome-linux");
-      break;
-    case OS.WINDOWS:
-      extPath = path.join(extPath, "chrome-win");
-      break;
-  }
+  const extPath = await tc.extractZip(archivePath);
   core.info(`Successfully extracted chromium to ${extPath}`);
 
   core.info("Adding to the cache ...");
   const cachedDir = await tc.cacheDir(extPath, "chromium", version);
   core.info(`Successfully cached chromium to ${cachedDir}`);
 
-  return cachedDir;
+  switch (platform.os) {
+    case OS.DARWIN:
+      return path.join(
+        cachedDir,
+        "chrome-mac",
+        "Chromium.app/Contents/MacOS/Chromium"
+      );
+    case OS.LINUX:
+      return path.join(cachedDir, "chrome-linux", "chrome");
+    case OS.WINDOWS:
+      return path.join(cachedDir, "chrome-win", "chrome.exe");
+  }
 };
 
 const makePlatformPart = ({ os, arch }: Platform): string => {
