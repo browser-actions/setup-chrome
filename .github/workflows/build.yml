@@ -27,7 +27,10 @@ jobs:
 
       # Test built action itself
       - uses: ./dist/
-      - run: chrome --version
+      - if: runner.os == 'Linux' || runner.os == 'Windows'
+        run: chrome --version
+      - if: runner.os == 'macOs'
+        run: chromium --version
 
   deploy:
     runs-on: ubuntu-latest
