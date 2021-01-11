@@ -85,4 +85,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy]
     steps:
-      - uses: ueokande/setup-chromium@latest
+      - uses: browser-actions/setup-chromium@latest
