@@ -2,6 +2,7 @@ import { Platform, OS, Arch } from "./platform";
 import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
 import * as httpm from "@actions/http-client";
+import path from "path";
 
 export const install = async (
   platform: Platform,
@@ -29,13 +30,25 @@ export const install = async (
   core.info(`Acquiring ${version} from ${url}`);
 
   const archivePath = await tc.downloadTool(url);
-  core.info("Extracting Firefox...");
-  const extPath = await tc.extractZip(archivePath);
-  core.info(`Successfully extracted fiirefox to ${extPath}`);
+  core.info("Extracting chromium...");
+  let extPath = await tc.extractZip(archivePath);
+  switch (platform.os) {
+    case OS.DARWIN:
+      extPath = path.join(extPath, "chrome-mac");
+      break;
+    case OS.LINUX:
+      extPath = path.join(extPath, "chrome-linux");
+      break;
+    case OS.WINDOWS:
+      extPath = path.join(extPath, "chrome-win");
+      break;
+  }
+  core.info(`Successfully extracted chromium to ${extPath}`);
 
   core.info("Adding to the cache ...");
   const cachedDir = await tc.cacheDir(extPath, "chromium", version);
   core.info(`Successfully cached chromium to ${cachedDir}`);
+
   return cachedDir;
 };
 
