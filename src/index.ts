@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
+import * as io from "@actions/io";
 import * as installer from "./installer";
 import { getPlatform, OS } from "./platform";
 import path from "path";
@@ -19,7 +20,8 @@ async function run(): Promise<void> {
     core.info(`Successfully setup chromium version ${version}`);
 
     if (platform.os === OS.WINDOWS) {
-      await exec.exec("(Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion");
+      // Unable to run with command-line option on windows
+      await io.which("chrome", true);
     } else if (platform.os === OS.DARWIN || platform.os === OS.LINUX) {
       await exec.exec(binName, ["--version"]);
     }
