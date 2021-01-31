@@ -3,22 +3,12 @@ import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
 import * as httpm from "@actions/http-client";
 import path from "path";
+import { Downloader } from "./downloader";
 
 export const install = async (
   platform: Platform,
   version: string
 ): Promise<string> => {
-  if (version === "latest") {
-    const http = new httpm.HttpClient("setup-chromium");
-    const resp = await http.get(makeLatestVersionURL(platform));
-    if (resp.message.statusCode !== httpm.HttpCodes.OK) {
-      throw new Error(
-        `Failed to get latest version: server returns ${resp.message.statusCode}`
-      );
-    }
-    version = await resp.readBody();
-  }
-
   const toolPath = tc.find("chromium", version);
   if (toolPath) {
     core.info(`Found in cache @ ${toolPath}`);
@@ -26,10 +16,15 @@ export const install = async (
   }
   core.info(`Attempting to download ${version}...`);
 
-  const url = makeDownloadURL(platform, version);
-  core.info(`Acquiring ${version} from ${url}`);
+  const downloader = new Downloader(platform);
+  const archivePath = await (async () => {
+    if (version === "latest") {
+      return await downloader.downloadLatest();
+    } else {
+      return await downloader.downloadSnapshot(version);
+    }
+  })();
 
-  const archivePath = await tc.downloadTool(url);
   core.info("Extracting chromium...");
   const extPath = await tc.extractZip(archivePath);
   core.info(`Successfully extracted chromium to ${extPath}`);
@@ -76,15 +71,4 @@ const makeBasename = ({ os }: Platform): string => {
     case OS.WINDOWS:
       return "chrome-win.zip";
   }
-};
-
-const makeLatestVersionURL = (platform: Platform): string => {
-  return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
-    platform
-  )}%2FLAST_CHANGE?alt=media`;
-};
-const makeDownloadURL = (platform: Platform, version: string): string => {
-  return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
-    platform
-  )}%2F${version}%2F${makeBasename(platform)}?alt=media`;
 };
