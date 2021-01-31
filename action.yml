@@ -3,7 +3,10 @@ description: 'Install and setup Chromium'
 author: "Shin'ya Ueoka"
 inputs:
   chromium-version:
-    description: 'The Chromium version to install and use.'
+    description: |-
+      The Chromium version to install and use.
+    default: latest
+    required: false
 
 runs:
   using: 'node12'
