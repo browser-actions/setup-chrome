@@ -4930,6 +4930,107 @@ module.exports = v4;
 
 /***/ }),
 
+/***/ 99:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Downloader = void 0;
+const platform_1 = __nccwpck_require__(999);
+const tc = __importStar(__nccwpck_require__(784));
+const httpm = __importStar(__nccwpck_require__(925));
+const core = __importStar(__nccwpck_require__(186));
+class Downloader {
+    constructor(platform) {
+        this.platform = platform;
+        this.http = new httpm.HttpClient("setup-chromium");
+    }
+    downloadChannel(channel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error("TODO");
+        });
+    }
+    downloadSnapshot(commitPosition) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2F${commitPosition}%2F${makeBasename(this.platform)}?alt=media`;
+            core.info(`Acquiring ${commitPosition} from ${url}`);
+            return tc.downloadTool(url);
+        });
+    }
+    downloadLatest() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const latestVersionURL = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2FLAST_CHANGE?alt=media`;
+            const resp = yield this.http.get(latestVersionURL);
+            if (resp.message.statusCode !== httpm.HttpCodes.OK) {
+                throw new Error(`Failed to get latest version: server returns ${resp.message.statusCode}`);
+            }
+            const version = yield resp.readBody();
+            return this.downloadSnapshot(version);
+        });
+    }
+}
+exports.Downloader = Downloader;
+const makeBasename = ({ os }) => {
+    switch (os) {
+        case platform_1.OS.DARWIN:
+            return "chrome-mac.zip";
+        case platform_1.OS.LINUX:
+            return "chrome-linux.zip";
+        case platform_1.OS.WINDOWS:
+            return "chrome-win.zip";
+    }
+};
+const makePlatformPart = ({ os, arch }) => {
+    if (os === platform_1.OS.DARWIN && arch === platform_1.Arch.AMD64) {
+        return "Mac";
+    }
+    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.I686) {
+        return "Linux";
+    }
+    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.AMD64) {
+        return "Linux_x64";
+    }
+    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.I686) {
+        return "Win";
+    }
+    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.AMD64) {
+        return "Win_x64";
+    }
+    throw new Error(`Unsupported platform "${os}" "${arch}"`);
+};
+
+
+/***/ }),
+
 /***/ 144:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -5043,26 +5144,24 @@ exports.install = void 0;
 const platform_1 = __nccwpck_require__(999);
 const tc = __importStar(__nccwpck_require__(784));
 const core = __importStar(__nccwpck_require__(186));
-const httpm = __importStar(__nccwpck_require__(925));
 const path_1 = __importDefault(__nccwpck_require__(622));
+const downloader_1 = __nccwpck_require__(99);
 const install = (platform, version) => __awaiter(void 0, void 0, void 0, function* () {
-    if (version === "latest") {
-        const http = new httpm.HttpClient("setup-chromium");
-        const resp = yield http.get(makeLatestVersionURL(platform));
-        if (resp.message.statusCode !== httpm.HttpCodes.OK) {
-            throw new Error(`Failed to get latest version: server returns ${resp.message.statusCode}`);
-        }
-        version = yield resp.readBody();
-    }
     const toolPath = tc.find("chromium", version);
     if (toolPath) {
         core.info(`Found in cache @ ${toolPath}`);
         return toolPath;
     }
     core.info(`Attempting to download ${version}...`);
-    const url = makeDownloadURL(platform, version);
-    core.info(`Acquiring ${version} from ${url}`);
-    const archivePath = yield tc.downloadTool(url);
+    const downloader = new downloader_1.Downloader(platform);
+    const archivePath = yield (() => __awaiter(void 0, void 0, void 0, function* () {
+        if (version === "latest") {
+            return yield downloader.downloadLatest();
+        }
+        else {
+            return yield downloader.downloadSnapshot(version);
+        }
+    }))();
     core.info("Extracting chromium...");
     const extPath = yield tc.extractZip(archivePath);
     core.info(`Successfully extracted chromium to ${extPath}`);
@@ -5106,12 +5205,6 @@ const makeBasename = ({ os }) => {
         case platform_1.OS.WINDOWS:
             return "chrome-win.zip";
     }
-};
-const makeLatestVersionURL = (platform) => {
-    return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(platform)}%2FLAST_CHANGE?alt=media`;
-};
-const makeDownloadURL = (platform, version) => {
-    return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(platform)}%2F${version}%2F${makeBasename(platform)}?alt=media`;
 };
 
 
