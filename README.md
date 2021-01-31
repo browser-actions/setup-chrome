@@ -6,7 +6,10 @@
 
 This action sets by Chromium for use in actions by:
 
-- downloading and caching a version of Chromium by version and add to PATH
+- [X] Install and setup latest Chromium
+- [X] Cross platform runner (macOS, Linux, Windows)
+- [ ] Install by channel (stable, beta, dev, and canary)
+- [ ] Install by version number (88.0.4324, or 88.0)
 
 ## Usage
 
@@ -18,6 +21,8 @@ Basic usage:
 steps:
   - uses: browser-actions/setup-chromium@latest
   - run: chrome --version
+    with:
+      chromium-version: latest
 ```
 
 **Note that the installed binary is `chrome` but not `chromium` on Linux and
@@ -29,6 +34,15 @@ system expects that `chromium` exists in PATH such as [karma-chromium-runner][]:
 ```sh
 CHROMIUM_BIN=$(which chrome) npm run test
 ```
+
+## Parameters
+
+- `chromium-version`:
+*(Optional)* The Chromium version to be installed.  Available value is commit position like `848897` or `latest`.
+You can find commit positions from [here][snapshots].
+Default: `latest`
+
+[snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
 ## License
 
