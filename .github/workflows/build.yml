@@ -46,6 +46,18 @@ jobs:
         run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
         # Unable to run with command-line option on windows
 
+      - uses: ./dist/
+        with:
+          chromium-version: dev
+      - if: runner.os == 'Linux'
+        run: chrome --version
+      - if: runner.os == 'macOS'
+        run: chromium --version
+      - if: runner.os == 'Windows'
+        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
+        # Unable to run with command-line option on windows
+
+
   deploy:
     runs-on: ubuntu-latest
     needs: [build]
