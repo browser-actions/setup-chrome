@@ -90,7 +90,7 @@ export const installChannel = async (
   const archivePath = await downloader.download(version);
 
   core.info("Extracting chromium...");
-  const extPath = await installer.install(archivePath);
+  const extPath = await installer.install(version, archivePath);
 
   core.info(`Successfully extracted chromium to ${extPath}`);
   return extPath;

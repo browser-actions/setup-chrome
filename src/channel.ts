@@ -159,21 +159,36 @@ export class ChannelDownloaderFactory {
 }
 
 export interface ChannelInstaller {
-  install(archive: string): Promise<string>;
+  install(channel: ChannelName, archive: string): Promise<string>;
 }
 
 export class LinuxChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
-  install(archive: string): Promise<string> {
-    throw new Error("TODO");
+  async install(channel: ChannelName, archive: string): Promise<string> {
+    if (channel === "canary") {
+      throw new Error(
+        `Chromium ${channel} not supported for platform ${this.platform.os} ${this.platform.arch}`
+      );
+    }
+
+    await exec.exec("dpkg", ["--install", archive]);
+
+    switch (channel) {
+      case "stable":
+        return "/opt/google/chrome/";
+      case "beta":
+        return "/opt/google/chrome-beta/";
+      case "dev":
+        return "/opt/google/chrome-unstable/";
+    }
   }
 }
 
 export class MacOSChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
-  install(archive: string): Promise<string> {
+  install(channel: ChannelName, archive: string): Promise<string> {
     throw new Error("TODO");
   }
 }
@@ -181,7 +196,7 @@ export class MacOSChannelInstaller implements ChannelInstaller {
 export class WindowsChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
-  async install(archive: string): Promise<string> {
+  async install(channel: ChannelName, archive: string): Promise<string> {
     await exec.exec(archive, ["/install", "/silent"]);
 
     throw new Error("TODO");
