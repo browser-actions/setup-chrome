@@ -3,14 +3,10 @@ import * as tc from "@actions/tool-cache";
 import * as httpm from "@actions/http-client";
 import * as core from "@actions/core";
 
-export class Downloader {
+export class SnapshotDownloader {
   private readonly http = new httpm.HttpClient("setup-chromium");
 
   constructor(private readonly platform: Platform) {}
-
-  async downloadChannel(channel: string): Promise<string> {
-    throw new Error("TODO");
-  }
 
   async downloadSnapshot(commitPosition: string): Promise<string> {
     const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
