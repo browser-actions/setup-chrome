@@ -3,6 +3,7 @@ import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
 import path from "path";
 import { SnapshotDownloader } from "./snapshot";
+import { ChannelDownloaderFactory, ChannelInstallerFactory } from "./channel";
 
 export const install = async (
   platform: Platform,
@@ -18,10 +19,10 @@ export const install = async (
     switch (version) {
       case "latest":
         return installLatest(platform, version);
+      case "stable":
       case "beta":
       case "dev":
       case "canary":
-      case "stable":
         return installChannel(platform, version);
       default:
         return await installSnapshot(platform, version);
@@ -80,7 +81,17 @@ export const installSnapshot = async (
 
 export const installChannel = async (
   platform: Platform,
-  version: string
+  version: "stable" | "beta" | "dev" | "canary"
 ): Promise<string> => {
-  throw new Error("TODO");
+  const downloader = new ChannelDownloaderFactory().create(platform);
+  const installer = new ChannelInstallerFactory().create(platform);
+
+  core.info(`Attempting to download ${version}...`);
+  const archivePath = await downloader.download(version);
+
+  core.info("Extracting chromium...");
+  const extPath = await installer.install(archivePath);
+
+  core.info(`Successfully extracted chromium to ${extPath}`);
+  return extPath;
 };
