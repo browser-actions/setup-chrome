@@ -1,6 +1,9 @@
 import { Platform, OS, Arch } from "./platform";
 import * as tc from "@actions/tool-cache";
 import * as exec from "@actions/exec";
+import fs from "fs";
+import os from "os";
+import path from "path";
 
 type ChannelName = "stable" | "beta" | "dev" | "canary";
 
@@ -172,16 +175,23 @@ export class LinuxChannelInstaller implements ChannelInstaller {
       );
     }
 
-    await exec.exec("dpkg", ["--force", "not-root", "--install", archive]);
+    const tmpdir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "deb-"));
+    const extdir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "chrome-"));
+    await exec.exec("ar", ["x", archive], { cwd: tmpdir });
+    await exec.exec("tar", [
+      "-xf",
+      path.join(tmpdir, "data.tar.xz"),
+      "--directory",
+      extdir,
+      "--strip-components",
+      "4",
+      "./opt/google",
+    ]);
 
-    switch (channel) {
-      case "stable":
-        return "/opt/google/chrome/";
-      case "beta":
-        return "/opt/google/chrome-beta/";
-      case "dev":
-        return "/opt/google/chrome-unstable/";
-    }
+    // remove broken symlink
+    await fs.promises.unlink(path.join(extdir, "google-chrome"));
+
+    return extdir;
   }
 }
 

@@ -35,15 +35,11 @@ export const install = async (
 
   switch (platform.os) {
     case OS.DARWIN:
-      return path.join(
-        cachedDir,
-        "chrome-mac",
-        "Chromium.app/Contents/MacOS/Chromium"
-      );
+      return path.join(cachedDir, "Chromium.app/Contents/MacOS/Chromium");
     case OS.LINUX:
-      return path.join(cachedDir, "chrome-linux", "chrome");
+      return path.join(cachedDir, "chrome");
     case OS.WINDOWS:
-      return path.join(cachedDir, "chrome-win", "chrome.exe");
+      return path.join(cachedDir, "chrome.exe");
   }
 };
 
@@ -60,7 +56,14 @@ export const installLatest = async (
   const extPath = await tc.extractZip(archivePath);
 
   core.info(`Successfully extracted chromium to ${extPath}`);
-  return extPath;
+  switch (platform.os) {
+    case OS.DARWIN:
+      return path.join(extPath, "chrome-mac");
+    case OS.LINUX:
+      return path.join(extPath, "chrome-linux");
+    case OS.WINDOWS:
+      return path.join(extPath, "chrome-win");
+  }
 };
 
 export const installSnapshot = async (
@@ -76,7 +79,14 @@ export const installSnapshot = async (
   const extPath = await tc.extractZip(archivePath);
 
   core.info(`Successfully extracted chromium to ${extPath}`);
-  return extPath;
+  switch (platform.os) {
+    case OS.DARWIN:
+      return path.join(extPath, "chrome-mac");
+    case OS.LINUX:
+      return path.join(extPath, "chrome-linux");
+    case OS.WINDOWS:
+      return path.join(extPath, "chrome-win");
+  }
 };
 
 export const installChannel = async (
