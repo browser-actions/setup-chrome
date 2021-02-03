@@ -172,7 +172,7 @@ export class LinuxChannelInstaller implements ChannelInstaller {
       );
     }
 
-    await exec.exec("dpkg", ["--install", archive]);
+    await exec.exec("dpkg", ["--force", "not-root", "--install", archive]);
 
     switch (channel) {
       case "stable":
