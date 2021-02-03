@@ -86,7 +86,7 @@ export class MacOSChannelDownloader implements ChannelDownloader {
 export class WindowsChannelDownloader implements ChannelDownloader {
   constructor(private readonly platform: Platform) {}
 
-  download(channel: ChannelName): Promise<string> {
+  async download(channel: ChannelName): Promise<string> {
     if (channel === "canary") {
       return this.downloadCanary();
     }
@@ -148,7 +148,10 @@ export class WindowsChannelDownloader implements ChannelDownloader {
     }`;
 
     core.info(`Acquiring ${channel} from ${url}`);
-    return tc.downloadTool(url);
+    const archivePath = await tc.downloadTool(url);
+
+    await fs.promises.rename(archivePath, `${archivePath}.exe`);
+    return `${archivePath}.exe`;
   }
 
   downloadCanary(): Promise<string> {
