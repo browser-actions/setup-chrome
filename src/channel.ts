@@ -1,6 +1,7 @@
 import { Platform, OS, Arch } from "./platform";
 import * as tc from "@actions/tool-cache";
 import * as exec from "@actions/exec";
+import * as core from "@actions/core";
 import fs from "fs";
 import os from "os";
 import path from "path";
@@ -31,6 +32,8 @@ export class LinuxChannelDownloader implements ChannelDownloader {
           return `https://dl.google.com/linux/direct/google-chrome-unstable_current_amd64.deb`;
       }
     })();
+
+    core.info(`Acquiring ${channel} from ${url}`);
     return tc.downloadTool(url);
   }
 }
@@ -60,6 +63,8 @@ export class MacOSChannelDownloader implements ChannelDownloader {
           return `https://dl.google.com/chrome/mac/${channel}/googlechrome${channel}.dmg`;
       }
     })();
+
+    core.info(`Acquiring ${channel} from ${url}`);
     return tc.downloadTool(url);
   }
 
@@ -72,6 +77,8 @@ export class MacOSChannelDownloader implements ChannelDownloader {
           return `https://dl.google.com/chrome/mac/universal/${channel}/googlechrome${channel}.dmg`;
       }
     })();
+
+    core.info(`Acquiring ${channel} from ${url}`);
     return tc.downloadTool(url);
   }
 }
@@ -140,6 +147,7 @@ export class WindowsChannelDownloader implements ChannelDownloader {
       path[this.platform.arch][channel]
     }`;
 
+    core.info(`Acquiring ${channel} from ${url}`);
     return tc.downloadTool(url);
   }
 
