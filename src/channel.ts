@@ -218,7 +218,7 @@ export class WindowsChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
   async install(channel: ChannelName, archive: string): Promise<string> {
-    await exec.exec(archive, ["/install", "/silent"]);
+    await exec.exec(archive, ["/silent", "/install"]);
 
     throw new Error("TODO");
   }
