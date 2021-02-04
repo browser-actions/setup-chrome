@@ -219,8 +219,16 @@ export class WindowsChannelInstaller implements ChannelInstaller {
 
   async install(channel: ChannelName, archive: string): Promise<string> {
     await exec.exec(archive, ["/silent", "/install"]);
-
-    throw new Error("TODO");
+    switch (channel) {
+      case "stable":
+        return "C:\\Program Files\\Google\\Chrome\\Application";
+      case "beta":
+        return "C:\\Program Files\\Google\\Chrome Beta\\Application";
+      case "dev":
+        return "C:\\Program Files\\Google\\Chrome Dev\\Application";
+      case "canary":
+        return "C:\\Program Files\\Google\\Chrome SxS\\Application";
+    }
   }
 }
 
