@@ -2,6 +2,7 @@ import { Platform, OS } from "./platform";
 import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
 import path from "path";
+import fs from "fs";
 import { SnapshotDownloader } from "./snapshot";
 import { ChannelDownloaderFactory, ChannelInstallerFactory } from "./channel";
 
@@ -15,7 +16,7 @@ export const install = async (
     return toolPath;
   }
 
-  const extPath = await (async () => {
+  let { root, bin } = await (async () => {
     switch (version) {
       case "latest":
         return installLatest(platform, version);
@@ -30,23 +31,23 @@ export const install = async (
   })();
 
   core.info("Adding to the cache ...");
-  const cachedDir = await tc.cacheDir(extPath, "chromium", version);
+  const cachedDir = await tc.cacheDir(root, "chromium", version);
   core.info(`Successfully cached chromium to ${cachedDir}`);
 
-  switch (platform.os) {
-    case OS.DARWIN:
-      return path.join(cachedDir, "Chromium.app/Contents/MacOS/Chromium");
-    case OS.LINUX:
-      return path.join(cachedDir, "chrome");
-    case OS.WINDOWS:
-      return path.join(cachedDir, "chrome.exe");
+  if (platform.os === OS.DARWIN) {
+    // Create symlink "chrome"
+    const bin2 = path.join(path.dirname(bin), "chrome");
+    await fs.promises.symlink(path.basename(bin), path.join(cachedDir, bin2));
+    bin = bin2;
   }
+
+  return path.join(cachedDir, bin);
 };
 
 export const installLatest = async (
   platform: Platform,
   version: string
-): Promise<string> => {
+): Promise<{ root: string; bin: string }> => {
   const downloader = new SnapshotDownloader(platform);
 
   core.info(`Attempting to download ${version}...`);
@@ -56,20 +57,33 @@ export const installLatest = async (
   const extPath = await tc.extractZip(archivePath);
 
   core.info(`Successfully extracted chromium to ${extPath}`);
-  switch (platform.os) {
-    case OS.DARWIN:
-      return path.join(extPath, "chrome-mac");
-    case OS.LINUX:
-      return path.join(extPath, "chrome-linux");
-    case OS.WINDOWS:
-      return path.join(extPath, "chrome-win");
-  }
+  const root = (() => {
+    switch (platform.os) {
+      case OS.DARWIN:
+        return path.join(extPath, "chrome-mac");
+      case OS.LINUX:
+        return path.join(extPath, "chrome-linux");
+      case OS.WINDOWS:
+        return path.join(extPath, "chrome-win");
+    }
+  })();
+  const bin = (() => {
+    switch (platform.os) {
+      case OS.DARWIN:
+        return "Chromium.app/Contents/MacOS/Chromium";
+      case OS.LINUX:
+        return "chrome";
+      case OS.WINDOWS:
+        return "chrome.exe";
+    }
+  })();
+  return { root, bin };
 };
 
 export const installSnapshot = async (
   platform: Platform,
   version: string
-): Promise<string> => {
+): Promise<{ root: string; bin: string }> => {
   const downloader = new SnapshotDownloader(platform);
 
   core.info(`Attempting to download ${version}...`);
@@ -79,20 +93,33 @@ export const installSnapshot = async (
   const extPath = await tc.extractZip(archivePath);
 
   core.info(`Successfully extracted chromium to ${extPath}`);
-  switch (platform.os) {
-    case OS.DARWIN:
-      return path.join(extPath, "chrome-mac");
-    case OS.LINUX:
-      return path.join(extPath, "chrome-linux");
-    case OS.WINDOWS:
-      return path.join(extPath, "chrome-win");
-  }
+  const root = (() => {
+    switch (platform.os) {
+      case OS.DARWIN:
+        return path.join(extPath, "chrome-mac");
+      case OS.LINUX:
+        return path.join(extPath, "chrome-linux");
+      case OS.WINDOWS:
+        return path.join(extPath, "chrome-win");
+    }
+  })();
+  const bin = (() => {
+    switch (platform.os) {
+      case OS.DARWIN:
+        return "Chromium.app/Contents/MacOS/Chromium";
+      case OS.LINUX:
+        return "chrome";
+      case OS.WINDOWS:
+        return "chrome.exe";
+    }
+  })();
+  return { root, bin };
 };
 
 export const installChannel = async (
   platform: Platform,
   version: "stable" | "beta" | "dev" | "canary"
-): Promise<string> => {
+): Promise<{ root: string; bin: string }> => {
   const downloader = new ChannelDownloaderFactory().create(platform);
   const installer = new ChannelInstallerFactory().create(platform);
 
@@ -100,8 +127,8 @@ export const installChannel = async (
   const archivePath = await downloader.download(version);
 
   core.info("Extracting chromium...");
-  const extPath = await installer.install(version, archivePath);
+  const { root, bin } = await installer.install(version, archivePath);
 
-  core.info(`Successfully extracted chromium to ${extPath}`);
-  return extPath;
+  core.info(`Successfully extracted chromium to ${root}`);
+  return { root, bin };
 };

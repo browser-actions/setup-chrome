@@ -172,14 +172,19 @@ export class ChannelDownloaderFactory {
   }
 }
 
+type InstallResut = {
+  root: string; // root is a directory containing all contents for chromium
+  bin: string; // bin is a sub-path to chromium executable binary from root
+};
+
 export interface ChannelInstaller {
-  install(channel: ChannelName, archive: string): Promise<string>;
+  install(channel: ChannelName, archive: string): Promise<InstallResut>;
 }
 
 export class LinuxChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
-  async install(channel: ChannelName, archive: string): Promise<string> {
+  async install(channel: ChannelName, archive: string): Promise<InstallResut> {
     if (channel === "canary") {
       throw new Error(
         `Chromium ${channel} not supported for platform ${this.platform.os} ${this.platform.arch}`
@@ -202,33 +207,74 @@ export class LinuxChannelInstaller implements ChannelInstaller {
     // remove broken symlink
     await fs.promises.unlink(path.join(extdir, "google-chrome"));
 
-    return extdir;
+    return { root: extdir, bin: "chrome" };
   }
 }
 
 export class MacOSChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
-  install(channel: ChannelName, archive: string): Promise<string> {
-    throw new Error("TODO");
+  async install(channel: ChannelName, archive: string): Promise<InstallResut> {
+    const mountpoint = path.join("/Volumes", path.basename(archive));
+    await exec.exec("hdiutil", [
+      "attach",
+      "-quiet",
+      "-noautofsck",
+      "-noautoopen",
+      "-mountpoint",
+      mountpoint,
+      archive,
+    ]);
+
+    const root = (() => {
+      switch (channel) {
+        case "stable":
+          return path.join(mountpoint, "Google Chrome.app");
+        case "beta":
+          return path.join(mountpoint, "Google Chrome Beta.app");
+        case "dev":
+          return path.join(mountpoint, "Google Chrome Dev.app");
+        case "canary":
+          return path.join(mountpoint, "Google Chrome Canary.app");
+      }
+    })();
+
+    const bin = (() => {
+      switch (channel) {
+        case "stable":
+          return "Contents/MacOS/Google Chrome";
+        case "beta":
+          return "Contents/MacOS/Google Chrome Beta";
+        case "dev":
+          return "Contents/MacOS/Google Chrome Dev";
+        case "canary":
+          return "Contents/MacOS/Google Chrome Canary";
+      }
+    })();
+
+    return { root, bin };
   }
 }
 
 export class WindowsChannelInstaller implements ChannelInstaller {
   constructor(private readonly platform: Platform) {}
 
-  async install(channel: ChannelName, archive: string): Promise<string> {
+  async install(channel: ChannelName, archive: string): Promise<InstallResut> {
     await exec.exec(archive, ["/silent", "/install"]);
-    switch (channel) {
-      case "stable":
-        return "C:\\Program Files\\Google\\Chrome\\Application";
-      case "beta":
-        return "C:\\Program Files\\Google\\Chrome Beta\\Application";
-      case "dev":
-        return "C:\\Program Files\\Google\\Chrome Dev\\Application";
-      case "canary":
-        return "C:\\Program Files\\Google\\Chrome SxS\\Application";
-    }
+    const root = (() => {
+      switch (channel) {
+        case "stable":
+          return "C:\\Program Files\\Google\\Chrome\\Application";
+        case "beta":
+          return "C:\\Program Files\\Google\\Chrome Beta\\Application";
+        case "dev":
+          return "C:\\Program Files\\Google\\Chrome Dev\\Application";
+        case "canary":
+          return "C:\\Program Files\\Google\\Chrome SxS\\Application";
+      }
+    })();
+
+    return { root, bin: "chrome.exe" };
   }
 }
 
