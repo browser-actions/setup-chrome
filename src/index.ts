@@ -2,7 +2,6 @@ import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as io from "@actions/io";
 import * as installer from "./installer";
-import fs from "fs";
 import { getPlatform, OS } from "./platform";
 import path from "path";
 
