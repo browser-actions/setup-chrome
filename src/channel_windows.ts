@@ -31,10 +31,7 @@ export class WindowsChannelInstaller implements Installer {
     if (!isChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
-    if (version === "canary") {
-      return this.downloadCanary();
-    }
-    if (this.platform.arch === Arch.ARM64) {
+    if (version === "canary" || this.platform.arch === Arch.ARM64) {
       throw new Error(
         `Chrome ${version} not supported for platform "${this.platform.os}" "${this.platform.arch}"`
       );
@@ -96,10 +93,6 @@ export class WindowsChannelInstaller implements Installer {
 
     await fs.promises.rename(archivePath, `${archivePath}.exe`);
     return { archive: `${archivePath}.exe` };
-  }
-
-  downloadCanary(): Promise<DownloadResult> {
-    throw new Error("TODO");
   }
 
   async install(version: string, archive: string): Promise<InstallResult> {
