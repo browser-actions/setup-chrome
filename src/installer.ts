@@ -1,74 +1,67 @@
-import { Platform, OS, Arch } from "./platform";
-import * as tc from "@actions/tool-cache";
+import { Platform, OS } from "./platform";
 import * as core from "@actions/core";
-import * as httpm from "@actions/http-client";
 import path from "path";
-import { Downloader } from "./downloader";
+import { SnapshotInstaller, LatestInstaller } from "./snapshot";
+import { LinuxChannelInstaller } from "./channel_linux";
+import { MacOSChannelInstaller } from "./channel_macos";
+import { WindowsChannelInstaller } from "./channel_windows";
+
+export type InstallResult = {
+  root: string; // root is a directory containing all contents for chromium
+  bin: string; // bin is a sub-path to chromium executable binary from root
+};
+
+export type DownloadResult = {
+  archive: string;
+};
+
+export interface Installer {
+  checkInstalled(version: string): Promise<InstallResult | undefined>;
+
+  download(version: string): Promise<DownloadResult>;
+
+  install(version: string, archive: string): Promise<InstallResult>;
+}
 
 export const install = async (
   platform: Platform,
   version: string
 ): Promise<string> => {
-  const toolPath = tc.find("chromium", version);
-  if (toolPath) {
-    core.info(`Found in cache @ ${toolPath}`);
-    return toolPath;
-  }
-  core.info(`Attempting to download ${version}...`);
-
-  const downloader = new Downloader(platform);
-  const archivePath = await (async () => {
-    if (version === "latest") {
-      return await downloader.downloadLatest();
-    } else {
-      return await downloader.downloadSnapshot(version);
+  const installer = (() => {
+    switch (version) {
+      case "latest":
+        return new LatestInstaller(platform);
+      case "stable":
+      case "beta":
+      case "dev":
+      case "canary":
+        switch (platform.os) {
+          case OS.LINUX:
+            return new LinuxChannelInstaller(platform);
+          case OS.DARWIN:
+            return new MacOSChannelInstaller(platform);
+          case OS.WINDOWS:
+            return new WindowsChannelInstaller(platform);
+        }
+        break;
+      default:
+        return new SnapshotInstaller(platform);
     }
   })();
 
-  core.info("Extracting chromium...");
-  const extPath = await tc.extractZip(archivePath);
-  core.info(`Successfully extracted chromium to ${extPath}`);
-
-  core.info("Adding to the cache ...");
-  const cachedDir = await tc.cacheDir(extPath, "chromium", version);
-  core.info(`Successfully cached chromium to ${cachedDir}`);
-
-  switch (platform.os) {
-    case OS.DARWIN:
-      return path.join(
-        cachedDir,
-        "chrome-mac",
-        "Chromium.app/Contents/MacOS/Chromium"
-      );
-    case OS.LINUX:
-      return path.join(cachedDir, "chrome-linux", "chrome");
-    case OS.WINDOWS:
-      return path.join(cachedDir, "chrome-win", "chrome.exe");
+  const cache = await installer.checkInstalled(version);
+  if (cache) {
+    core.info(`Found in cache @ ${cache.root}`);
+    return path.join(cache.root, cache.bin);
   }
-};
 
-const makePlatformPart = ({ os, arch }: Platform): string => {
-  if (os === OS.DARWIN && arch === Arch.AMD64) {
-    return "Mac";
-  } else if (os === OS.LINUX && arch === Arch.I686) {
-    return "Linux";
-  } else if (os === OS.LINUX && arch === Arch.AMD64) {
-    return "Linux_x64";
-  } else if (os === OS.WINDOWS && arch === Arch.I686) {
-    return "Win";
-  } else if (os === OS.WINDOWS && arch === Arch.AMD64) {
-    return "Win_x64";
-  }
-  throw new Error(`Unsupported platform "${os}" "${arch}"`);
-};
+  core.info(`Attempting to download ${version}...`);
+  const { archive } = await installer.download(version);
 
-const makeBasename = ({ os }: Platform): string => {
-  switch (os) {
-    case OS.DARWIN:
-      return "chrome-mac.zip";
-    case OS.LINUX:
-      return "chrome-linux.zip";
-    case OS.WINDOWS:
-      return "chrome-win.zip";
-  }
+  core.info("Installing chromium...");
+  const { root, bin } = await installer.install(version, archive);
+
+  core.info(`Successfully installed chromium to ${path.join(root, bin)}`);
+
+  return path.join(root, bin);
 };
