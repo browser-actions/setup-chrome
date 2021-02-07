@@ -25,8 +25,8 @@ jobs:
       - run: yarn build
       - run: yarn package
 
-      # Test built action itself
-      - uses: ./dist/
+      - name: Install with no params
+        uses: ./dist/
       - if: runner.os == 'Linux'
         run: chrome --version
       - if: runner.os == 'macOS'
@@ -35,7 +35,8 @@ jobs:
         run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
         # Unable to run with command-line option on windows
 
-      - uses: ./dist/
+      - name: Install with version '827102'
+        uses: ./dist/
         with:
           chromium-version: 827102
       - if: runner.os == 'Linux'
@@ -46,7 +47,8 @@ jobs:
         run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
         # Unable to run with command-line option on windows
 
-      - uses: ./dist/
+      - name: install with version 'dev'
+        uses: ./dist/
         with:
           chromium-version: dev
       - if: runner.os == 'Linux'
