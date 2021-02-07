@@ -4930,7 +4930,25 @@ module.exports = v4;
 
 /***/ }),
 
-/***/ 99:
+/***/ 542:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isChannelName = void 0;
+const isChannelName = (version) => {
+    return (version === "stable" ||
+        version === "beta" ||
+        version === "dev" ||
+        version === "canary");
+};
+exports.isChannelName = isChannelName;
+
+
+/***/ }),
+
+/***/ 886:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -4963,70 +4981,390 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Downloader = void 0;
-const platform_1 = __nccwpck_require__(999);
+exports.LinuxChannelInstaller = void 0;
+const channel_1 = __nccwpck_require__(542);
 const tc = __importStar(__nccwpck_require__(784));
-const httpm = __importStar(__nccwpck_require__(925));
+const exec = __importStar(__nccwpck_require__(514));
 const core = __importStar(__nccwpck_require__(186));
-class Downloader {
+const fs_1 = __importDefault(__nccwpck_require__(747));
+const os_1 = __importDefault(__nccwpck_require__(87));
+const path_1 = __importDefault(__nccwpck_require__(622));
+class LinuxChannelInstaller {
     constructor(platform) {
         this.platform = platform;
-        this.http = new httpm.HttpClient("setup-chromium");
     }
-    downloadChannel(channel) {
+    checkInstalled(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new Error("TODO");
-        });
-    }
-    downloadSnapshot(commitPosition) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2F${commitPosition}%2F${makeBasename(this.platform)}?alt=media`;
-            core.info(`Acquiring ${commitPosition} from ${url}`);
-            return tc.downloadTool(url);
-        });
-    }
-    downloadLatest() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const latestVersionURL = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2FLAST_CHANGE?alt=media`;
-            const resp = yield this.http.get(latestVersionURL);
-            if (resp.message.statusCode !== httpm.HttpCodes.OK) {
-                throw new Error(`Failed to get latest version: server returns ${resp.message.statusCode}`);
+            const root = tc.find("chromium", version);
+            if (root) {
+                return { root, bin: "chrome" };
             }
-            const version = yield resp.readBody();
-            return this.downloadSnapshot(version);
+        });
+    }
+    download(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            if (version === "canary") {
+                throw new Error(`Chromium ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`);
+            }
+            const url = (() => {
+                switch (version) {
+                    case "stable":
+                        return `https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb`;
+                    case "beta":
+                        return `https://dl.google.com/linux/direct/google-chrome-beta_current_amd64.deb`;
+                    case "dev":
+                        return `https://dl.google.com/linux/direct/google-chrome-unstable_current_amd64.deb`;
+                }
+            })();
+            core.info(`Acquiring ${version} from ${url}`);
+            const archive = yield tc.downloadTool(url);
+            return { archive };
+        });
+    }
+    install(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            if (version === "canary") {
+                throw new Error(`Chromium ${version} not supported for Linux`);
+            }
+            const tmpdir = yield fs_1.default.promises.mkdtemp(path_1.default.join(os_1.default.tmpdir(), "deb-"));
+            const extdir = yield fs_1.default.promises.mkdtemp(path_1.default.join(os_1.default.tmpdir(), "chrome-"));
+            yield exec.exec("ar", ["x", archive], { cwd: tmpdir });
+            yield exec.exec("tar", [
+                "-xf",
+                path_1.default.join(tmpdir, "data.tar.xz"),
+                "--directory",
+                extdir,
+                "--strip-components",
+                "4",
+                "./opt/google",
+            ]);
+            // remove broken symlink
+            yield fs_1.default.promises.unlink(path_1.default.join(extdir, "google-chrome"));
+            const root = yield tc.cacheDir(extdir, "chromium", version);
+            core.info(`Successfully Installed chromium to ${root}`);
+            return { root: extdir, bin: "chrome" };
         });
     }
 }
-exports.Downloader = Downloader;
-const makeBasename = ({ os }) => {
-    switch (os) {
-        case platform_1.OS.DARWIN:
-            return "chrome-mac.zip";
-        case platform_1.OS.LINUX:
-            return "chrome-linux.zip";
-        case platform_1.OS.WINDOWS:
-            return "chrome-win.zip";
-    }
+exports.LinuxChannelInstaller = LinuxChannelInstaller;
+
+
+/***/ }),
+
+/***/ 561:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
-const makePlatformPart = ({ os, arch }) => {
-    if (os === platform_1.OS.DARWIN && arch === platform_1.Arch.AMD64) {
-        return "Mac";
-    }
-    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.I686) {
-        return "Linux";
-    }
-    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.AMD64) {
-        return "Linux_x64";
-    }
-    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.I686) {
-        return "Win";
-    }
-    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.AMD64) {
-        return "Win_x64";
-    }
-    throw new Error(`Unsupported platform "${os}" "${arch}"`);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MacOSChannelInstaller = void 0;
+const platform_1 = __nccwpck_require__(999);
+const channel_1 = __nccwpck_require__(542);
+const tc = __importStar(__nccwpck_require__(784));
+const exec = __importStar(__nccwpck_require__(514));
+const core = __importStar(__nccwpck_require__(186));
+const fs_1 = __importDefault(__nccwpck_require__(747));
+const path_1 = __importDefault(__nccwpck_require__(622));
+class MacOSChannelInstaller {
+    constructor(platform) {
+        this.platform = platform;
+    }
+    checkInstalled(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            const root = tc.find("chromium", version);
+            if (root) {
+                return { root, bin: "Contents/MacOS/chrome" };
+            }
+        });
+    }
+    download(version) {
+        if (!channel_1.isChannelName(version)) {
+            throw new Error(`Unexpected version: ${version}`);
+        }
+        switch (this.platform.arch) {
+            case platform_1.Arch.AMD64:
+                return this.downloadForIntelChip(version);
+            case platform_1.Arch.ARM64:
+                return this.downloadForAppleChip(version);
+            default:
+                throw new Error(`Chromium ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`);
+        }
+    }
+    downloadForIntelChip(channel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = (() => {
+                switch (channel) {
+                    case "stable":
+                        return `https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg`;
+                    default:
+                        return `https://dl.google.com/chrome/mac/${channel}/googlechrome${channel}.dmg`;
+                }
+            })();
+            core.info(`Acquiring ${channel} from ${url}`);
+            const archive = yield tc.downloadTool(url);
+            return { archive };
+        });
+    }
+    downloadForAppleChip(channel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = (() => {
+                switch (channel) {
+                    case "stable":
+                        return `https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg`;
+                    default:
+                        return `https://dl.google.com/chrome/mac/universal/${channel}/googlechrome${channel}.dmg`;
+                }
+            })();
+            core.info(`Acquiring ${channel} from ${url}`);
+            const archive = yield tc.downloadTool(url);
+            return { archive };
+        });
+    }
+    install(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            const mountpoint = path_1.default.join("/Volumes", path_1.default.basename(archive));
+            yield exec.exec("hdiutil", [
+                "attach",
+                "-quiet",
+                "-noautofsck",
+                "-noautoopen",
+                "-mountpoint",
+                mountpoint,
+                archive,
+            ]);
+            let root = (() => {
+                switch (version) {
+                    case "stable":
+                        return path_1.default.join(mountpoint, "Google Chrome.app");
+                    case "beta":
+                        return path_1.default.join(mountpoint, "Google Chrome Beta.app");
+                    case "dev":
+                        return path_1.default.join(mountpoint, "Google Chrome Dev.app");
+                    case "canary":
+                        return path_1.default.join(mountpoint, "Google Chrome Canary.app");
+                }
+            })();
+            const bin = (() => {
+                switch (version) {
+                    case "stable":
+                        return "Contents/MacOS/Google Chrome";
+                    case "beta":
+                        return "Contents/MacOS/Google Chrome Beta";
+                    case "dev":
+                        return "Contents/MacOS/Google Chrome Dev";
+                    case "canary":
+                        return "Contents/MacOS/Google Chrome Canary";
+                }
+            })();
+            const bin2 = path_1.default.join(path_1.default.dirname(bin), "chrome");
+            root = yield tc.cacheDir(root, "chromium", version);
+            yield fs_1.default.promises.symlink(path_1.default.basename(bin), path_1.default.join(root, bin2));
+            core.info(`Successfully Installed chromium to ${root}`);
+            return { root, bin: bin2 };
+        });
+    }
+}
+exports.MacOSChannelInstaller = MacOSChannelInstaller;
+
+
+/***/ }),
+
+/***/ 46:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WindowsChannelInstaller = void 0;
+const platform_1 = __nccwpck_require__(999);
+const channel_1 = __nccwpck_require__(542);
+const tc = __importStar(__nccwpck_require__(784));
+const exec = __importStar(__nccwpck_require__(514));
+const core = __importStar(__nccwpck_require__(186));
+const fs_1 = __importDefault(__nccwpck_require__(747));
+class WindowsChannelInstaller {
+    constructor(platform) {
+        this.platform = platform;
+    }
+    checkInstalled(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            const root = this.rootDir(version);
+            try {
+                yield fs_1.default.promises.stat(root);
+            }
+            catch (e) {
+                if (e.code === "ENOENT") {
+                    return undefined;
+                }
+                throw e;
+            }
+            return { root, bin: "chrome.exe" };
+        });
+    }
+    download(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            if (version === "canary" || this.platform.arch === platform_1.Arch.ARM64) {
+                throw new Error(`Chrome ${version} not supported for platform "${this.platform.os}" "${this.platform.arch}"`);
+            }
+            const appguid = {
+                stable: "{8A69D345-D564-463C-AFF1-A69D9E530F96}",
+                beta: "{8237E44A-0054-442C-B6B6-EA0509993955}",
+                dev: "{401C381F-E0DE-4B85-8BD8-3F3F14FBDA57}",
+            };
+            const iid = "{980B7082-EC04-6DFB-63B8-08C1EC45EB8E}";
+            const lang = "en";
+            const browser = "3";
+            const usagestats = "0";
+            const appname = {
+                stable: "Google Chrome",
+                beta: "Google Chrome Beta",
+                dev: "Google Chrome Dev",
+            };
+            const needsadmin = "prefers";
+            const ap = {
+                [platform_1.Arch.AMD64]: "-arch_x64-statsdef_1",
+                [platform_1.Arch.I686]: "-arch_x86-statsdef_1",
+            };
+            const installdataindex = "empty";
+            const path = {
+                [platform_1.Arch.AMD64]: {
+                    stable: "chrome/install/ChromeStandaloneSetup64.exe",
+                    beta: "chrome/install/beta/ChromeBetaStandaloneSetup64.exe",
+                    dev: "chrome/install/dev/ChromeDevStandaloneSetup64.exe",
+                },
+                [platform_1.Arch.I686]: {
+                    stable: "chrome/install/ChromeStandaloneSetup.exe",
+                    beta: "chrome/install/beta/ChromeBetaStandaloneSetup.exe",
+                    dev: "chrome/install/dev/ChromeDevStandaloneSetup.exe",
+                },
+            };
+            const params = [
+                ["appguid", appguid[version]],
+                ["iid", iid],
+                ["lang", lang],
+                ["browser", browser],
+                ["usagestats", usagestats],
+                ["appname", encodeURIComponent(appname[version])],
+                ["needsadmin", needsadmin],
+                ["ap", ap[this.platform.arch]],
+                ["installdataindex", installdataindex],
+            ]
+                .map(([key, value]) => `${key}=${value}`)
+                .join("&");
+            const url = `https://dl.google.com/tag/s/${encodeURIComponent(params)}/${path[this.platform.arch][version]}`;
+            core.info(`Acquiring ${version} from ${url}`);
+            const archivePath = yield tc.downloadTool(url);
+            yield fs_1.default.promises.rename(archivePath, `${archivePath}.exe`);
+            return { archive: `${archivePath}.exe` };
+        });
+    }
+    install(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!channel_1.isChannelName(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            yield exec.exec(archive, ["/silent", "/install"]);
+            return { root: this.rootDir(version), bin: "chrome.exe" };
+        });
+    }
+    rootDir(version) {
+        switch (version) {
+            case "stable":
+                return "C:\\Program Files\\Google\\Chrome\\Application";
+            case "beta":
+                return "C:\\Program Files\\Google\\Chrome Beta\\Application";
+            case "dev":
+                return "C:\\Program Files\\Google\\Chrome Dev\\Application";
+            case "canary":
+                return "C:\\Program Files\\Google\\Chrome SxS\\Application";
+        }
+    }
+}
+exports.WindowsChannelInstaller = WindowsChannelInstaller;
 
 
 /***/ }),
@@ -5142,70 +5480,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.install = void 0;
 const platform_1 = __nccwpck_require__(999);
-const tc = __importStar(__nccwpck_require__(784));
 const core = __importStar(__nccwpck_require__(186));
 const path_1 = __importDefault(__nccwpck_require__(622));
-const downloader_1 = __nccwpck_require__(99);
+const snapshot_1 = __nccwpck_require__(270);
+const channel_linux_1 = __nccwpck_require__(886);
+const channel_macos_1 = __nccwpck_require__(561);
+const channel_windows_1 = __nccwpck_require__(46);
 const install = (platform, version) => __awaiter(void 0, void 0, void 0, function* () {
-    const toolPath = tc.find("chromium", version);
-    if (toolPath) {
-        core.info(`Found in cache @ ${toolPath}`);
-        return toolPath;
+    const installer = (() => {
+        switch (version) {
+            case "latest":
+                return new snapshot_1.LatestInstaller(platform);
+            case "stable":
+            case "beta":
+            case "dev":
+            case "canary":
+                switch (platform.os) {
+                    case platform_1.OS.LINUX:
+                        return new channel_linux_1.LinuxChannelInstaller(platform);
+                    case platform_1.OS.DARWIN:
+                        return new channel_macos_1.MacOSChannelInstaller(platform);
+                    case platform_1.OS.WINDOWS:
+                        return new channel_windows_1.WindowsChannelInstaller(platform);
+                }
+                break;
+            default:
+                return new snapshot_1.SnapshotInstaller(platform);
+        }
+    })();
+    const cache = yield installer.checkInstalled(version);
+    if (cache) {
+        core.info(`Found in cache @ ${cache.root}`);
+        return path_1.default.join(cache.root, cache.bin);
     }
     core.info(`Attempting to download ${version}...`);
-    const downloader = new downloader_1.Downloader(platform);
-    const archivePath = yield (() => __awaiter(void 0, void 0, void 0, function* () {
-        if (version === "latest") {
-            return yield downloader.downloadLatest();
-        }
-        else {
-            return yield downloader.downloadSnapshot(version);
-        }
-    }))();
-    core.info("Extracting chromium...");
-    const extPath = yield tc.extractZip(archivePath);
-    core.info(`Successfully extracted chromium to ${extPath}`);
-    core.info("Adding to the cache ...");
-    const cachedDir = yield tc.cacheDir(extPath, "chromium", version);
-    core.info(`Successfully cached chromium to ${cachedDir}`);
-    switch (platform.os) {
-        case platform_1.OS.DARWIN:
-            return path_1.default.join(cachedDir, "chrome-mac", "Chromium.app/Contents/MacOS/Chromium");
-        case platform_1.OS.LINUX:
-            return path_1.default.join(cachedDir, "chrome-linux", "chrome");
-        case platform_1.OS.WINDOWS:
-            return path_1.default.join(cachedDir, "chrome-win", "chrome.exe");
-    }
+    const { archive } = yield installer.download(version);
+    core.info("Installing chromium...");
+    const { root, bin } = yield installer.install(version, archive);
+    core.info(`Successfully installed chromium to ${path_1.default.join(root, bin)}`);
+    return path_1.default.join(root, bin);
 });
 exports.install = install;
-const makePlatformPart = ({ os, arch }) => {
-    if (os === platform_1.OS.DARWIN && arch === platform_1.Arch.AMD64) {
-        return "Mac";
-    }
-    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.I686) {
-        return "Linux";
-    }
-    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.AMD64) {
-        return "Linux_x64";
-    }
-    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.I686) {
-        return "Win";
-    }
-    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.AMD64) {
-        return "Win_x64";
-    }
-    throw new Error(`Unsupported platform "${os}" "${arch}"`);
-};
-const makeBasename = ({ os }) => {
-    switch (os) {
-        case platform_1.OS.DARWIN:
-            return "chrome-mac.zip";
-        case platform_1.OS.LINUX:
-            return "chrome-linux.zip";
-        case platform_1.OS.WINDOWS:
-            return "chrome-win.zip";
-    }
-};
 
 
 /***/ }),
@@ -5262,6 +5577,163 @@ const getPlatform = () => {
     };
 };
 exports.getPlatform = getPlatform;
+
+
+/***/ }),
+
+/***/ 270:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LatestInstaller = exports.SnapshotInstaller = void 0;
+const platform_1 = __nccwpck_require__(999);
+const tc = __importStar(__nccwpck_require__(784));
+const httpm = __importStar(__nccwpck_require__(925));
+const core = __importStar(__nccwpck_require__(186));
+const path_1 = __importDefault(__nccwpck_require__(622));
+class SnapshotInstaller {
+    constructor(platform) {
+        this.platform = platform;
+    }
+    checkInstalled(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = tc.find("chromium", version);
+            if (root) {
+                return { root, bin: "chrome" };
+            }
+        });
+    }
+    download(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2F${version}%2F${makeBasename(this.platform)}?alt=media`;
+            core.info(`Acquiring ${version} from ${url}`);
+            const archive = yield tc.downloadTool(url);
+            return { archive };
+        });
+    }
+    install(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const extPath = yield tc.extractZip(archive);
+            let root = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return path_1.default.join(extPath, "chrome-mac");
+                    case platform_1.OS.LINUX:
+                        return path_1.default.join(extPath, "chrome-linux");
+                    case platform_1.OS.WINDOWS:
+                        return path_1.default.join(extPath, "chrome-win");
+                }
+            })();
+            const bin = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return "Chromium.app/Contents/MacOS/Chromium";
+                    case platform_1.OS.LINUX:
+                        return "chrome";
+                    case platform_1.OS.WINDOWS:
+                        return "chrome.exe";
+                }
+            })();
+            root = yield tc.cacheDir(root, "chromium", version);
+            core.info(`Successfully Installed chromium to ${root}`);
+            return { root, bin };
+        });
+    }
+}
+exports.SnapshotInstaller = SnapshotInstaller;
+class LatestInstaller {
+    constructor(platform) {
+        this.platform = platform;
+        this.http = new httpm.HttpClient("setup-chromium");
+        this.snapshotInstaller = new SnapshotInstaller(this.platform);
+    }
+    checkInstalled(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = tc.find("chromium", version);
+            if (root) {
+                return { root, bin: "chrome" };
+            }
+        });
+    }
+    download(_version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const latestVersionURL = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2FLAST_CHANGE?alt=media`;
+            const resp = yield this.http.get(latestVersionURL);
+            if (resp.message.statusCode !== httpm.HttpCodes.OK) {
+                throw new Error(`Failed to get latest version: server returns ${resp.message.statusCode}`);
+            }
+            const version = yield resp.readBody();
+            return this.snapshotInstaller.download(version);
+        });
+    }
+    install(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.snapshotInstaller.install(version, archive);
+        });
+    }
+}
+exports.LatestInstaller = LatestInstaller;
+const makeBasename = ({ os }) => {
+    switch (os) {
+        case platform_1.OS.DARWIN:
+            return "chrome-mac.zip";
+        case platform_1.OS.LINUX:
+            return "chrome-linux.zip";
+        case platform_1.OS.WINDOWS:
+            return "chrome-win.zip";
+    }
+};
+const makePlatformPart = ({ os, arch }) => {
+    if (os === platform_1.OS.DARWIN && arch === platform_1.Arch.AMD64) {
+        return "Mac";
+    }
+    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.I686) {
+        return "Linux";
+    }
+    else if (os === platform_1.OS.LINUX && arch === platform_1.Arch.AMD64) {
+        return "Linux_x64";
+    }
+    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.I686) {
+        return "Win";
+    }
+    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.AMD64) {
+        return "Win_x64";
+    }
+    throw new Error(`Unsupported platform "${os}" "${arch}"`);
+};
 
 
 /***/ }),

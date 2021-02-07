@@ -8,7 +8,7 @@ This action sets by Chromium for use in actions by:
 
 - [X] Install and setup latest Chromium
 - [X] Cross platform runner (macOS, Linux, Windows)
-- [ ] Install by channel (stable, beta, dev, and canary)
+- [X] Install by channel (stable, beta, dev, and canary)
 - [ ] Install by version number (88.0.4324, or 88.0)
 
 ## Usage
@@ -37,10 +37,12 @@ CHROMIUM_BIN=$(which chrome) npm run test
 
 ## Parameters
 
-- `chromium-version`:
-*(Optional)* The Chromium version to be installed.  Available value is commit position like `848897` or `latest`.
-You can find commit positions from [here][snapshots].
-Default: `latest`
+- `chromium-version`: *(Optional)* The Chromium version to be installed.  Available value is one of the following:
+    - Commit position like `848897`.  You can find commit positions from [here][snapshots].
+    - Latest snapshot `latest`
+    - Chrome release channels: `stable`, `beta`, `dev` and `canary`
+
+  Default: `latest`
 
 [snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
