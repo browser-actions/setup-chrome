@@ -56,7 +56,7 @@ export class SnapshotInstaller implements Installer {
 }
 
 export class LatestInstaller implements Installer {
-  private readonly http = new httpm.HttpClient("setup-chromium");
+  private readonly http = new httpm.HttpClient("setup-chrome");
 
   private readonly snapshotInstaller = new SnapshotInstaller(this.platform);
 
