@@ -5011,7 +5011,7 @@ class LinuxChannelInstaller {
                 throw new Error(`Unexpected version: ${version}`);
             }
             if (version === "canary") {
-                throw new Error(`Chromium ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`);
+                throw new Error(`Chrome ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`);
             }
             const url = (() => {
                 switch (version) {
@@ -5034,7 +5034,7 @@ class LinuxChannelInstaller {
                 throw new Error(`Unexpected version: ${version}`);
             }
             if (version === "canary") {
-                throw new Error(`Chromium ${version} not supported for Linux`);
+                throw new Error(`Chrome ${version} not supported for Linux`);
             }
             const tmpdir = yield fs_1.default.promises.mkdtemp(path_1.default.join(os_1.default.tmpdir(), "deb-"));
             const extdir = yield fs_1.default.promises.mkdtemp(path_1.default.join(os_1.default.tmpdir(), "chrome-"));
@@ -5415,7 +5415,7 @@ const path_1 = __importDefault(__nccwpck_require__(622));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const version = core.getInput("chromium-version") || "latest";
+            const version = core.getInput("chrome-version") || "latest";
             const platform = platform_1.getPlatform();
             core.info(`Setup chromium ${version}`);
             const binPath = yield installer.install(platform, version);
@@ -5677,7 +5677,7 @@ exports.SnapshotInstaller = SnapshotInstaller;
 class LatestInstaller {
     constructor(platform) {
         this.platform = platform;
-        this.http = new httpm.HttpClient("setup-chromium");
+        this.http = new httpm.HttpClient("setup-chrome");
         this.snapshotInstaller = new SnapshotInstaller(this.platform);
     }
     checkInstalled(version) {
