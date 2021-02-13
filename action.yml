@@ -1,10 +1,10 @@
-name: 'Setup Chromium'
-description: 'Install and setup Chromium'
+name: 'Setup Chrome'
+description: 'Install and setup Google Chrome and Chromium'
 author: "Shin'ya Ueoka"
 inputs:
-  chromium-version:
+  chrome-version:
     description: |-
-      The Chromium version to install and use.
+      The Google Chrome/Chromium version to install and use.
     default: latest
     required: false
 

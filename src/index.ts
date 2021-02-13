@@ -7,7 +7,7 @@ import path from "path";
 
 async function run(): Promise<void> {
   try {
-    const version = core.getInput("chromium-version") || "latest";
+    const version = core.getInput("chrome-version") || "latest";
     const platform = getPlatform();
 
     core.info(`Setup chromium ${version}`);

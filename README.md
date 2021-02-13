@@ -1,14 +1,14 @@
 <p>
-  <a href="https://github.com/browser-actions/setup-chromium/actions"><img alt="typescript-action status" src="https://github.com/browser-actions/setup-chromium/workflows/build-test/badge.svg"></a>
+  <a href="https://github.com/browser-actions/setup-chrome/actions"><img alt="typescript-action status" src="https://github.com/browser-actions/setup-chrome/workflows/build-test/badge.svg"></a>
 </p>
 
-# setup-chromium
+# setup-chrome
 
-This action sets by Chromium for use in actions by:
+This action sets by Google Chrome/Chromium for use in actions by:
 
 - [X] Install and setup latest Chromium
 - [X] Cross platform runner (macOS, Linux, Windows)
-- [X] Install by channel (stable, beta, dev, and canary)
+- [X] Install Google Chrome by channel (stable, beta, dev, and canary)
 - [ ] Install by version number (88.0.4324, or 88.0)
 
 ## Usage
@@ -19,15 +19,22 @@ Basic usage:
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chromium@latest
+  - uses: browser-actions/setup-chrome@latest
   - run: chrome --version
-    with:
-      chromium-version: latest
 ```
 
-**Note that the installed binary is `chrome` but not `chromium` on Linux and
-Windows.** Be sure to pass a full-path to `chrome` to your test system if the
-system expects that `chromium` exists in PATH such as [karma-chromium-runner][]:
+Install Google Chrome Beta
+```yaml
+steps:
+  - uses: browser-actions/setup-chrome@latest
+  - run: chrome --version
+    with:
+      chrome-version: beta
+```
+
+**Note that the installed binary depends on your installation spec.**
+Be sure to pass a full-path to `chrome` or `chromium` to your test system if
+the system expects that `chromium` exists in PATH such as [karma-chromium-runner][]:
 
 [karma-chromium-runner]: https://github.com/karma-runner/karma-chrome-launcher
 
@@ -37,10 +44,10 @@ CHROMIUM_BIN=$(which chrome) npm run test
 
 ## Parameters
 
-- `chromium-version`: *(Optional)* The Chromium version to be installed.  Available value is one of the following:
-    - Commit position like `848897`.  You can find commit positions from [here][snapshots].
-    - Latest snapshot `latest`
-    - Chrome release channels: `stable`, `beta`, `dev` and `canary`
+- `chrome-version`: *(Optional)* The Google Chrome/Chromium version to be installed.  Available value is one of the following:
+    - Chromium by a commit position like `848897`.  You can find commit positions from [here][snapshots].
+    - Chromium latest snapshot `latest`
+    - Google Chrome release channels: `stable`, `beta`, `dev` and `canary`
 
   Default: `latest`
 

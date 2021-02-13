@@ -63,7 +63,7 @@ export class PlatformVersions {
 }
 
 export class RecentReleaseClient {
-  private readonly http = new httpm.HttpClient("setup-chromium");
+  private readonly http = new httpm.HttpClient("setup-chrome");
 
   async getChannelReleases(): Promise<PlatformVersions> {
     const url = `http://omahaproxy.appspot.com/all.json`;
