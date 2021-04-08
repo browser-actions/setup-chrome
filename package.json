@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/io": "^1.0.2",
+    "@actions/io": "^1.1.0",
     "@actions/tool-cache": "^1.6.1"
   },
   "devDependencies": {
