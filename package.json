@@ -9,11 +9,11 @@
     "@actions/tool-cache": "^1.6.1"
   },
   "devDependencies": {
-    "@types/node": "^15.6.1",
+    "@types/node": "^15.14.0",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "@vercel/ncc": "^0.28.6",
-    "eslint": "^7.26.0",
+    "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.0",
