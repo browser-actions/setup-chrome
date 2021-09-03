@@ -20,7 +20,7 @@ Basic usage:
 ```yaml
 steps:
   - uses: browser-actions/setup-chrome@latest
-  - run: chrome --version
+  - run: chrome --version || chromium --version
 ```
 
 Install Google Chrome Beta
