@@ -33,6 +33,18 @@ steps:
 ```
 
 **Note that the installed binary depends on your installation spec.**
+
+The installed binary name depends on the version you specify and your platform.
+The summarized binary names are the following:
+
+| OS \ installed version | `latest` (default) | commit position (e.g. `848897`) | channel name (e.g. `dev`) |
+| ---                    | ---                | ---                             | ---                       |
+| Windows                | chrome             | chrome                          | chrome                    |
+| macOS                  | chromium           | chromium                        | chrome                    |
+| Linux                  | chrome             | chrome                          | chrome                    |
+
+
+
 Be sure to pass a full-path to `chrome` or `chromium` to your test system if
 the system expects that `chromium` exists in PATH such as [karma-chromium-runner][]:
 
