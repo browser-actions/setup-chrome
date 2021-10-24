@@ -111,4 +111,4 @@ jobs:
     needs: [deploy]
     steps:
       - uses: browser-actions/setup-chrome@latest
-      - run: chrome --version
+      - run: chrome --help
