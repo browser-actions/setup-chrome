@@ -6,8 +6,8 @@
 
 This action sets by Google Chrome/Chromium for use in actions by:
 
-- [X] Install and setup latest Chromium
-- [X] Cross platform runner (macOS, Linux, Windows)
+- [X] Install and set up the latest Chromium
+- [X] Cross-platform runner (macOS, Linux, Windows)
 - [X] Install Google Chrome by channel (stable, beta, dev, and canary)
 - [ ] Install by version number (88.0.4324, or 88.0)
 
@@ -27,9 +27,9 @@ Install Google Chrome Beta
 ```yaml
 steps:
   - uses: browser-actions/setup-chrome@latest
-  - run: chrome --version
     with:
       chrome-version: beta
+  - run: chrome --version
 ```
 
 **Note that the installed binary depends on your installation spec.**
@@ -38,7 +38,7 @@ The installed binary name depends on the version you specify and your platform.
 The summarized binary names are the following:
 
 | OS \ installed version | `latest` (default) | commit position (e.g. `848897`) | channel name (e.g. `dev`) |
-| ---                    | ---                | ---                             | ---                       |
+|------------------------|--------------------|---------------------------------|---------------------------|
 | Windows                | chrome             | chrome                          | chrome                    |
 | macOS                  | chromium           | chromium                        | chrome                    |
 | Linux                  | chrome             | chrome                          | chrome                    |
