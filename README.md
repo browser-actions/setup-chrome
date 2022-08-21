@@ -27,9 +27,9 @@ Install Google Chrome Beta
 ```yaml
 steps:
   - uses: browser-actions/setup-chrome@latest
-  - run: chrome --version
     with:
       chrome-version: beta
+  - run: chrome --version
 ```
 
 **Note that the installed binary depends on your installation spec.**
