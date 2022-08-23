@@ -6,7 +6,7 @@
   "dependencies": {
     "@actions/core": "^1.9.1",
     "@actions/io": "^1.1.2",
-    "@actions/tool-cache": "^1.7.1"
+    "@actions/tool-cache": "^2.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.7.11",
