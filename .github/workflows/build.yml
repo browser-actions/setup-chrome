@@ -106,9 +106,9 @@ jobs:
           git commit --message "Release for ${GITHUB_SHA}"
           git push origin latest
 
-  test-latest:
+  test:
     runs-on: ubuntu-latest
     needs: [deploy]
     steps:
-      - uses: browser-actions/setup-chrome@latest
+      - uses: ./
       - run: chrome --version
