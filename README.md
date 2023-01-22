@@ -19,14 +19,14 @@ Basic usage:
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@latest
+  - uses: browser-actions/setup-chrome@v1
   - run: chrome --version
 ```
 
 Install Google Chrome Beta
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@latest
+  - uses: browser-actions/setup-chrome@v1
     with:
       chrome-version: beta
   - run: chrome --version
