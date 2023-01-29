@@ -19,6 +19,7 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           ref: 'latest'
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/download-artifact@v3
@@ -31,6 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           major_version: ${{ steps.release.outputs.major }}
           full_version: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+          tag_name: ${{ steps.release.outputs.tag_name }}
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
@@ -47,5 +49,8 @@ jobs:
           git push origin latest
           git push origin v$major_version --force
           git push origin v$full_version
+
+          git tag -a $tag_name $GITHUB_SHA -m "Release v$full_version"
+          git push origin $tag_name
 
         if: ${{ steps.release.outputs.release_created }}
