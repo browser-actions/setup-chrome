@@ -55,9 +55,11 @@ async function run(): Promise<void> {
 
     core.addPath(path.join(installDir));
 
-    const actualVersions = await testVersion(platform, binPath);
+    const actualVersion = await testVersion(platform, binPath);
 
-    core.info(`Successfully setup chromium version ${actualVersions}`);
+    core.info(`Successfully setup chromium version ${actualVersion}`);
+
+    core.setOutput("chrome-version", actualVersion);
   } catch (error) {
     if (hasErrorMessage(error)) {
       core.setFailed(error.message);
