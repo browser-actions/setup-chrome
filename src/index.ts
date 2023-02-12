@@ -1,12 +1,46 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as io from "@actions/io";
 import * as installer from "./installer";
-import { getPlatform, OS } from "./platform";
+import { getPlatform, Platform, OS } from "./platform";
 import path from "path";
 
 const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
   return typeof e === "object" && e !== null && "message" in e;
+};
+
+const testVersion = async (
+  platform: Platform,
+  bin: string
+): Promise<string> => {
+  if (platform.os === OS.WINDOWS) {
+    const output = await exec.getExecOutput(`powershell`, [
+      "-Command",
+      `(Get-Item (Get-Command '${bin}').Source).VersionInfo.ProductVersion`,
+    ]);
+    if (output.exitCode !== 0) {
+      throw new Error(
+        `shell exits with status ${output.exitCode}: ${output.stderr}`
+      );
+    }
+    return output.stdout.trimStart().trimEnd();
+  }
+
+  const output = await exec.getExecOutput(`"${bin}"`, ["--version"], {});
+  if (output.exitCode !== 0) {
+    throw new Error(
+      `chromium exits with status ${output.exitCode}: ${output.stderr}`
+    );
+  }
+  if (
+    !output.stdout.startsWith("Chromium ") &&
+    !output.stdout.startsWith("Google Chrome ")
+  ) {
+    throw new Error(`chromium outputs unexpected results: ${output.stdout}`);
+  }
+  return output.stdout
+    .replace("Chromium ", "")
+    .replace("Google Chrome ", "")
+    .split(" ", 1)[0];
 };
 
 async function run(): Promise<void> {
@@ -18,17 +52,12 @@ async function run(): Promise<void> {
 
     const binPath = await installer.install(platform, version);
     const installDir = path.dirname(binPath);
-    const binName = path.basename(binPath);
 
     core.addPath(path.join(installDir));
-    core.info(`Successfully setup chromium version ${version}`);
 
-    if (platform.os === OS.WINDOWS) {
-      // Unable to run with command-line option on windows
-      await io.which("chrome", true);
-    } else if (platform.os === OS.DARWIN || platform.os === OS.LINUX) {
-      await exec.exec(binName, ["--version"]);
-    }
+    const actualVersions = await testVersion(platform, binPath);
+
+    core.info(`Successfully setup chromium version ${actualVersions}`);
   } catch (error) {
     if (hasErrorMessage(error)) {
       core.setFailed(error.message);
