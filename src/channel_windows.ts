@@ -6,6 +6,12 @@ import * as exec from "@actions/exec";
 import * as core from "@actions/core";
 import fs from "fs";
 
+const isENOENT = (e: unknown): boolean => {
+  return (
+    typeof e === "object" && e !== null && "code" in e && e.code === "ENOENT"
+  );
+};
+
 export class WindowsChannelInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
@@ -18,7 +24,7 @@ export class WindowsChannelInstaller implements Installer {
     try {
       await fs.promises.stat(root);
     } catch (e) {
-      if (e.code === "ENOENT") {
+      if (isENOENT(e)) {
         return undefined;
       }
       throw e;

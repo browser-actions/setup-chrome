@@ -12,7 +12,7 @@ export const OS = {
 } as const;
 
 // eslint-disable-next-line no-redeclare
-export type OS = typeof OS[keyof typeof OS];
+export type OS = (typeof OS)[keyof typeof OS];
 
 export const Arch = {
   AMD64: "amd64",
@@ -21,7 +21,7 @@ export const Arch = {
 } as const;
 
 // eslint-disable-next-line no-redeclare
-export type Arch = typeof Arch[keyof typeof Arch];
+export type Arch = (typeof Arch)[keyof typeof Arch];
 
 export const getOS = (): OS => {
   const platform = os.platform();

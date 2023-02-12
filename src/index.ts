@@ -5,6 +5,10 @@ import * as installer from "./installer";
 import { getPlatform, OS } from "./platform";
 import path from "path";
 
+const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
+  return typeof e === "object" && e !== null && "message" in e;
+};
+
 async function run(): Promise<void> {
   try {
     const version = core.getInput("chrome-version") || "latest";
@@ -26,7 +30,11 @@ async function run(): Promise<void> {
       await exec.exec(binName, ["--version"]);
     }
   } catch (error) {
-    core.setFailed(error.message);
+    if (hasErrorMessage(error)) {
+      core.setFailed(error.message);
+    } else {
+      core.setFailed(String(error));
+    }
   }
 }
 
