@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.0.1...setup-chrome-v1.1.0) (2023-02-12)
+
+
+### Features
+
+* Output version ([#319](https://github.com/browser-actions/setup-chrome/issues/319)) ([01ba6fc](https://github.com/browser-actions/setup-chrome/commit/01ba6fcebedc628eab00d4d550a9b5257bc6111c))
+
+
+### Bug Fixes
+
+* bump typescript from 4.3.2 to 4.9.5 ([#314](https://github.com/browser-actions/setup-chrome/issues/314)) ([a5f9494](https://github.com/browser-actions/setup-chrome/commit/a5f9494933005154a9571cfc7cd57459084e91dd))
+
 ## [1.0.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.0.0...setup-chrome-v1.0.1) (2023-01-29)
 
 
