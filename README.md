@@ -29,7 +29,10 @@ steps:
   - uses: browser-actions/setup-chrome@v1
     with:
       chrome-version: beta
-  - run: chrome --version
+    id: setup-chrome
+  - run: |
+      echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
+      chrome --version
 ```
 
 **Note that the installed binary depends on your installation spec.**
