@@ -60,6 +60,7 @@ async function run(): Promise<void> {
     core.info(`Successfully setup chromium version ${actualVersion}`);
 
     core.setOutput("chrome-version", actualVersion);
+    core.setOutput("chrome-path", binPath);
   } catch (error) {
     if (hasErrorMessage(error)) {
       core.setFailed(error.message);

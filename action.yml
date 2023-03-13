@@ -10,6 +10,8 @@ inputs:
 outputs:
   chrome-version:
     description: 'The installed Google Chrome/Chromium version. Useful when given a latest version.'
+  chrome-path:
+    description: 'The installed Google Chrome/Chromium path.'
 runs:
   using: 'node16'
   main: 'index.js'
