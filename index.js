@@ -10736,6 +10736,7 @@ function run() {
             const actualVersion = yield testVersion(platform, binPath);
             core.info(`Successfully setup chromium version ${actualVersion}`);
             core.setOutput("chrome-version", actualVersion);
+            core.setOutput("chrome-path", binPath);
         }
         catch (error) {
             if (hasErrorMessage(error)) {
