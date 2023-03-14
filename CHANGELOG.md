@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.1.0...setup-chrome-v1.2.0) (2023-03-14)
+
+
+### Features
+
+* Add `chrome-path` output ([#327](https://github.com/browser-actions/setup-chrome/issues/327)) ([b216760](https://github.com/browser-actions/setup-chrome/commit/b2167607c7f87c1d8026e564d6dcde8fc18654b5))
+
 ## [1.1.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.0.1...setup-chrome-v1.1.0) (2023-02-12)
 
 

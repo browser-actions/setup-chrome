@@ -1,6 +1,6 @@
 {
   "name": "setup-chrome",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Set up your GitHub Actions workflow with a specific version of chromium",
   "main": "dist/index.js",
   "dependencies": {
