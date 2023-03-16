@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.0...setup-chrome-v1.2.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* **deps:** bump @actions/io from 1.1.2 to 1.1.3 ([#333](https://github.com/browser-actions/setup-chrome/issues/333)) ([619ab4e](https://github.com/browser-actions/setup-chrome/commit/619ab4ecda61fb4ee08835d01c8aad9b7381d78a))
+
 ## [1.2.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.1.0...setup-chrome-v1.2.0) (2023-03-14)
 
 
