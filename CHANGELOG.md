@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.1...setup-chrome-v1.2.2) (2023-04-22)
+
+
+### Bug Fixes
+
+* fix stable channel version on Intel Mac ([#351](https://github.com/browser-actions/setup-chrome/issues/351)) ([68cb47d](https://github.com/browser-actions/setup-chrome/commit/68cb47d5946fd8cad495395835d94ab24f182393))
+
 ## [1.2.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.0...setup-chrome-v1.2.1) (2023-03-16)
 
 
