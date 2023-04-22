@@ -32,7 +32,7 @@ steps:
     id: setup-chrome
   - run: |
       echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
-      chrome --version
+      ${{ steps.setup-chrome.outputs.chrome-path }} --version
 ```
 
 **Note that the installed binary depends on your installation spec.**

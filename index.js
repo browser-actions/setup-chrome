@@ -10338,7 +10338,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MacOSChannelInstaller = void 0;
-const platform_1 = __nccwpck_require__(2999);
 const channel_1 = __nccwpck_require__(6542);
 const tc = __importStar(__nccwpck_require__(7784));
 const exec = __importStar(__nccwpck_require__(1514));
@@ -10361,44 +10360,19 @@ class MacOSChannelInstaller {
         });
     }
     download(version) {
-        if (!(0, channel_1.isChannelName)(version)) {
-            throw new Error(`Unexpected version: ${version}`);
-        }
-        switch (this.platform.arch) {
-            case platform_1.Arch.AMD64:
-                return this.downloadForIntelChip(version);
-            case platform_1.Arch.ARM64:
-                return this.downloadForAppleChip(version);
-            default:
-                throw new Error(`Chromium ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`);
-        }
-    }
-    downloadForIntelChip(channel) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!(0, channel_1.isChannelName)(version)) {
+                throw new Error(`Unexpected version: ${version}`);
+            }
             const url = (() => {
-                switch (channel) {
-                    case "stable":
-                        return `https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg`;
-                    default:
-                        return `https://dl.google.com/chrome/mac/${channel}/googlechrome${channel}.dmg`;
-                }
-            })();
-            core.info(`Acquiring ${channel} from ${url}`);
-            const archive = yield tc.downloadTool(url);
-            return { archive };
-        });
-    }
-    downloadForAppleChip(channel) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = (() => {
-                switch (channel) {
+                switch (version) {
                     case "stable":
                         return `https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg`;
                     default:
-                        return `https://dl.google.com/chrome/mac/universal/${channel}/googlechrome${channel}.dmg`;
+                        return `https://dl.google.com/chrome/mac/universal/${version}/googlechrome${version}.dmg`;
                 }
             })();
-            core.info(`Acquiring ${channel} from ${url}`);
+            core.info(`Acquiring ${version} from ${url}`);
             const archive = yield tc.downloadTool(url);
             return { archive };
         });
