@@ -43,34 +43,11 @@ jobs:
 
       - name: Install with no params
         uses: ./
+        id: setup-chrome
       - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chromium --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
-
-      - name: Install with version '827102'
-        uses: ./
-        with:
-          chrome-version: 827102
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chromium --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
-
-      - name: install with version 'dev'
-        uses: ./
-        with:
-          chrome-version: dev
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chrome --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
+        run:
+          # Linux or windows
+          # chrome --version
+          # macOS
+          # chromium --version
+          ${{ steps.setup-chrome.outputs.chrome-path }} --version
