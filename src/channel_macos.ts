@@ -1,6 +1,6 @@
-import { Platform, Arch } from "./platform";
+import { Platform } from "./platform";
 import { Installer, DownloadResult, InstallResult } from "./installer";
-import { ChannelName, isChannelName } from "./channel";
+import { isChannelName } from "./channel";
 import * as tc from "@actions/tool-cache";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
@@ -20,48 +20,21 @@ export class MacOSChannelInstaller implements Installer {
     }
   }
 
-  download(version: string): Promise<DownloadResult> {
+  async download(version: string): Promise<DownloadResult> {
     if (!isChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
-    switch (this.platform.arch) {
-      case Arch.AMD64:
-        return this.downloadForIntelChip(version);
-      case Arch.ARM64:
-        return this.downloadForAppleChip(version);
-      default:
-        throw new Error(
-          `Chromium ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`
-        );
-    }
-  }
 
-  async downloadForIntelChip(channel: ChannelName): Promise<DownloadResult> {
     const url = (() => {
-      switch (channel) {
-        case "stable":
-          return `https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg`;
-        default:
-          return `https://dl.google.com/chrome/mac/${channel}/googlechrome${channel}.dmg`;
-      }
-    })();
-
-    core.info(`Acquiring ${channel} from ${url}`);
-    const archive = await tc.downloadTool(url);
-    return { archive };
-  }
-
-  async downloadForAppleChip(channel: ChannelName): Promise<DownloadResult> {
-    const url = (() => {
-      switch (channel) {
+      switch (version) {
         case "stable":
           return `https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg`;
         default:
-          return `https://dl.google.com/chrome/mac/universal/${channel}/googlechrome${channel}.dmg`;
+          return `https://dl.google.com/chrome/mac/universal/${version}/googlechrome${version}.dmg`;
       }
     })();
 
-    core.info(`Acquiring ${channel} from ${url}`);
+    core.info(`Acquiring ${version} from ${url}`);
     const archive = await tc.downloadTool(url);
     return { archive };
   }
