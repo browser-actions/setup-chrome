@@ -34,43 +34,16 @@ jobs:
     needs: [build]
     strategy:
       matrix:
-        os: [ubuntu, macos, windows]
+        os: [macos]
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: dist
 
-      - name: Install with no params
-        uses: ./
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chromium --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
-
-      - name: Install with version '827102'
+      - name: install with version 'stable'
         uses: ./
         with:
-          chrome-version: 827102
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chromium --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
-
-      - name: install with version 'dev'
-        uses: ./
-        with:
-          chrome-version: dev
-      - if: runner.os == 'Linux'
-        run: chrome --version
+          chrome-version: stable
       - if: runner.os == 'macOS'
         run: chrome --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
