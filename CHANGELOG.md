@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.2...setup-chrome-v1.2.3) (2023-09-17)
+
+
+### Bug Fixes
+
+* **deps:** migrate a package manager to pnpm ([#384](https://github.com/browser-actions/setup-chrome/issues/384)) ([5fa5696](https://github.com/browser-actions/setup-chrome/commit/5fa56961cf53f049d4a4963f21322f4aec3de1d3))
+
 ## [1.2.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.1...setup-chrome-v1.2.2) (2023-04-22)
 
 
