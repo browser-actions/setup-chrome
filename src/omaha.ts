@@ -30,7 +30,7 @@ export class Versions {
   constructor(private readonly json: VersionJSON[]) {}
 
   findByChannel(
-    channel: "beta" | "dev" | "canary" | "stable"
+    channel: "beta" | "dev" | "canary" | "stable",
   ): VersionJSON | undefined {
     return this.json.find((o) => o.channel == channel);
   }
@@ -70,12 +70,12 @@ export class RecentReleaseClient {
     const resp = await this.http.getJson<PlatformVersionsJSON>(url);
     if (resp.statusCode !== httpm.HttpCodes.OK) {
       throw new Error(
-        `Failed to get channel versions: server returns ${resp.statusCode}`
+        `Failed to get channel versions: server returns ${resp.statusCode}`,
       );
     }
     if (resp.result === null) {
       throw new Error(
-        `Failed to get channel versions: server returns empty body`
+        `Failed to get channel versions: server returns empty body`,
       );
     }
 

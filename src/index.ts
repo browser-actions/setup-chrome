@@ -10,7 +10,7 @@ const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
 
 const testVersion = async (
   platform: Platform,
-  bin: string
+  bin: string,
 ): Promise<string> => {
   if (platform.os === OS.WINDOWS) {
     const output = await exec.getExecOutput(`powershell`, [
@@ -19,7 +19,7 @@ const testVersion = async (
     ]);
     if (output.exitCode !== 0) {
       throw new Error(
-        `shell exits with status ${output.exitCode}: ${output.stderr}`
+        `shell exits with status ${output.exitCode}: ${output.stderr}`,
       );
     }
     return output.stdout.trimStart().trimEnd();
@@ -28,7 +28,7 @@ const testVersion = async (
   const output = await exec.getExecOutput(`"${bin}"`, ["--version"], {});
   if (output.exitCode !== 0) {
     throw new Error(
-      `chromium exits with status ${output.exitCode}: ${output.stderr}`
+      `chromium exits with status ${output.exitCode}: ${output.stderr}`,
     );
   }
   if (

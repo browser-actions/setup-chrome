@@ -24,7 +24,7 @@ export class LinuxChannelInstaller implements Installer {
     }
     if (version === "canary") {
       throw new Error(
-        `Chrome ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`
+        `Chrome ${version} not supported for platform ${this.platform.os} ${this.platform.arch}`,
       );
     }
 

@@ -39,7 +39,7 @@ export class WindowsChannelInstaller implements Installer {
     }
     if (version === "canary" || this.platform.arch === Arch.ARM64) {
       throw new Error(
-        `Chrome ${version} not supported for platform "${this.platform.os}" "${this.platform.arch}"`
+        `Chrome ${version} not supported for platform "${this.platform.os}" "${this.platform.arch}"`,
       );
     }
 
