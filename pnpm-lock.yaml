@@ -11,6 +11,9 @@ dependencies:
   '@actions/exec':
     specifier: ^1.1.1
     version: 1.1.1
+  '@actions/http-client':
+    specifier: ^2.1.1
+    version: 2.1.1
   '@actions/io':
     specifier: ^1.1.3
     version: 1.1.3
@@ -52,7 +55,7 @@ packages:
   /@actions/core@1.10.0:
     resolution: {integrity: sha512-2aZDDa3zrrZbP5ZYg159sNoLRb61nQ7awl5pSvIq5Qpj81vwDzdMRKzkWJGJuwVvWpvZKx7vspJALyvaaIQyug==}
     dependencies:
-      '@actions/http-client': 2.0.1
+      '@actions/http-client': 2.1.1
       uuid: 8.3.2
     dev: false
 
@@ -68,8 +71,8 @@ packages:
       tunnel: 0.0.6
     dev: false
 
-  /@actions/http-client@2.0.1:
-    resolution: {integrity: sha512-PIXiMVtz6VvyaRsGY268qvj57hXQEpsYogYOu2nrQhlf+XCGmZstmuZBbAybUl1nQGnvS1k1eEsQ69ZoD7xlSw==}
+  /@actions/http-client@2.1.1:
+    resolution: {integrity: sha512-qhrkRMB40bbbLo7gF+0vu+X+UawOvQQqNAA/5Unx774RS8poaOhThDOG6BGmxvAnxhQnDp2BG/ZUm65xZILTpw==}
     dependencies:
       tunnel: 0.0.6
     dev: false
