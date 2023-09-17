@@ -7,3 +7,15 @@ updates:
     commit-message:
       prefix: "fix(deps)"
       prefix-development: 'chore(deps):'
+    groups:
+      actions:
+        patterns:
+          - "@actions/*"
+      typescript:
+        patterns:
+          - "typescript"
+          - "@typescript-*"
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
