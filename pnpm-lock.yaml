@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@actions/core':
-    specifier: ^1.10.0
-    version: 1.10.0
+    specifier: ^1.10.1
+    version: 1.10.1
   '@actions/exec':
     specifier: ^1.1.1
     version: 1.1.1
@@ -18,8 +18,8 @@ dependencies:
     specifier: ^1.1.3
     version: 1.1.3
   '@actions/tool-cache':
-    specifier: ^1.7.1
-    version: 1.7.1
+    specifier: ^2.0.1
+    version: 2.0.1
 
 devDependencies:
   '@types/node':
@@ -57,8 +57,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /@actions/core@1.10.0:
-    resolution: {integrity: sha512-2aZDDa3zrrZbP5ZYg159sNoLRb61nQ7awl5pSvIq5Qpj81vwDzdMRKzkWJGJuwVvWpvZKx7vspJALyvaaIQyug==}
+  /@actions/core@1.10.1:
+    resolution: {integrity: sha512-3lBR9EDAY+iYIpTnTIXmWcNbX3T2kCkAEQGIQx4NVQ0575nk2k3GRZDTPQG+vVtS2izSLmINlxXf0uLtnrTP+g==}
     dependencies:
       '@actions/http-client': 2.1.1
       uuid: 8.3.2
@@ -68,12 +68,6 @@ packages:
     resolution: {integrity: sha512-+sCcHHbVdk93a0XT19ECtO/gIXoxvdsgQLzb2fE2/5sIZmWQuluYyjPQtrtTHdU1YzTZ7bAPN4sITq2xi1679w==}
     dependencies:
       '@actions/io': 1.1.3
-    dev: false
-
-  /@actions/http-client@1.0.9:
-    resolution: {integrity: sha512-0O4SsJ7q+MK0ycvXPl2e6bMXV7dxAXOGjrXS1eTF9s2S401Tp6c/P3c3Joz04QefC1J6Gt942Wl2jbm3f4mLcg==}
-    dependencies:
-      tunnel: 0.0.6
     dev: false
 
   /@actions/http-client@2.1.1:
@@ -86,14 +80,14 @@ packages:
     resolution: {integrity: sha512-wi9JjgKLYS7U/z8PPbco+PvTb/nRWjeoFlJ1Qer83k/3C5PHQi28hiVdeE2kHXmIL99mQFawx8qt/JPjZilJ8Q==}
     dev: false
 
-  /@actions/tool-cache@1.7.1:
-    resolution: {integrity: sha512-y1xxxOhXaBUIUit3lhepmu/0xdgiTMpnZRLmVdtF0hTm521doi+MdRRRP62czHvM7wxH6epj4JPNJQ3iJpOrkQ==}
+  /@actions/tool-cache@2.0.1:
+    resolution: {integrity: sha512-iPU+mNwrbA8jodY8eyo/0S/QqCKDajiR8OxWTnSk/SnYg0sj8Hp4QcUEVC1YFpHWXtrfbQrE13Jz4k4HXJQKcA==}
     dependencies:
-      '@actions/core': 1.10.0
+      '@actions/core': 1.10.1
       '@actions/exec': 1.1.1
-      '@actions/http-client': 1.0.9
+      '@actions/http-client': 2.1.1
       '@actions/io': 1.1.3
-      semver: 6.3.0
+      semver: 6.3.1
       uuid: 3.4.0
     dev: false
 
@@ -1155,8 +1149,8 @@ packages:
       queue-microtask: 1.2.3
     dev: true
 
-  /semver@6.3.0:
-    resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
+  /semver@6.3.1:
+    resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
     dev: false
 
