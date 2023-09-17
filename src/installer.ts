@@ -25,7 +25,7 @@ export interface Installer {
 
 export const install = async (
   platform: Platform,
-  version: string
+  version: string,
 ): Promise<string> => {
   const installer = (() => {
     switch (version) {

@@ -17,7 +17,7 @@ export class SnapshotInstaller implements Installer {
 
   async download(version: string): Promise<DownloadResult> {
     const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
-      this.platform
+      this.platform,
     )}%2F${version}%2F${makeBasename(this.platform)}?alt=media`;
 
     core.info(`Acquiring ${version} from ${url}`);
@@ -71,12 +71,12 @@ export class LatestInstaller implements Installer {
 
   async download(_version: string): Promise<DownloadResult> {
     const latestVersionURL = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
-      this.platform
+      this.platform,
     )}%2FLAST_CHANGE?alt=media`;
     const resp = await this.http.get(latestVersionURL);
     if (resp.message.statusCode !== httpm.HttpCodes.OK) {
       throw new Error(
-        `Failed to get latest version: server returns ${resp.message.statusCode}`
+        `Failed to get latest version: server returns ${resp.message.statusCode}`,
       );
     }
     const version = await resp.readBody();
