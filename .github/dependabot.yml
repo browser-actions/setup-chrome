@@ -19,3 +19,4 @@ updates:
         patterns:
           - "eslint"
           - "eslint-*"
+          - "prettier"
