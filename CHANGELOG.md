@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.3...setup-chrome-v1.3.0) (2023-11-11)
+
+
+### Features
+
+* support M1/M2 mac ([#426](https://github.com/browser-actions/setup-chrome/issues/426)) ([8a8f449](https://github.com/browser-actions/setup-chrome/commit/8a8f4497e59bf92e66270626dbcc37a2aa0933e5))
+
 ## [1.2.3](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.2...setup-chrome-v1.2.3) (2023-09-17)
 
 
