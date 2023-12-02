@@ -1,0 +1,52 @@
+name: 'Run test manually'
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'OS to run test on'
+        required: true
+        type: choice
+        options:
+        - ubuntu
+        - windows
+        - macos
+      chrome-version:
+        description: 'Chrome version to install'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: 'package.json'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm package
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./dist/
+
+  test:
+    needs: [build]
+    runs-on: ${{ inputs.os }}-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - name: Install chrome
+        uses: ./
+        with:
+          chrome-version: ${{ inputs.chrome-version }}
+        id: setup-chrome
+      - if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: ${{ steps.setup-chrome.outputs.chrome-path }} --version
+      - if: runner.os == 'Windows'
+        run: (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
