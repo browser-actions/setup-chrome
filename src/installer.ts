@@ -61,7 +61,5 @@ export const install = async (
   core.info("Installing chromium...");
   const { root, bin } = await installer.install(version, archive);
 
-  core.info(`Successfully installed chromium to ${path.join(root, bin)}`);
-
   return path.join(root, bin);
 };
