@@ -31,42 +31,21 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu, macos, windows]
+        version: ["", 827102, 120, dev]
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: dist
 
-      - name: Install with no params
-        uses: ./
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chromium --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
-
-      - name: Install with version '827102'
+      - name: Install Google Chrome
         uses: ./
         with:
-          chrome-version: 827102
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chromium --version
+          chrome-version: ${{ matrix.version }}
+        id: setup-chrome
+      - if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          "${{ steps.setup-chrome.outputs.chrome-path }}" --version
       - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
-
-      - name: install with version 'dev'
-        uses: ./
-        with:
-          chrome-version: dev
-      - if: runner.os == 'Linux'
-        run: chrome --version
-      - if: runner.os == 'macOS'
-        run: chrome --version
-      - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command chrome).Source).VersionInfo.ProductVersion
-        # Unable to run with command-line option on windows
+        run: |
+          (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
