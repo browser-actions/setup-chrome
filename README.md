@@ -9,13 +9,12 @@ This action sets by Google Chrome/Chromium for use in actions by:
 - [X] Install and setup latest Chromium
 - [X] Cross platform runner (macOS, Linux, Windows)
 - [X] Install Google Chrome by channel (stable, beta, dev, and canary)
-- [ ] Install by version number (88.0.4324, or 88.0)
+- [X] Install by version number (88.0.4324, or 88.0)
 
 ## Usage
 
-See [action.yml](action.yml)
-
-Basic usage:
+Here is a basic usage.
+The action installs the latest build by default.
 
 ```yaml
 steps:
@@ -23,48 +22,52 @@ steps:
   - run: chrome --version
 ```
 
-Install Google Chrome Beta
+To install a specific channel, use `chrome-version` input.
+
 ```yaml
 steps:
   - uses: browser-actions/setup-chrome@v1
     with:
-      chrome-version: beta
-    id: setup-chrome
-  - run: |
-      echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
-      ${{ steps.setup-chrome.outputs.chrome-path }} --version
+      chrome-version: 120
 ```
 
-**Note that the installed binary depends on your installation spec.**
+### Supported version formats
 
-The installed binary name depends on the version you specify and your platform.
-The summarized binary names are the following:
+The action supports the following version formats:
 
-| OS \ installed version | `latest` (default) | commit position (e.g. `848897`) | channel name (e.g. `dev`) |
-| ---                    | ---                | ---                             | ---                       |
-| Windows                | chrome             | chrome                          | chrome                    |
-| macOS                  | chromium           | chromium                        | chrome                    |
-| Linux                  | chrome             | chrome                          | chrome                    |
+- The latest snapshot `latest` (default).
+- Commit positions like `848897`.  You can find commit positions from [here][snapshots].
+- Google Chrome release channels: `stable`, `beta`, `dev` and `canary`
+- Specific versions: `119`, `120.0.6099`, `121.0.6100.0`.  The version are resolved by [Chrome for Testing][].
 
+[Chrome for Testing]: https://googlechromelabs.github.io/chrome-for-testing/
 
+### Installed path
 
-Be sure to pass a full-path to `chrome` or `chromium` to your test system if
-the system expects that `chromium` exists in PATH such as [karma-chromium-runner][]:
+The installed binary name is not always `chrome` or `chromium`.
+It depends on your installation spec and OS.
 
-[karma-chromium-runner]: https://github.com/karma-runner/karma-chrome-launcher
+To get the installed binary path, use `chrome-path` output of the action:
 
-```sh
-CHROMIUM_BIN=$(which chrome) npm run test
+```yaml
+steps:
+  - uses: browser-actions/setup-chrome@v1
+    id: setup-chrome
+  - run: |
+      ${{ steps.setup-chrome.outputs.chrome-path }} --version
 ```
 
 ## Parameters
 
-- `chrome-version`: *(Optional)* The Google Chrome/Chromium version to be installed.  Available value is one of the following:
-    - Chromium by a commit position like `848897`.  You can find commit positions from [here][snapshots].
-    - Chromium latest snapshot `latest`
-    - Google Chrome release channels: `stable`, `beta`, `dev` and `canary`
+### Inputs
 
+- `chrome-version`: *(Optional)* The Google Chrome/Chromium version to be installed.
   Default: `latest`
+
+### Outputs
+
+- `chrome-path`: The installed Google Chrome/Chromium binary path.
+- `chrome-version`: The installed Google Chrome/Chromium version.
 
 [snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
