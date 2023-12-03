@@ -45,8 +45,8 @@ export const install = async (
             return new WindowsChannelInstaller(platform);
         }
     }
-    // To distinguish between commit number and known-good version, assume commit number is greater than 1,000,000
-    if (Number(version) > 1000000) {
+    // To distinguish between commit number and known-good version, assume commit number is greater than 10,000
+    if (Number(version) > 10000) {
       return new SnapshotInstaller(platform);
     }
     return new KnownGoodVersionInstaller(platform);
