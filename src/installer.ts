@@ -5,6 +5,7 @@ import { SnapshotInstaller, LatestInstaller } from "./snapshot";
 import { LinuxChannelInstaller } from "./channel_linux";
 import { MacOSChannelInstaller } from "./channel_macos";
 import { WindowsChannelInstaller } from "./channel_windows";
+import { KnownGoodVersionInstaller } from "./version_installer";
 
 export type InstallResult = {
   root: string; // root is a directory containing all contents for chromium
@@ -43,10 +44,12 @@ export const install = async (
           case OS.WINDOWS:
             return new WindowsChannelInstaller(platform);
         }
-        break;
-      default:
-        return new SnapshotInstaller(platform);
     }
+    // To distinguish between commit number and known-good version, assume commit number is greater than 10,000
+    if (Number(version) > 10000) {
+      return new SnapshotInstaller(platform);
+    }
+    return new KnownGoodVersionInstaller(platform);
   })();
 
   const cache = await installer.checkInstalled(version);
@@ -60,8 +63,6 @@ export const install = async (
 
   core.info("Installing chromium...");
   const { root, bin } = await installer.install(version, archive);
-
-  core.info(`Successfully installed chromium to ${path.join(root, bin)}`);
 
   return path.join(root, bin);
 };

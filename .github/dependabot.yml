@@ -20,3 +20,9 @@ updates:
           - "eslint"
           - "eslint-*"
           - "prettier"
+      jest:
+        patterns:
+          - "jest"
+          - "jest-*"
+          - "ts-jest"
+          - "@types/jest"

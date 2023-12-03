@@ -27,6 +27,7 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm build
       - run: pnpm package
       - uses: actions/upload-artifact@v3
@@ -47,6 +48,8 @@ jobs:
           chrome-version: ${{ inputs.chrome-version }}
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: ${{ steps.setup-chrome.outputs.chrome-path }} --version
+        run: |
+          "${{ steps.setup-chrome.outputs.chrome-path }}" --version
       - if: runner.os == 'Windows'
-        run: (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
+        run: |
+          (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
