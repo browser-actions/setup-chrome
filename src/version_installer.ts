@@ -9,26 +9,92 @@ import { Installer, DownloadResult, InstallResult } from "./installer";
 const KNOWN_GOOD_VERSIONS_URL =
   "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
 
-export interface KnownGoodVersionsJson {
+export type KnownGoodVersionsJson = {
   timestamp: string;
   versions: KnownGoodVersion[];
-}
+};
 
-export interface KnownGoodVersion {
+export type KnownGoodVersionPlatform =
+  | "linux64"
+  | "mac-arm64"
+  | "mac-x64"
+  | "win32"
+  | "win64";
+
+export type KnownGoodVersion = {
   version: string;
   revision: string;
   downloads: {
     chrome: Array<{
-      platform: "linux64" | "mac-arm64" | "mac-x64" | "win32" | "win64";
+      platform: KnownGoodVersionPlatform;
       url: string;
     }>;
   };
-}
+};
 
-export class KnownGoodVersionsClient {
+export class KnownGoodVersionResolver {
   private readonly http = new httpm.HttpClient("setup-chrome");
 
-  async getKnownGoodVersions(): Promise<KnownGoodVersion[]> {
+  private readonly platform: KnownGoodVersionPlatform;
+
+  private knownGoodVersionsCache?: KnownGoodVersion[];
+
+  private readonly resolvedVersions = new Map<string, StaticVersion>();
+
+  constructor(platform: KnownGoodVersionPlatform) {
+    this.platform = platform;
+  }
+
+  async resolve(spec: VersionSpec): Promise<StaticVersion | undefined> {
+    if (this.resolvedVersions.has(spec.toString())) {
+      return this.resolvedVersions.get(spec.toString())!;
+    }
+
+    const knownGoodVersions = await this.getKnownGoodVersions();
+    for (const version of knownGoodVersions) {
+      const v = new StaticVersion(version.version);
+      if (!spec.satisfies(v)) {
+        continue;
+      }
+      const found = version.downloads.chrome.find(
+        ({ platform }) => platform === this.platform,
+      );
+      if (found) {
+        this.resolvedVersions.set(spec.toString(), v);
+        return v;
+      }
+    }
+    return undefined;
+  }
+
+  async resolveUrl(spec: VersionSpec): Promise<string | undefined> {
+    const version = await this.resolve(spec);
+    if (!version) {
+      return undefined;
+    }
+
+    const knownGoodVersions = await this.getKnownGoodVersions();
+    const knownGoodVersion = knownGoodVersions.find(
+      (v) => v.version === version.toString(),
+    );
+    if (!knownGoodVersion) {
+      return undefined;
+    }
+
+    const found = knownGoodVersion.downloads.chrome.find(
+      ({ platform }) => platform === this.platform,
+    );
+    if (!found) {
+      return undefined;
+    }
+    return found.url;
+  }
+
+  private async getKnownGoodVersions(): Promise<KnownGoodVersion[]> {
+    if (this.knownGoodVersionsCache) {
+      return this.knownGoodVersionsCache;
+    }
+
     const resp = await this.http.getJson<KnownGoodVersionsJson>(
       KNOWN_GOOD_VERSIONS_URL,
     );
@@ -39,14 +105,16 @@ export class KnownGoodVersionsClient {
       throw new Error(`Failed to get known good versions`);
     }
 
+    this.knownGoodVersionsCache = resp.result.versions.reverse();
+
     return resp.result.versions;
   }
 }
 
 export class KnownGoodVersionInstaller implements Installer {
-  private readonly versionsClient = new KnownGoodVersionsClient();
+  private readonly versionResolver: KnownGoodVersionResolver;
   private readonly platform: Platform;
-  private readonly knownGoodVersionPlatform: string;
+  private readonly knownGoodVersionPlatform: KnownGoodVersionPlatform;
 
   constructor(platform: Platform) {
     this.platform = platform;
@@ -63,10 +131,20 @@ export class KnownGoodVersionInstaller implements Installer {
     } else {
       throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
     }
+
+    this.versionResolver = new KnownGoodVersionResolver(
+      this.knownGoodVersionPlatform,
+    );
   }
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const root = tc.find("chromium", version);
+    const spec = new VersionSpec(version);
+    const resolved = await this.versionResolver.resolve(spec);
+    if (!resolved) {
+      return undefined;
+    }
+
+    const root = tc.find("chromium", resolved.toString());
     if (root) {
       return { root, bin: "chrome" };
     }
@@ -74,31 +152,33 @@ export class KnownGoodVersionInstaller implements Installer {
 
   async download(version: string): Promise<DownloadResult> {
     const spec = new VersionSpec(version);
-    const knownGoodVersions = await this.versionsClient.getKnownGoodVersions();
-    for (const version of knownGoodVersions) {
-      const v = new StaticVersion(version.version);
-      if (!spec.satisfies(v)) {
-        continue;
-      }
-      const found = version.downloads.chrome.find(
-        ({ platform }) => platform === this.knownGoodVersionPlatform,
-      );
-      if (found) {
-        const archive = await tc.downloadTool(found.url);
-        return { archive };
-      }
+    const resolved = await this.versionResolver.resolve(spec);
+    if (!resolved) {
+      throw new Error(`Version ${version} not found in known good versions`);
     }
-    throw new Error(`Version ${version} not found in known good versions`);
+
+    const url = await this.versionResolver.resolveUrl(spec);
+    if (!url) {
+      throw new Error(`Version ${version} not found in known good versions`);
+    }
+    const archive = await tc.downloadTool(url);
+    core.info(`Acquiring ${resolved} from ${url}`);
+    return { archive };
   }
 
   async install(version: string, archive: string): Promise<InstallResult> {
+    const spec = new VersionSpec(version);
+    const resolved = await this.versionResolver.resolve(spec);
+    if (!resolved) {
+      throw new Error(`Version ${version} not found in known good versions`);
+    }
     const extPath = await tc.extractZip(archive);
     const extAppRoot = path.join(
       extPath,
       `chrome-${this.knownGoodVersionPlatform}`,
     );
 
-    const root = await tc.cacheDir(extAppRoot, "chromium", version);
+    const root = await tc.cacheDir(extAppRoot, "chromium", resolved.toString());
     core.info(`Successfully Installed chromium to ${root}`);
     const bin = (() => {
       switch (this.platform.os) {
