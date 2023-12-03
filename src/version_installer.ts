@@ -50,7 +50,7 @@ export class KnownGoodVersionInstaller implements Installer {
 
   constructor(platform: Platform) {
     this.platform = platform;
-    if (platform.os === OS.LINUX && platform.arch === Arch.I686) {
+    if (platform.os === OS.LINUX && platform.arch === Arch.AMD64) {
       this.knownGoodVersionPlatform = "linux64";
     } else if (platform.os === OS.DARWIN && platform.arch === Arch.AMD64) {
       this.knownGoodVersionPlatform = "mac-x64";
