@@ -1,6 +1,6 @@
 {
   "name": "setup-chrome",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Set up your GitHub Actions workflow with a specific version of chromium",
   "main": "dist/index.js",
   "packageManager": "pnpm@8.7.5",

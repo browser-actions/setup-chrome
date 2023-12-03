@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.3.0...setup-chrome-v1.4.0) (2023-12-03)
+
+
+### Features
+
+* Support to install by a specific version ([#444](https://github.com/browser-actions/setup-chrome/issues/444)) ([775b8fb](https://github.com/browser-actions/setup-chrome/commit/775b8fb5bb29c3f0bd6c573adb3174095102e7cc))
+
+
+### Bug Fixes
+
+* **deps:** bump the actions group with 1 update ([#406](https://github.com/browser-actions/setup-chrome/issues/406)) ([f318cc2](https://github.com/browser-actions/setup-chrome/commit/f318cc23baba89e414d91f638b85a97363758ac6))
+
 ## [1.3.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.2.3...setup-chrome-v1.3.0) (2023-11-11)
 
 
