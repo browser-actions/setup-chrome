@@ -103,6 +103,8 @@ const makeBasename = ({ os }: Platform): string => {
 const makePlatformPart = ({ os, arch }: Platform): string => {
   if (os === OS.DARWIN && arch === Arch.AMD64) {
     return "Mac";
+  } else if (os === OS.DARWIN && arch === Arch.ARM64) {
+    return "Mac_Arm";
   } else if (os === OS.LINUX && arch === Arch.I686) {
     return "Linux";
   } else if (os === OS.LINUX && arch === Arch.AMD64) {
