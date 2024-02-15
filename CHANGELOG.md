@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.4.0...setup-chrome-v1.5.0) (2024-02-14)
+
+
+### Features
+
+* support `macos-14` runner ([#483](https://github.com/browser-actions/setup-chrome/issues/483)) ([c7a9638](https://github.com/browser-actions/setup-chrome/commit/c7a9638ceead5dc0072ed72e8dcba019186cc665))
+
+
+### Bug Fixes
+
+* Update nodejs version 20 ([#480](https://github.com/browser-actions/setup-chrome/issues/480)) ([f2d38a6](https://github.com/browser-actions/setup-chrome/commit/f2d38a6a7f1e725ec59a107ed254971eca75fc3e))
+
 ## [1.4.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.3.0...setup-chrome-v1.4.0) (2023-12-03)
 
 
