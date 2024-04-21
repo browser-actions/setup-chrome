@@ -49,3 +49,23 @@ jobs:
       - if: runner.os == 'Windows'
         run: |
           (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
+
+  test-container:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: debian
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - name: Install action dependencies
+        run: apt-get update && apt-get install -y unzip
+
+      - name: Install Google Chrome
+        uses: ./
+        with:
+          chrome-version: 120
+        id: setup-chrome
+      - run: |
+          "${{ steps.setup-chrome.outputs.chrome-path }}" --version
