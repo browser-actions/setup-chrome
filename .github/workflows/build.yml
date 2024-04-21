@@ -52,15 +52,27 @@ jobs:
 
   test-container:
     needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        container:
+          - redhat/ubi9
+          - oraclelinux:9
+          - fedora
+          - debian
+          - ubuntu
+          - linuxmintd/mint21-amd64
+          - opensuse/leap
+          - registry.suse.com/bci/bci-base:15.5
     runs-on: ubuntu-latest
-    container:
-      image: debian
+    container: ${{ matrix.container }}
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: dist
       - name: Install action dependencies
         run: apt-get update && apt-get install -y unzip
+        if: ${{ matrix.container == 'debian' || matrix.container == 'ubuntu' || matrix.container == 'linuxmintd/mint21-amd64' }}
 
       - name: Install Google Chrome
         uses: ./
