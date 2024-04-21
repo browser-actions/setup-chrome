@@ -31,6 +31,18 @@ steps:
       chrome-version: 120
 ```
 
+If you use the self-hosted runner, your runner may not have the required dependencies on the system.
+You can install the dependencies by using the `install-dependencies` parameter.
+It installs the required dependencies for the Google Chrome/Chromium to run automatically.
+
+```yaml
+steps:
+  - uses: browser-actions/setup-chrome@v1
+    with:
+      chrome-version: 120
+      install-dependencies: true
+```
+
 ### Supported version formats
 
 The action supports the following version formats:
@@ -63,6 +75,8 @@ steps:
 
 - `chrome-version`: *(Optional)* The Google Chrome/Chromium version to be installed.
   Default: `latest`
+- `install-dependencies`: *(Optional)* Install the required dependencies for the Google Chrome/Chromium to run.
+  Default: `false`
 
 ### Outputs
 

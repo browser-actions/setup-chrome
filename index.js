@@ -28538,6 +28538,125 @@ exports.WindowsChannelInstaller = WindowsChannelInstaller;
 
 /***/ }),
 
+/***/ 1726:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.installDependencies = void 0;
+const actions_swing_1 = __nccwpck_require__(7353);
+const core = __importStar(__nccwpck_require__(9093));
+const DEBIAN_BASED_DEPENDENT_PACKAGES = [
+    "libglib2.0-0",
+    "libgconf-2-4",
+    "libatk1.0-0",
+    "libatk-bridge2.0-0",
+    "libgdk-pixbuf2.0-0",
+    "libgtk-3-0",
+    "libgbm-dev",
+    "libnss3-dev",
+    "libxss-dev",
+    "libasound2",
+    "xvfb",
+    "fonts-liberation",
+    "libu2f-udev",
+    "xdg-utils",
+];
+const FEDORA_BASED_DEPENDENT_PACKAGES = [
+    "alsa-lib",
+    "atk",
+    "at-spi2-atk",
+    "cups-libs",
+    "libdrm",
+    "libXcomposite",
+    "libXdamage",
+    "libxkbcommon",
+    "libXrandr",
+    "mesa-libgbm",
+    "nss",
+    "pango",
+];
+const SUSE_BASED_DEPENDENT_PACKAGES = [
+    "libasound2",
+    "libatk-1_0-0",
+    "libatk-bridge-2_0-0",
+    "libcups2",
+    "libdbus-1-3",
+    "libdrm2",
+    "libgbm1",
+    "libgobject-2_0-0",
+    "libpango-1_0-0",
+    "libXcomposite1",
+    "libXdamage1",
+    "libXfixes3",
+    "libxkbcommon0",
+    "libXrandr2",
+    "mozilla-nss",
+];
+const installDependencies = (platform) => __awaiter(void 0, void 0, void 0, function* () {
+    if (platform.os !== "linux") {
+        core.warning(`install-dependencies is only supported on Linux, but current platform is ${platform.os}`);
+        return;
+    }
+    const packages = yield (() => __awaiter(void 0, void 0, void 0, function* () {
+        const osReleaseId = yield actions_swing_1.runtime.getOsReleaseId();
+        switch (osReleaseId) {
+            case "rhel":
+            case "centos":
+            case "ol":
+            case "fedora":
+                return FEDORA_BASED_DEPENDENT_PACKAGES;
+            case "debian":
+            case "ubuntu":
+            case "linuxmint":
+                return DEBIAN_BASED_DEPENDENT_PACKAGES;
+            case "opensuse":
+            case "opensuse-leap":
+            case "sles":
+                return SUSE_BASED_DEPENDENT_PACKAGES;
+        }
+        throw new Error(`Unsupported OS: ${osReleaseId}`);
+    }))();
+    yield actions_swing_1.pkg.install(packages);
+});
+exports.installDependencies = installDependencies;
+
+
+/***/ }),
+
 /***/ 2694:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -28584,6 +28703,7 @@ const exec = __importStar(__nccwpck_require__(7775));
 const installer = __importStar(__nccwpck_require__(3822));
 const platform_1 = __nccwpck_require__(1493);
 const path_1 = __importDefault(__nccwpck_require__(1017));
+const dependencies_1 = __nccwpck_require__(1726);
 const hasErrorMessage = (e) => {
     return typeof e === "object" && e !== null && "message" in e;
 };
@@ -28616,6 +28736,11 @@ function run() {
         try {
             const version = core.getInput("chrome-version") || "latest";
             const platform = (0, platform_1.getPlatform)();
+            const flagInstallDependencies = core.getInput("install-dependencies") === "true";
+            if (flagInstallDependencies) {
+                core.info(`Installing dependencies`);
+                yield (0, dependencies_1.installDependencies)(platform);
+            }
             core.info(`Setup chromium ${version}`);
             const binPath = yield installer.install(platform, version);
             const installDir = path_1.default.dirname(binPath);
@@ -31138,6 +31263,233 @@ function parseParams (str) {
 module.exports = parseParams
 
 
+/***/ }),
+
+/***/ 7353:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__nccwpck_require__.r(__webpack_exports__);
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "bootstrap": () => (/* binding */ bootstrap_exports),
+  "pkg": () => (/* binding */ pkg_exports),
+  "runtime": () => (/* binding */ runtime_exports)
+});
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.10.1/node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(9093);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
+var exec = __nccwpck_require__(7775);
+;// CONCATENATED MODULE: external "fs/promises"
+const promises_namespaceObject = require("fs/promises");
+;// CONCATENATED MODULE: ./node_modules/.pnpm/actions-swing@0.0.5_@actions+core@1.10.1_@actions+exec@1.1.1/node_modules/actions-swing/dist/index.js
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
+// src/bootstrap/index.ts
+var bootstrap_exports = {};
+__export(bootstrap_exports, {
+  run: () => run
+});
+
+var hasErrorMessage = (e) => {
+  return typeof e === "object" && e !== null && "message" in e;
+};
+var run = async (fn) => {
+  try {
+    await fn();
+  } catch (e) {
+    process.stderr.write("Error: ");
+    if (hasErrorMessage(e)) {
+      core.setFailed(e.message);
+    } else if (e instanceof Error) {
+      core.setFailed(e.message);
+    } else {
+      core.setFailed(String(e));
+    }
+  }
+};
+
+// src/pkg/index.ts
+var pkg_exports = {};
+__export(pkg_exports, {
+  install: () => install,
+  uninstall: () => uninstall
+});
+
+// src/pkg/distributions.ts
+
+
+// src/runtime/index.ts
+var runtime_exports = {};
+__export(runtime_exports, {
+  getOsReleaseId: () => getOsReleaseId,
+  loadOsRelease: () => loadOsRelease
+});
+
+var DEFAULT_OS_RELEASE_PATH = "/etc/os-release";
+var REQUIRED_KEYS = ["ID"];
+var loadOsRelease = async (path = DEFAULT_OS_RELEASE_PATH) => {
+  if (process.platform !== "linux") {
+    throw new Error(`Unsupported platform: ${process.platform}`);
+  }
+  const content = await promises_namespaceObject.readFile(path, "utf-8");
+  const osRelease = {};
+  for (const line of content.split("\n")) {
+    const parts = line.split("=");
+    if (parts.length !== 2) {
+      continue;
+    }
+    const key = parts[0];
+    const value = parts[1].startsWith('"') && parts[1].endsWith('"') ? parts[1].slice(1, -1) : parts[1];
+    osRelease[key] = value;
+  }
+  for (const key of REQUIRED_KEYS) {
+    if (typeof osRelease[key] !== "string" || osRelease[key].length === 0) {
+      throw new Error(`Missing ${key} in ${path}`);
+    }
+  }
+  return osRelease;
+};
+var getOsReleaseId = async () => {
+  const osRelease = await loadOsRelease();
+  return osRelease.ID;
+};
+
+// src/pkg/distributions.ts
+var ZypperPackageManager = class {
+  async install(packageName, opts) {
+    if (opts?.sudo) {
+      await (0,exec.exec)("sudo", ["zypper", "install", "--no-confirm", ...packageName]);
+    } else {
+      await (0,exec.exec)("zypper", ["install", "--no-confirm", ...packageName]);
+    }
+  }
+  async uninstall(packageName) {
+    await (0,exec.exec)("zypper", ["remove", "--no-confirm", ...packageName]);
+  }
+};
+var AptPackageManager = class {
+  async install(packageName, opts) {
+    const env = { DEBIAN_FRONTEND: "noninteractive" };
+    if (opts?.sudo) {
+      await (0,exec.exec)("sudo", ["apt-get", "update"]);
+      await (0,exec.exec)(
+        "sudo",
+        [
+          "apt-get",
+          "install",
+          "--yes",
+          "--no-install-recommends",
+          ...packageName
+        ],
+        { env }
+      );
+    } else {
+      await (0,exec.exec)("apt-get", ["update"]);
+      await (0,exec.exec)(
+        "apt-get",
+        ["install", "--yes", "--no-install-recommends", ...packageName],
+        { env }
+      );
+    }
+  }
+  async uninstall(packageName, opts) {
+    const env = { DEBIAN_FRONTEND: "noninteractive" };
+    if (opts?.sudo) {
+      await (0,exec.exec)("sudo", ["apt-get", "remove", "--yes", ...packageName], {
+        env
+      });
+    } else {
+      await (0,exec.exec)("apt-get", ["remove", "--yes", ...packageName], { env });
+    }
+  }
+};
+var YumPackageManager = class {
+  async install(packageName, opts) {
+    if (opts?.sudo) {
+      await (0,exec.exec)("sudo", [
+        "yum",
+        "install",
+        "--assumeyes",
+        "--setopt=install_weak_deps=False",
+        ...packageName
+      ]);
+    } else {
+      await (0,exec.exec)("yum", [
+        "install",
+        "--assumeyes",
+        "--setopt=install_weak_deps=False",
+        ...packageName
+      ]);
+    }
+  }
+  async uninstall(packageName, opts) {
+    if (opts?.sudo) {
+      await (0,exec.exec)("sudo", ["yum", "remove", "--assumeyes", ...packageName]);
+    } else {
+      await (0,exec.exec)("yum", ["remove", "--assumeyes", ...packageName]);
+    }
+  }
+};
+var EchoPackageManager = class {
+  async install(packageName) {
+    console.log(`Would install: ${packageName.join(", ")}`);
+  }
+  async uninstall(packageName) {
+    console.log(`Would uninstall: ${packageName.join(", ")}`);
+  }
+};
+var createPackageManager = async () => {
+  if (process.env.PACKAGE_MANAGER === "echo") {
+    return new EchoPackageManager();
+  }
+  if (process.platform !== "linux") {
+    throw new Error(`Unsupported platform: ${process.platform}`);
+  }
+  const osReleaseId = await getOsReleaseId();
+  switch (osReleaseId) {
+    case "rhel":
+    case "centos":
+    case "ol":
+    case "fedora":
+      return new YumPackageManager();
+    case "debian":
+    case "ubuntu":
+    case "linuxmint":
+      return new AptPackageManager();
+    case "opensuse":
+    case "opensuse-leap":
+    case "sles":
+      return new ZypperPackageManager();
+  }
+  throw new Error(`Unsupported distribution: ${osReleaseId}`);
+};
+
+// src/pkg/index.ts
+var install = async (packageNames, opts) => {
+  const pkgmgr = await createPackageManager();
+  await pkgmgr.install(
+    Array.isArray(packageNames) ? packageNames : [packageNames],
+    opts
+  );
+};
+var uninstall = async (packageNames, opts) => {
+  const pkgmgr = await createPackageManager();
+  await pkgmgr.uninstall(
+    Array.isArray(packageNames) ? packageNames : [packageNames],
+    opts
+  );
+};
+
+//# sourceMappingURL=index.js.map
+
 /***/ })
 
 /******/ 	});
@@ -31173,6 +31525,34 @@ module.exports = parseParams
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
