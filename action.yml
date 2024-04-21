@@ -7,6 +7,10 @@ inputs:
       The Google Chrome/Chromium version to install and use.
     default: latest
     required: false
+  install-dependencies:
+    description: |-
+      Install dependent packages for Google Chrome/Chromium (Linux only).
+    default: false
 outputs:
   chrome-version:
     description: 'The installed Google Chrome/Chromium version. Useful when given a latest version.'
