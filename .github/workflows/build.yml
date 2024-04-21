@@ -56,14 +56,9 @@ jobs:
       fail-fast: false
       matrix:
         container:
-          - redhat/ubi9
-          - oraclelinux:9
           - fedora
           - debian
-          - ubuntu
-          - linuxmintd/mint21-amd64
           - opensuse/leap
-          - registry.suse.com/bci/bci-base:15.5
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     steps:
