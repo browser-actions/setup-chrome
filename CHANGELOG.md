@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.5.0...setup-chrome-v1.6.0) (2024-04-21)
+
+
+### Features
+
+* Add `install-dependencies` parameter ([#521](https://github.com/browser-actions/setup-chrome/issues/521)) ([808262a](https://github.com/browser-actions/setup-chrome/commit/808262a22c281a8f87e58abea70d008d15916821))
+
 ## [1.5.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.4.0...setup-chrome-v1.5.0) (2024-02-14)
 
 
