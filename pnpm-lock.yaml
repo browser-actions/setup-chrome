@@ -20,6 +20,9 @@ dependencies:
   '@actions/tool-cache':
     specifier: ^2.0.1
     version: 2.0.1
+  actions-swing:
+    specifier: ^0.0.5
+    version: 0.0.5(@actions/core@1.10.1)(@actions/exec@1.1.1)
 
 devDependencies:
   '@types/jest':
@@ -1110,6 +1113,17 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
+
+  /actions-swing@0.0.5(@actions/core@1.10.1)(@actions/exec@1.1.1):
+    resolution: {integrity: sha512-JnOnk09lhKLTnWJS28YX4c9Jl1jczyHxhRHtcxKrX6wcXukO2K/ZlRoHgcmv5ccNyISBIVJE6I/W31VcmrmFaA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@actions/core': '>=1'
+      '@actions/exec': '>=1'
+    dependencies:
+      '@actions/core': 1.10.1
+      '@actions/exec': 1.1.1
+    dev: false
 
   /ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}

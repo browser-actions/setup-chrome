@@ -3,6 +3,7 @@ import * as exec from "@actions/exec";
 import * as installer from "./installer";
 import { getPlatform, Platform, OS } from "./platform";
 import path from "path";
+import { installDependencies } from "./dependencies";
 
 const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
   return typeof e === "object" && e !== null && "message" in e;
@@ -47,6 +48,13 @@ async function run(): Promise<void> {
   try {
     const version = core.getInput("chrome-version") || "latest";
     const platform = getPlatform();
+    const flagInstallDependencies =
+      core.getInput("install-dependencies") === "true";
+
+    if (flagInstallDependencies) {
+      core.info(`Installing dependencies`);
+      await installDependencies(platform);
+    }
 
     core.info(`Setup chromium ${version}`);
 
