@@ -10,6 +10,10 @@ on:
         - ubuntu
         - windows
         - macos
+      container:
+        description: 'Container image to run test on'
+        required: false
+        type: string
       chrome-version:
         description: 'Chrome version to install'
         required: false
@@ -38,6 +42,7 @@ jobs:
   test:
     needs: [build]
     runs-on: ${{ inputs.os }}-latest
+    container: ${{ inputs.container }}
     steps:
       - uses: actions/download-artifact@v3
         with:
