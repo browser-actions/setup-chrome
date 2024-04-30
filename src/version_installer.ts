@@ -3,7 +3,7 @@ import * as httpm from "@actions/http-client";
 import * as core from "@actions/core";
 import path from "path";
 import { Arch, OS, Platform } from "./platform";
-import { StaticVersion, VersionSpec } from "./version";
+import { parse } from "./version";
 import { Installer, DownloadResult, InstallResult } from "./installer";
 
 const KNOWN_GOOD_VERSIONS_URL =
@@ -39,43 +39,43 @@ export class KnownGoodVersionResolver {
 
   private knownGoodVersionsCache?: KnownGoodVersion[];
 
-  private readonly resolvedVersions = new Map<string, StaticVersion>();
+  private readonly resolvedVersions = new Map<string, string>();
 
   constructor(platform: KnownGoodVersionPlatform) {
     this.platform = platform;
   }
 
-  async resolve(spec: VersionSpec): Promise<StaticVersion | undefined> {
+  async resolve(version: string): Promise<string | undefined> {
+    const spec = parse(version);
     if (this.resolvedVersions.has(spec.toString())) {
       return this.resolvedVersions.get(spec.toString())!;
     }
 
     const knownGoodVersions = await this.getKnownGoodVersions();
     for (const version of knownGoodVersions) {
-      const v = new StaticVersion(version.version);
-      if (!spec.satisfies(v)) {
+      if (!spec.satisfies(version.version)) {
         continue;
       }
       const found = version.downloads.chrome.find(
         ({ platform }) => platform === this.platform,
       );
       if (found) {
-        this.resolvedVersions.set(spec.toString(), v);
-        return v;
+        this.resolvedVersions.set(spec.toString(), version.version);
+        return version.version;
       }
     }
     return undefined;
   }
 
-  async resolveUrl(spec: VersionSpec): Promise<string | undefined> {
-    const version = await this.resolve(spec);
-    if (!version) {
+  async resolveUrl(version: string): Promise<string | undefined> {
+    const resolved = await this.resolve(version);
+    if (!resolved) {
       return undefined;
     }
 
     const knownGoodVersions = await this.getKnownGoodVersions();
     const knownGoodVersion = knownGoodVersions.find(
-      (v) => v.version === version.toString(),
+      (v) => v.version === resolved.toString(),
     );
     if (!knownGoodVersion) {
       return undefined;
@@ -138,8 +138,7 @@ export class KnownGoodVersionInstaller implements Installer {
   }
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const spec = new VersionSpec(version);
-    const resolved = await this.versionResolver.resolve(spec);
+    const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       return undefined;
     }
@@ -151,13 +150,12 @@ export class KnownGoodVersionInstaller implements Installer {
   }
 
   async download(version: string): Promise<DownloadResult> {
-    const spec = new VersionSpec(version);
-    const resolved = await this.versionResolver.resolve(spec);
+    const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
 
-    const url = await this.versionResolver.resolveUrl(spec);
+    const url = await this.versionResolver.resolveUrl(version);
     if (!url) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
@@ -167,8 +165,7 @@ export class KnownGoodVersionInstaller implements Installer {
   }
 
   async install(version: string, archive: string): Promise<InstallResult> {
-    const spec = new VersionSpec(version);
-    const resolved = await this.versionResolver.resolve(spec);
+    const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }

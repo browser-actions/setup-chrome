@@ -1,6 +1,7 @@
 import { Platform, OS } from "./platform";
 import * as core from "@actions/core";
 import path from "path";
+import { parse } from "./version";
 import { SnapshotInstaller, LatestInstaller } from "./snapshot";
 import { LinuxChannelInstaller } from "./channel_linux";
 import { MacOSChannelInstaller } from "./channel_macos";
@@ -29,13 +30,11 @@ export const install = async (
   version: string,
 ): Promise<string> => {
   const installer = (() => {
-    switch (version) {
+    const spec = parse(version);
+    switch (spec.value.type) {
       case "latest":
         return new LatestInstaller(platform);
-      case "stable":
-      case "beta":
-      case "dev":
-      case "canary":
+      case "channel":
         switch (platform.os) {
           case OS.LINUX:
             return new LinuxChannelInstaller(platform);
@@ -44,12 +43,12 @@ export const install = async (
           case OS.WINDOWS:
             return new WindowsChannelInstaller(platform);
         }
+        break;
+      case "snapshot":
+        return new SnapshotInstaller(platform);
+      case "four-parts":
+        return new KnownGoodVersionInstaller(platform);
     }
-    // To distinguish between commit number and known-good version, assume commit number is greater than 10,000
-    if (Number(version) > 10000) {
-      return new SnapshotInstaller(platform);
-    }
-    return new KnownGoodVersionInstaller(platform);
   })();
 
   const cache = await installer.checkInstalled(version);

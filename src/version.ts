@@ -1,149 +1,200 @@
-export class StaticVersion {
-  public readonly major: number;
-  public readonly minor: number;
-  public readonly build: number;
-  public readonly patch: number;
+enum ReleaseChannel {
+  Stable = "stable",
+  Beta = "beta",
+  Dev = "dev",
+  Canary = "canary",
+}
 
-  constructor(
-    arg:
-      | string
-      | { major: number; minor: number; build: number; patch: number },
-  ) {
-    if (typeof arg === "string") {
-      if (arg === "") {
-        throw new Error(`Invalid version: ${arg}`);
-      }
-      const digits: Array<number> = arg.split(".").map((part) => {
-        const num = Number(part);
-        if (isNaN(num) || num < 0) {
-          throw new Error(`Invalid version: ${arg}`);
-        }
-        return num;
+type FourPartsVersion = {
+  type: "four-parts";
+  major: number;
+  minor: number | undefined;
+  build: number | undefined;
+  patch: number | undefined;
+};
+
+type SnapshotVersion = {
+  type: "snapshot";
+  snapshot: number;
+};
+
+type ChannelVersion = {
+  type: "channel";
+  channel: ReleaseChannel;
+};
+
+type LatestVersion = {
+  type: "latest";
+};
+
+type VersionValue =
+  | FourPartsVersion
+  | SnapshotVersion
+  | ChannelVersion
+  | LatestVersion;
+
+class VersionSpec {
+  public readonly value: VersionValue;
+
+  constructor(value: VersionValue) {
+    this.value = value;
+  }
+
+  static parse(version: string): VersionSpec {
+    if (version === "") {
+      throw new Error(`Invalid version: ${version}`);
+    }
+
+    switch (version) {
+      case "latest":
+        return new VersionSpec({ type: "latest" });
+      case "stable":
+      case "beta":
+      case "dev":
+      case "canary":
+        return new VersionSpec({
+          type: "channel",
+          channel: version as ReleaseChannel,
+        });
+    }
+
+    if (Number(version) > 10000) {
+      return new VersionSpec({
+        type: "snapshot",
+        snapshot: Number(version),
       });
-      if (digits.length !== 4) {
-        throw new Error(`Invalid version: ${arg}`);
+    }
+
+    const digits: Array<number | undefined> = version.split(".").map((part) => {
+      if (part === "x") {
+        return undefined;
       }
-      this.major = digits[0];
-      this.minor = digits[1];
-      this.build = digits[2];
-      this.patch = digits[3];
-    } else {
-      this.major = arg.major;
-      this.minor = arg.minor;
-      this.build = arg.build;
-      this.patch = arg.patch;
+      const num = Number(part);
+      if (isNaN(num) || num < 0) {
+        throw new Error(`Invalid version: ${version}`);
+      }
+      return num;
+    });
+    if (digits.length > 4) {
+      throw new Error(`Invalid version: ${version}`);
     }
-  }
-
-  private compare(o: StaticVersion): number {
-    if (this.major !== o.major) {
-      return this.major - o.major;
+    if (digits.length === 1 && digits[0] === undefined) {
+      throw new Error(`Invalid version: ${version}`);
     }
-    if (this.minor !== o.minor) {
-      return this.minor - o.minor;
+    for (let i = 0; i < digits.length - 1; i++) {
+      const [d1, d2] = [digits[i], digits[i + 1]];
+      if (d1 === undefined && d2 !== undefined) {
+        throw new Error(`Invalid version: ${version}`);
+      }
     }
-    if (this.build !== o.build) {
-      return this.build - o.build;
+
+    return new VersionSpec({
+      type: "four-parts",
+      major: digits[0] as number,
+      minor: digits[1],
+      build: digits[2],
+      patch: digits[3],
+    });
+  }
+
+  public satisfies(version: string): boolean {
+    const spec = VersionSpec.parse(version);
+    const [v1, v2] = [this.value, spec.value];
+    if (v1.type === "latest" && v2.type === "latest") {
+      return true;
     }
-    if (this.patch !== o.patch) {
-      return this.patch - o.patch;
+    if (v1.type === "channel" && v2.type === "channel") {
+      return v1.channel === v2.channel;
     }
-    return 0;
+    if (v1.type === "snapshot" && v2.type === "snapshot") {
+      return v1.snapshot === v2.snapshot;
+    }
+    if (v1.type === "four-parts" && v2.type === "four-parts") {
+      if (v1.major !== v2.major) {
+        return false;
+      }
+      if (v1.minor !== undefined && v1.minor !== v2.minor) {
+        return false;
+      }
+      if (v1.build !== undefined && v1.build !== v2.build) {
+        return false;
+      }
+      if (v1.patch !== undefined && v1.patch !== v2.patch) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 
-  public greaterThan(o: StaticVersion): boolean {
-    return this.compare(o) > 0;
+  public gt(version: string): boolean {
+    return this.compare(version) > 0;
   }
 
-  public greaterThanOrEqual(o: StaticVersion): boolean {
-    return this.compare(o) >= 0;
+  public lt(version: string): boolean {
+    return this.compare(version) < 0;
   }
 
-  public lessThan(o: StaticVersion): boolean {
-    return this.compare(o) < 0;
-  }
+  private compare(version: string): number {
+    const spec = VersionSpec.parse(version);
+    const [v1, v2] = [this.value, spec.value];
+    if (v1.type === "latest" && v2.type === "latest") {
+      return 0;
+    }
+    if (v1.type === "channel" && v2.type === "channel") {
+      return v1.channel === v2.channel ? 0 : NaN;
+    }
+    if (v1.type === "snapshot" && v2.type === "snapshot") {
+      return v1.snapshot - v2.snapshot;
+    }
+    if (v1.type === "four-parts" && v2.type === "four-parts") {
+      if (v1.major !== v2.major) {
+        return v1.major - v2.major;
+      }
+      if (v1.minor !== v2.minor) {
+        return v1.minor === undefined || v2.minor === undefined
+          ? NaN
+          : v1.minor - v2.minor;
+      }
+      if (v1.build !== v2.build) {
+        return v1.build === undefined || v2.build === undefined
+          ? NaN
+          : v1.build - v2.build;
+      }
+      if (v1.patch !== v2.patch) {
+        return v1.patch === undefined || v2.patch === undefined
+          ? NaN
+          : v1.patch - v2.patch;
+      }
+      return 0;
+    }
 
-  public lessThanOrEqual(o: StaticVersion): boolean {
-    return this.compare(o) <= 0;
-  }
-
-  public equals(o: StaticVersion): boolean {
-    return this.compare(o) === 0;
+    return NaN;
   }
 
   public toString(): string {
-    return `${this.major}.${this.minor}.${this.build}.${this.patch}`;
+    switch (this.value.type) {
+      case "latest":
+        return "latest";
+      case "channel":
+        return this.value.channel;
+      case "snapshot":
+        return String(this.value.snapshot);
+      case "four-parts":
+        return [
+          this.value.major,
+          this.value.minor,
+          this.value.build,
+          this.value.patch,
+        ]
+          .filter((d) => d !== undefined)
+          .join(".");
+    }
   }
 }
 
-export class VersionSpec {
-  public readonly major: number;
-  public readonly minor: number | undefined;
-  public readonly build: number | undefined;
-  public readonly patch: number | undefined;
+export type { VersionSpec };
 
-  constructor(
-    arg:
-      | string
-      | { major: number; minor?: number; build?: number; patch?: number },
-  ) {
-    if (typeof arg === "string") {
-      if (arg === "") {
-        throw new Error(`Invalid version: ${arg}`);
-      }
-      const digits: Array<number | undefined> = arg.split(".").map((part) => {
-        if (part === "x") {
-          return undefined;
-        }
-        const num = Number(part);
-        if (isNaN(num) || num < 0) {
-          throw new Error(`Invalid version: ${arg}`);
-        }
-        return num;
-      });
-      if (digits.length > 4) {
-        throw new Error(`Invalid version: ${arg}`);
-      }
-      if (digits.length === 1 && digits[0] === undefined) {
-        throw new Error(`Invalid version: ${arg}`);
-      }
-      for (let i = 0; i < digits.length - 1; i++) {
-        const [d1, d2] = [digits[i], digits[i + 1]];
-        if (d1 === undefined && d2 !== undefined) {
-          throw new Error(`Invalid version: ${arg}`);
-        }
-      }
-      this.major = digits[0] as number;
-      this.minor = digits[1];
-      this.build = digits[2];
-      this.patch = digits[3];
-    } else {
-      this.major = arg.major;
-      this.minor = arg.minor;
-      this.build = arg.build;
-      this.patch = arg.patch;
-    }
-  }
-
-  public satisfies(version: StaticVersion): boolean {
-    if (this.major !== version.major) {
-      return false;
-    }
-    if (this.minor !== undefined && this.minor !== version.minor) {
-      return false;
-    }
-    if (this.build !== undefined && this.build !== version.build) {
-      return false;
-    }
-    if (this.patch !== undefined && this.patch !== version.patch) {
-      return false;
-    }
-    return true;
-  }
-
-  public toString(): string {
-    return [this.major, this.minor, this.build, this.patch]
-      .filter((d) => d !== undefined)
-      .join(".");
-  }
-}
+export const parse = (version: string): VersionSpec => {
+  return VersionSpec.parse(version);
+};
