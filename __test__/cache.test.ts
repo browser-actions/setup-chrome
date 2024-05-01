@@ -13,7 +13,9 @@ const expectFile = async (file: string) =>
 describe("find", () => {
   let tempToolCacheDir: string;
   beforeEach(async () => {
-    tempToolCacheDir = await fs.promises.mkdtemp(os.tmpdir());
+    tempToolCacheDir = await fs.promises.mkdtemp(
+      path.join(os.tmpdir(), "setup-chrome-"),
+    );
     process.env.RUNNER_TOOL_CACHE = tempToolCacheDir;
   });
 
@@ -90,8 +92,12 @@ describe("cacheDir", () => {
   let tempToolCacheDir: string;
   let workspaceDir: string;
   beforeEach(async () => {
-    tempToolCacheDir = await fs.promises.mkdtemp(os.tmpdir());
-    workspaceDir = await fs.promises.mkdtemp(os.tmpdir());
+    tempToolCacheDir = await fs.promises.mkdtemp(
+      path.join(os.tmpdir(), "setup-chrome-"),
+    );
+    workspaceDir = await fs.promises.mkdtemp(
+      path.join(os.tmpdir(), "setup-chrome-"),
+    );
     process.env.RUNNER_TOOL_CACHE = tempToolCacheDir;
   });
 
