@@ -1,4 +1,15 @@
-import { parse } from "../src/version";
+import { parse, isReleaseChannelName } from "../src/version";
+
+describe("isReleaseChannelName", () => {
+  test("return true if the version is a release channel name", () => {
+    expect(isReleaseChannelName("stable")).toBe(true);
+    expect(isReleaseChannelName("beta")).toBe(true);
+    expect(isReleaseChannelName("dev")).toBe(true);
+    expect(isReleaseChannelName("canary")).toBe(true);
+    expect(isReleaseChannelName("latest")).toBe(false);
+    expect(isReleaseChannelName("unknown")).toBe(false);
+  });
+});
 
 describe("parse", () => {
   test.each([

@@ -1,9 +1,15 @@
-enum ReleaseChannel {
-  Stable = "stable",
-  Beta = "beta",
-  Dev = "dev",
-  Canary = "canary",
-}
+export type ReleaseChannelName = "stable" | "beta" | "dev" | "canary";
+
+export const isReleaseChannelName = (
+  version: string,
+): version is ReleaseChannelName => {
+  return (
+    version === "stable" ||
+    version === "beta" ||
+    version === "dev" ||
+    version === "canary"
+  );
+};
 
 type FourPartsVersion = {
   type: "four-parts";
@@ -20,7 +26,7 @@ type SnapshotVersion = {
 
 type ChannelVersion = {
   type: "channel";
-  channel: ReleaseChannel;
+  channel: ReleaseChannelName;
 };
 
 type LatestVersion = {
@@ -45,17 +51,12 @@ class VersionSpec {
       throw new Error(`Invalid version: ${version}`);
     }
 
-    switch (version) {
-      case "latest":
-        return new VersionSpec({ type: "latest" });
-      case "stable":
-      case "beta":
-      case "dev":
-      case "canary":
-        return new VersionSpec({
-          type: "channel",
-          channel: version as ReleaseChannel,
-        });
+    if (version === "latest") {
+      return new VersionSpec({ type: "latest" });
+    }
+
+    if (isReleaseChannelName(version)) {
+      return new VersionSpec({ type: "channel", channel: version });
     }
 
     if (Number(version) > 10000) {
