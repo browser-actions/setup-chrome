@@ -64,7 +64,7 @@ export class LatestInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const root = cache.find("chromium", version);
+    const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
     }

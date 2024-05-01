@@ -3,6 +3,7 @@ import { Installer, DownloadResult, InstallResult } from "./installer";
 import { isReleaseChannelName, type ReleaseChannelName } from "./version";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
+import * as tc from "@actions/tool-cache";
 import fs from "fs";
 
 const isENOENT = (e: unknown): boolean => {
