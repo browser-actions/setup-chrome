@@ -1,7 +1,6 @@
 import { Platform, Arch } from "./platform";
 import { Installer, DownloadResult, InstallResult } from "./installer";
 import { isReleaseChannelName, type ReleaseChannelName } from "./version";
-import * as tc from "@actions/tool-cache";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
 import fs from "fs";

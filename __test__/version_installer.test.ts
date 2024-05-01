@@ -4,6 +4,7 @@ import {
 } from "../src/version_installer";
 import * as httpm from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
+import * as cache from "../src/cache";
 import fs from "fs";
 import path from "path";
 
@@ -53,12 +54,14 @@ describe("VersionResolver", () => {
 });
 
 describe("KnownGoodVersionInstaller", () => {
-  const tcFindSpy = jest.spyOn(tc, "find");
+  const tcFindSpy = jest.spyOn(cache, "find");
   const tcDownloadToolSpy = jest.spyOn(tc, "downloadTool");
 
   test("should return installed path if installed", async () => {
     tcFindSpy.mockImplementation((name: string, version: string) => {
-      return `/opt/hostedtoolcache/${name}/${version}`;
+      return Promise.resolve(
+        `/opt/hostedtoolcache/setup-chrome/${name}/${version}/x64`,
+      );
     });
 
     const installer = new KnownGoodVersionInstaller({
@@ -67,7 +70,7 @@ describe("KnownGoodVersionInstaller", () => {
     });
     const installed = await installer.checkInstalled("120.0.6099.x");
     expect(installed?.root).toEqual(
-      "/opt/hostedtoolcache/chromium/120.0.6099.56",
+      "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
     );
     expect(tcFindSpy).toHaveBeenCalledWith("chromium", "120.0.6099.56");
   });

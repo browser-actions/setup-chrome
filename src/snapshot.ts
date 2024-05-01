@@ -1,5 +1,6 @@
 import { Platform, OS, Arch } from "./platform";
 import { Installer, DownloadResult, InstallResult } from "./installer";
+import * as cache from "./cache";
 import * as tc from "@actions/tool-cache";
 import * as httpm from "@actions/http-client";
 import * as core from "@actions/core";
@@ -9,7 +10,7 @@ export class SnapshotInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const root = tc.find("chromium", version);
+    const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
     }
@@ -48,7 +49,7 @@ export class SnapshotInstaller implements Installer {
       }
     })();
 
-    root = await tc.cacheDir(root, "chromium", version);
+    root = await cache.cacheDir(root, "chromium", version);
     core.info(`Successfully Installed chromium to ${root}`);
 
     return { root, bin };
@@ -63,7 +64,7 @@ export class LatestInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const root = tc.find("chromium", version);
+    const root = cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
     }

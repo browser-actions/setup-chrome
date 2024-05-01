@@ -5,6 +5,7 @@ import path from "path";
 import { Arch, OS, Platform } from "./platform";
 import { parse } from "./version";
 import { Installer, DownloadResult, InstallResult } from "./installer";
+import * as cache from "./cache";
 
 const KNOWN_GOOD_VERSIONS_URL =
   "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
@@ -143,7 +144,7 @@ export class KnownGoodVersionInstaller implements Installer {
       return undefined;
     }
 
-    const root = tc.find("chromium", resolved.toString());
+    const root = await cache.find("chromium", resolved.toString());
     if (root) {
       return { root, bin: "chrome" };
     }
@@ -175,7 +176,11 @@ export class KnownGoodVersionInstaller implements Installer {
       `chrome-${this.knownGoodVersionPlatform}`,
     );
 
-    const root = await tc.cacheDir(extAppRoot, "chromium", resolved.toString());
+    const root = await cache.cacheDir(
+      extAppRoot,
+      "chromium",
+      resolved.toString(),
+    );
     core.info(`Successfully Installed chromium to ${root}`);
     const bin = (() => {
       switch (this.platform.os) {
