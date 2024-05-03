@@ -1,11 +1,11 @@
-import { Platform, OS } from "./platform";
+import path from "node:path";
 import * as core from "@actions/core";
-import path from "path";
-import { parse } from "./version";
-import { SnapshotInstaller, LatestInstaller } from "./snapshot";
 import { LinuxChannelInstaller } from "./channel_linux";
 import { MacOSChannelInstaller } from "./channel_macos";
 import { WindowsChannelInstaller } from "./channel_windows";
+import { OS, type Platform } from "./platform";
+import { LatestInstaller, SnapshotInstaller } from "./snapshot";
+import { parse } from "./version";
 import { KnownGoodVersionInstaller } from "./version_installer";
 
 export type InstallResult = {

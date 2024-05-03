@@ -1,7 +1,7 @@
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
 import { cacheDir, find } from "../src/cache";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
 
 const mkdir = (dir: string) => fs.promises.mkdir(dir, { recursive: true });
 const touch = (file: string) => fs.promises.writeFile(file, "");
@@ -77,9 +77,9 @@ describe("find", () => {
     beforeEach(async () => {
       const dir = path.join(tempToolCacheDir, "setup-chrome", "chrome");
       await mkdir(path.join(dir, "100.0.0.0", "x64"));
-      await mkdir(path.join(dir, "100.0.0.0", "x64") + ".complete");
+      await mkdir(`${path.join(dir, "100.0.0.0", "x64")}.complete`);
       await mkdir(path.join(dir, "100.1.0.0", "x64"));
-      await mkdir(path.join(dir, "100.1.0.0", "x64") + ".complete");
+      await mkdir(`${path.join(dir, "100.1.0.0", "x64")}.complete`);
       await mkdir(path.join(dir, "100.2.0.0", "x64"));
     });
 
@@ -136,10 +136,10 @@ describe("cacheDir", () => {
     const prefix = path.join(tempToolCacheDir, "setup-chrome", "chrome");
     await expectDir(path.join(prefix, "100.0.0.0", "x64"));
     await expectFile(path.join(prefix, "100.0.0.0", "x64", "file"));
-    await expectFile(path.join(prefix, "100.0.0.0", "x64") + ".complete");
+    await expectFile(`${path.join(prefix, "100.0.0.0", "x64")}.complete`);
     await expectDir(path.join(prefix, "100.1.0.0", "arm64"));
     await expectFile(path.join(prefix, "100.1.0.0", "arm64", "file"));
-    await expectFile(path.join(prefix, "100.1.0.0", "arm64") + ".complete");
+    await expectFile(`${path.join(prefix, "100.1.0.0", "arm64")}.complete`);
     await expectDir(path.join(prefix, "latest", "x64"));
     await expectFile(path.join(prefix, "latest", "x64", "file"));
   });

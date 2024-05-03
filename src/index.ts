@@ -1,9 +1,9 @@
+import path from "node:path";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as installer from "./installer";
-import { getPlatform, Platform, OS } from "./platform";
-import path from "path";
 import { installDependencies } from "./dependencies";
+import * as installer from "./installer";
+import { OS, type Platform, getPlatform } from "./platform";
 
 const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
   return typeof e === "object" && e !== null && "message" in e;
@@ -14,7 +14,7 @@ const testVersion = async (
   bin: string,
 ): Promise<string> => {
   if (platform.os === OS.WINDOWS) {
-    const output = await exec.getExecOutput(`powershell`, [
+    const output = await exec.getExecOutput("powershell", [
       "-Command",
       `(Get-Item (Get-Command '${bin}').Source).VersionInfo.ProductVersion`,
     ]);
@@ -52,7 +52,7 @@ async function run(): Promise<void> {
       core.getInput("install-dependencies") === "true";
 
     if (flagInstallDependencies) {
-      core.info(`Installing dependencies`);
+      core.info("Installing dependencies");
       await installDependencies(platform);
     }
 

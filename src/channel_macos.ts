@@ -1,12 +1,12 @@
-import { Platform } from "./platform";
-import { Installer, DownloadResult, InstallResult } from "./installer";
-import { isReleaseChannelName } from "./version";
-import * as cache from "./cache";
-import * as tc from "@actions/tool-cache";
-import * as exec from "@actions/exec";
+import fs from "node:fs";
+import path from "node:path";
 import * as core from "@actions/core";
-import fs from "fs";
-import path from "path";
+import * as exec from "@actions/exec";
+import * as tc from "@actions/tool-cache";
+import * as cache from "./cache";
+import type { DownloadResult, InstallResult, Installer } from "./installer";
+import type { Platform } from "./platform";
+import { isReleaseChannelName } from "./version";
 
 export class MacOSChannelInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
@@ -29,7 +29,7 @@ export class MacOSChannelInstaller implements Installer {
     const url = (() => {
       switch (version) {
         case "stable":
-          return `https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg`;
+          return "https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg";
         default:
           return `https://dl.google.com/chrome/mac/universal/${version}/googlechrome${version}.dmg`;
       }

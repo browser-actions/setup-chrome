@@ -1,12 +1,12 @@
-import {
-  KnownGoodVersionResolver,
-  KnownGoodVersionInstaller,
-} from "../src/version_installer";
+import fs from "node:fs";
+import path from "node:path";
 import * as httpm from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 import * as cache from "../src/cache";
-import fs from "fs";
-import path from "path";
+import {
+  KnownGoodVersionInstaller,
+  KnownGoodVersionResolver,
+} from "../src/version_installer";
 
 describe("VersionResolver", () => {
   const getJsonSpy = jest.spyOn(httpm.HttpClient.prototype, "getJson");

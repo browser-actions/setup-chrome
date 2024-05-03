@@ -1,10 +1,10 @@
-import { Platform, OS, Arch } from "./platform";
-import { Installer, DownloadResult, InstallResult } from "./installer";
-import * as cache from "./cache";
-import * as tc from "@actions/tool-cache";
-import * as httpm from "@actions/http-client";
+import path from "node:path";
 import * as core from "@actions/core";
-import path from "path";
+import * as httpm from "@actions/http-client";
+import * as tc from "@actions/tool-cache";
+import * as cache from "./cache";
+import type { DownloadResult, InstallResult, Installer } from "./installer";
+import { Arch, OS, type Platform } from "./platform";
 
 export class SnapshotInstaller implements Installer {
   constructor(private readonly platform: Platform) {}

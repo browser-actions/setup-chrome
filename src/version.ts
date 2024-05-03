@@ -72,7 +72,7 @@ class VersionSpec {
         return undefined;
       }
       const num = Number(part);
-      if (isNaN(num) || num < 0) {
+      if (Number.isNaN(num) || num < 0) {
         throw new Error(`Invalid version: ${version}`);
       }
       return num;
@@ -144,7 +144,7 @@ class VersionSpec {
       return 0;
     }
     if (v1.type === "channel" && v2.type === "channel") {
-      return v1.channel === v2.channel ? 0 : NaN;
+      return v1.channel === v2.channel ? 0 : Number.NaN;
     }
     if (v1.type === "snapshot" && v2.type === "snapshot") {
       return v1.snapshot - v2.snapshot;
@@ -155,23 +155,23 @@ class VersionSpec {
       }
       if (v1.minor !== v2.minor) {
         return v1.minor === undefined || v2.minor === undefined
-          ? NaN
+          ? Number.NaN
           : v1.minor - v2.minor;
       }
       if (v1.build !== v2.build) {
         return v1.build === undefined || v2.build === undefined
-          ? NaN
+          ? Number.NaN
           : v1.build - v2.build;
       }
       if (v1.patch !== v2.patch) {
         return v1.patch === undefined || v2.patch === undefined
-          ? NaN
+          ? Number.NaN
           : v1.patch - v2.patch;
       }
       return 0;
     }
 
-    return NaN;
+    return Number.NaN;
   }
 
   public toString(): string {

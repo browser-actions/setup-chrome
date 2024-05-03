@@ -11,11 +11,11 @@
  * /opt/hostedtoolcache/setup-chrome/${toolName}/${version}/${arch}/...
  */
 
+import { ok } from "node:assert";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
 import * as core from "@actions/core";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
-import { ok } from "assert";
 import { parse } from "./version";
 
 export async function cacheDir(
@@ -27,7 +27,7 @@ export async function cacheDir(
   core.debug(`Caching tool ${tool} ${version} ${arch}`);
   core.debug(`source dir: ${sourceDir}`);
   if (!(await fs.promises.stat(sourceDir)).isDirectory()) {
-    throw new Error(`cacheDir: sourceDir is not a directory`);
+    throw new Error("cacheDir: sourceDir is not a directory");
   }
 
   const destPath: string = await _createToolPath(tool, version, arch);
