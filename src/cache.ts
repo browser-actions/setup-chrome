@@ -65,28 +65,28 @@ export const find = async (
   }
 
   const versions = await fs.promises.readdir(toolPath);
-  let version: string | undefined;
+  let cachePath: string | undefined;
   for (const v of versions) {
     if (!spec.satisfies(v) || spec.lt(v)) {
       continue;
     }
 
-    const cachePath = path.join(toolPath, v, arch);
-    const markerPath = `${cachePath}.complete`;
-    if (!fs.existsSync(cachePath) || !fs.existsSync(markerPath)) {
+    const p = path.join(toolPath, v, arch);
+    const markerPath = `${p}.complete`;
+    if (!fs.existsSync(p) || !fs.existsSync(markerPath)) {
       continue;
     }
-    version = v;
+    cachePath = p;
   }
 
-  if (version) {
-    core.debug(`Found tool in cache ${toolName} ${versionSpec} ${arch}`);
+  if (cachePath) {
+    core.debug(`Found tool in cache ${cachePath}`);
   } else {
     core.debug(
       `Unable to find tool in cache ${toolName} ${versionSpec} ${arch}`,
     );
   }
-  return version;
+  return cachePath;
 };
 
 async function _createToolPath(

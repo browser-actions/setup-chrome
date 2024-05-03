@@ -49,16 +49,21 @@ describe("find", () => {
       }
     });
 
-    test("finds a tool in the cache", async () => {
-      expect(await find("chrome", "100.0.1.0", "x64")).toBe("100.0.1.0");
-      expect(await find("chrome", "100.1", "x64")).toBe("100.1.1.0");
-      expect(await find("chrome", "100", "x64")).toBe("100.2.0.0");
-      expect(await find("chrome", "latest", "x64")).toBe("latest");
-      expect(await find("chrome", "canary", "x64")).toBe("canary");
-      expect(await find("chrome", "123456", "x64")).toBe("123456");
-      expect(await find("chrome", "300000", "x64")).toBeUndefined();
-      expect(await find("chrome", "200", "x64")).toBeUndefined();
-      expect(await find("chrome", "stable", "x64")).toBeUndefined();
+    test.each`
+      version        | arch       | subdir
+      ${"100.0.1.0"} | ${"x64"}   | ${"100.0.1.0/x64"}
+      ${"100.1"}     | ${"x64"}   | ${"100.1.1.0/x64"}
+      ${"100"}       | ${"x64"}   | ${"100.2.0.0/x64"}
+      ${"latest"}    | ${"x64"}   | ${"latest/x64"}
+      ${"canary"}    | ${"x64"}   | ${"canary/x64"}
+      ${"123456"}    | ${"x64"}   | ${"123456/x64"}
+      ${"300000"}    | ${"arm64"} | ${"300000/arm64"}
+      ${"200"}       | ${"x64"}   | ${undefined}
+      ${"stable"}    | ${"x64"}   | ${undefined}
+    `("finds a tool in the cache", async ({ version, arch, subdir }) => {
+      expect(await find("chrome", version, arch)).toBe(
+        subdir && path.join(tempToolCacheDir, "setup-chrome", "chrome", subdir),
+      );
     });
   });
 
@@ -83,7 +88,15 @@ describe("find", () => {
     });
 
     test("corrupted cache is ignored", async () => {
-      expect(await find("chrome", "100", "x64")).toBe("100.1.0.0");
+      expect(await find("chrome", "100", "x64")).toBe(
+        path.join(
+          tempToolCacheDir,
+          "setup-chrome",
+          "chrome",
+          "100.1.0.0",
+          "x64",
+        ),
+      );
     });
   });
 });
