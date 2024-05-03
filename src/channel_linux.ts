@@ -1,6 +1,7 @@
 import { Platform } from "./platform";
 import { Installer, DownloadResult, InstallResult } from "./installer";
-import { isChannelName } from "./channel";
+import { isReleaseChannelName } from "./version";
+import * as cache from "./cache";
 import * as tc from "@actions/tool-cache";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
@@ -12,14 +13,14 @@ export class LinuxChannelInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const root = tc.find("chromium", version);
+    const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
     }
   }
 
   async download(version: string): Promise<DownloadResult> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
     if (version === "canary") {
@@ -45,7 +46,7 @@ export class LinuxChannelInstaller implements Installer {
   }
 
   async install(version: string, archive: string): Promise<InstallResult> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
     if (version === "canary") {
@@ -68,7 +69,7 @@ export class LinuxChannelInstaller implements Installer {
     // remove broken symlink
     await fs.promises.unlink(path.join(extdir, "google-chrome"));
 
-    const root = await tc.cacheDir(extdir, "chromium", version);
+    const root = await cache.cacheDir(extdir, "chromium", version);
     core.info(`Successfully Installed chromium to ${root}`);
 
     return { root: extdir, bin: "chrome" };

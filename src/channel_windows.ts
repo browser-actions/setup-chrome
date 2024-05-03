@@ -1,9 +1,9 @@
 import { Platform, Arch } from "./platform";
 import { Installer, DownloadResult, InstallResult } from "./installer";
-import { ChannelName, isChannelName } from "./channel";
-import * as tc from "@actions/tool-cache";
+import { isReleaseChannelName, type ReleaseChannelName } from "./version";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
+import * as tc from "@actions/tool-cache";
 import fs from "fs";
 
 const isENOENT = (e: unknown): boolean => {
@@ -16,7 +16,7 @@ export class WindowsChannelInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
 
@@ -34,7 +34,7 @@ export class WindowsChannelInstaller implements Installer {
   }
 
   async download(version: string): Promise<DownloadResult> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
     if (version === "canary" || this.platform.arch === Arch.ARM64) {
@@ -102,7 +102,7 @@ export class WindowsChannelInstaller implements Installer {
   }
 
   async install(version: string, archive: string): Promise<InstallResult> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
     await exec.exec(archive, ["/silent", "/install"]);
@@ -110,7 +110,7 @@ export class WindowsChannelInstaller implements Installer {
     return { root: this.rootDir(version), bin: "chrome.exe" };
   }
 
-  private rootDir(version: ChannelName) {
+  private rootDir(version: ReleaseChannelName) {
     switch (version) {
       case "stable":
         return "C:\\Program Files\\Google\\Chrome\\Application";

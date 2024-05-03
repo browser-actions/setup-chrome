@@ -1,6 +1,7 @@
 import { Platform } from "./platform";
 import { Installer, DownloadResult, InstallResult } from "./installer";
-import { isChannelName } from "./channel";
+import { isReleaseChannelName } from "./version";
+import * as cache from "./cache";
 import * as tc from "@actions/tool-cache";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
@@ -11,17 +12,17 @@ export class MacOSChannelInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
-    const root = tc.find("chromium", version);
+    const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "Contents/MacOS/chrome" };
     }
   }
 
   async download(version: string): Promise<DownloadResult> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
 
@@ -40,7 +41,7 @@ export class MacOSChannelInstaller implements Installer {
   }
 
   async install(version: string, archive: string): Promise<InstallResult> {
-    if (!isChannelName(version)) {
+    if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
     const mountpoint = path.join("/Volumes", path.basename(archive));
@@ -80,7 +81,7 @@ export class MacOSChannelInstaller implements Installer {
     })();
     const bin2 = path.join(path.dirname(bin), "chrome");
 
-    root = await tc.cacheDir(root, "chromium", version);
+    root = await cache.cacheDir(root, "chromium", version);
     await fs.promises.symlink(path.basename(bin), path.join(root, bin2));
     core.info(`Successfully Installed chromium to ${root}`);
 
