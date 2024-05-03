@@ -11,15 +11,6 @@ updates:
       actions:
         patterns:
           - "@actions/*"
-      typescript:
-        patterns:
-          - "typescript"
-          - "@typescript-*"
-      eslint:
-        patterns:
-          - "eslint"
-          - "eslint-*"
-          - "prettier"
       jest:
         patterns:
           - "jest"
