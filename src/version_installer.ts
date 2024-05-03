@@ -1,11 +1,11 @@
-import * as tc from "@actions/tool-cache";
-import * as httpm from "@actions/http-client";
+import path from "node:path";
 import * as core from "@actions/core";
-import path from "path";
-import { Arch, OS, Platform } from "./platform";
-import { parse } from "./version";
-import { Installer, DownloadResult, InstallResult } from "./installer";
+import * as httpm from "@actions/http-client";
+import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
+import type { DownloadResult, InstallResult, Installer } from "./installer";
+import { Arch, OS, type Platform } from "./platform";
+import { parse } from "./version";
 
 const KNOWN_GOOD_VERSIONS_URL =
   "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
@@ -49,7 +49,7 @@ export class KnownGoodVersionResolver {
   async resolve(version: string): Promise<string | undefined> {
     const spec = parse(version);
     if (this.resolvedVersions.has(spec.toString())) {
-      return this.resolvedVersions.get(spec.toString())!;
+      return this.resolvedVersions.get(spec.toString());
     }
 
     const knownGoodVersions = await this.getKnownGoodVersions();
@@ -103,7 +103,7 @@ export class KnownGoodVersionResolver {
       throw new Error(`Failed to get known good versions: ${resp.statusCode}`);
     }
     if (resp.result === null) {
-      throw new Error(`Failed to get known good versions`);
+      throw new Error("Failed to get known good versions");
     }
 
     this.knownGoodVersionsCache = resp.result.versions.reverse();

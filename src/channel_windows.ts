@@ -1,10 +1,10 @@
-import { Platform, Arch } from "./platform";
-import { Installer, DownloadResult, InstallResult } from "./installer";
-import { isReleaseChannelName, type ReleaseChannelName } from "./version";
-import * as exec from "@actions/exec";
+import fs from "node:fs";
 import * as core from "@actions/core";
+import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
-import fs from "fs";
+import type { DownloadResult, InstallResult, Installer } from "./installer";
+import { Arch, type Platform } from "./platform";
+import { type ReleaseChannelName, isReleaseChannelName } from "./version";
 
 const isENOENT = (e: unknown): boolean => {
   return (

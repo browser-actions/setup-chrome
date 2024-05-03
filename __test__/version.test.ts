@@ -1,4 +1,4 @@
-import { parse, isReleaseChannelName } from "../src/version";
+import { isReleaseChannelName, parse } from "../src/version";
 
 describe("isReleaseChannelName", () => {
   test("return true if the version is a release channel name", () => {

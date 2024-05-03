@@ -1,6 +1,6 @@
+import * as core from "@actions/core";
 import { pkg, runtime } from "actions-swing";
 import type { Platform } from "./platform";
-import * as core from "@actions/core";
 
 const DEBIAN_BASED_DEPENDENT_PACKAGES = [
   "libglib2.0-0",
