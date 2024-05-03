@@ -59,6 +59,7 @@ class VersionSpec {
       return new VersionSpec({ type: "channel", channel: version });
     }
 
+    // Assume that the snapshot version is greater than 10000 to distinguish it from the four-parts version.
     if (Number(version) > 10000) {
       return new VersionSpec({
         type: "snapshot",
