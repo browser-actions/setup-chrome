@@ -72,6 +72,6 @@ export class LinuxChannelInstaller implements Installer {
     const root = await cache.cacheDir(extdir, "chromium", version);
     core.info(`Successfully Installed chromium to ${root}`);
 
-    return { root: extdir, bin: "chrome" };
+    return { root, bin: "chrome" };
   }
 }
