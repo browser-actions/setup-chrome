@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.1.1
     version: 1.1.1
   '@actions/http-client':
-    specifier: ^2.2.0
-    version: 2.2.0
+    specifier: ^2.2.1
+    version: 2.2.1
   '@actions/io':
     specifier: ^1.1.3
     version: 1.1.3
@@ -55,7 +55,7 @@ packages:
   /@actions/core@1.10.1:
     resolution: {integrity: sha512-3lBR9EDAY+iYIpTnTIXmWcNbX3T2kCkAEQGIQx4NVQ0575nk2k3GRZDTPQG+vVtS2izSLmINlxXf0uLtnrTP+g==}
     dependencies:
-      '@actions/http-client': 2.2.0
+      '@actions/http-client': 2.2.1
       uuid: 8.3.2
     dev: false
 
@@ -65,11 +65,11 @@ packages:
       '@actions/io': 1.1.3
     dev: false
 
-  /@actions/http-client@2.2.0:
-    resolution: {integrity: sha512-q+epW0trjVUUHboliPb4UF9g2msf+w61b32tAkFEwL/IwP0DQWgbCMM0Hbe3e3WXSKz5VcUXbzJQgy8Hkra/Lg==}
+  /@actions/http-client@2.2.1:
+    resolution: {integrity: sha512-KhC/cZsq7f8I4LfZSJKgCvEwfkE8o1538VoBeoGzokVLLnbFDEAdFD3UhoMklxo2un9NJVBdANOresx7vTHlHw==}
     dependencies:
       tunnel: 0.0.6
-      undici: 5.27.2
+      undici: 5.28.4
     dev: false
 
   /@actions/io@1.1.3:
@@ -81,7 +81,7 @@ packages:
     dependencies:
       '@actions/core': 1.10.1
       '@actions/exec': 1.1.1
-      '@actions/http-client': 2.2.0
+      '@actions/http-client': 2.2.1
       '@actions/io': 1.1.3
       semver: 6.3.1
       uuid: 3.4.0
@@ -512,8 +512,8 @@ packages:
     dev: true
     optional: true
 
-  /@fastify/busboy@2.1.0:
-    resolution: {integrity: sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==}
+  /@fastify/busboy@2.1.1:
+    resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
     dev: false
 
@@ -2399,11 +2399,11 @@ packages:
     hasBin: true
     dev: true
 
-  /undici@5.27.2:
-    resolution: {integrity: sha512-iS857PdOEy/y3wlM3yRp+6SNQQ6xU0mmZcwRSriqk+et/cwWAtwmIGf6WkoDN2EK/AMdCO/dfXzIwi+rFMrjjQ==}
+  /undici@5.28.4:
+    resolution: {integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==}
     engines: {node: '>=14.0'}
     dependencies:
-      '@fastify/busboy': 2.1.0
+      '@fastify/busboy': 2.1.1
     dev: false
 
   /update-browserslist-db@1.0.13(browserslist@4.22.1):
