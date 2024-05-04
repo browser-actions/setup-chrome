@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.6.0...setup-chrome-v1.6.1) (2024-05-04)
+
+
+### Bug Fixes
+
+* **deps:** bump the actions group with 1 update ([#505](https://github.com/browser-actions/setup-chrome/issues/505)) ([21a0849](https://github.com/browser-actions/setup-chrome/commit/21a0849857a04999f466f1573877d549dbebc23f))
+* tool-cache does not work ([#533](https://github.com/browser-actions/setup-chrome/issues/533)) ([e88eaf7](https://github.com/browser-actions/setup-chrome/commit/e88eaf738be41864c31ee42ad17d06d10b166676)), closes [#504](https://github.com/browser-actions/setup-chrome/issues/504)
+
 ## [1.6.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.5.0...setup-chrome-v1.6.0) (2024-04-21)
 
 
