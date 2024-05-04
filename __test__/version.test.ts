@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest";
 import { isReleaseChannelName, parse } from "../src/version";
 
 describe("isReleaseChannelName", () => {

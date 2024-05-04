@@ -2,30 +2,35 @@ import fs from "node:fs";
 import path from "node:path";
 import * as httpm from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
 import {
   KnownGoodVersionInstaller,
   KnownGoodVersionResolver,
 } from "../src/version_installer";
 
-describe("VersionResolver", () => {
-  const getJsonSpy = jest.spyOn(httpm.HttpClient.prototype, "getJson");
+const getJsonSpy = vi.spyOn(httpm.HttpClient.prototype, "getJson");
 
-  beforeEach(() => {
-    const mockDataPath = path.join(
-      __dirname,
-      "data/known-good-versions-with-downloads.json",
-    );
+beforeEach(() => {
+  const mockDataPath = path.join(
+    __dirname,
+    "data/known-good-versions-with-downloads.json",
+  );
 
-    getJsonSpy.mockImplementation(async () => {
-      return {
-        statusCode: 200,
-        headers: {},
-        result: JSON.parse(await fs.promises.readFile(mockDataPath, "utf-8")),
-      };
-    });
+  getJsonSpy.mockImplementation(async () => {
+    return {
+      statusCode: 200,
+      headers: {},
+      result: JSON.parse(await fs.promises.readFile(mockDataPath, "utf-8")),
+    };
   });
+});
 
+afterEach(() => {
+  vi.resetAllMocks();
+});
+
+describe("VersionResolver", () => {
   test.each`
     spec               | resolved
     ${"120.0.6099.5"}  | ${"120.0.6099.5"}
@@ -54,8 +59,8 @@ describe("VersionResolver", () => {
 });
 
 describe("KnownGoodVersionInstaller", () => {
-  const tcFindSpy = jest.spyOn(cache, "find");
-  const tcDownloadToolSpy = jest.spyOn(tc, "downloadTool");
+  const tcFindSpy = vi.spyOn(cache, "find");
+  const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
 
   test("should return installed path if installed", async () => {
     tcFindSpy.mockImplementation((name: string, version: string) => {

@@ -11,9 +11,3 @@ updates:
       actions:
         patterns:
           - "@actions/*"
-      jest:
-        patterns:
-          - "jest"
-          - "jest-*"
-          - "ts-jest"
-          - "@types/jest"
