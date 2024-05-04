@@ -48,7 +48,7 @@ steps:
 The action supports the following version formats:
 
 - The latest snapshot `latest` (default).
-- Commit positions like `848897`.  You can find commit positions from [here][snapshots].
+- Commit positions like `1295939`.  You can find commit positions from [here][snapshots].
 - Google Chrome release channels: `stable`, `beta`, `dev` and `canary`
 - Specific versions: `119`, `120.0.6099`, `121.0.6100.0`.  The version are resolved by [Chrome for Testing][].
 
