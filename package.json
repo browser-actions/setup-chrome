@@ -37,12 +37,7 @@
     "type": "git",
     "url": "git+https://github.com/browser-actions/setup-chrome.git"
   },
-  "keywords": [
-    "actions",
-    "node",
-    "setup",
-    "chromium"
-  ],
+  "keywords": ["actions", "node", "setup", "chromium"],
   "author": "Shin'ya Ueoka",
   "license": "MIT",
   "bugs": {
