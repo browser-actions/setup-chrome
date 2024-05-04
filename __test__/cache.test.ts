@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { cacheDir, find } from "../src/cache";
 
 const mkdir = (dir: string) => fs.promises.mkdir(dir, { recursive: true });
