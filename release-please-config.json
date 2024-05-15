@@ -4,8 +4,7 @@
       "changelog-path": "CHANGELOG.md",
       "release-type": "node",
       "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": true
+      "bump-patch-for-minor-pre-major": false
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
