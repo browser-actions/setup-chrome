@@ -29031,7 +29031,7 @@ class LinuxChannelInstaller {
             yield node_fs_1.default.promises.unlink(node_path_1.default.join(extdir, "google-chrome"));
             const root = yield cache.cacheDir(extdir, "chromium", version);
             core.info(`Successfully Installed chromium to ${root}`);
-            return { root: extdir, bin: "chrome" };
+            return { root, bin: "chrome" };
         });
     }
 }
@@ -29374,7 +29374,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.installDependencies = void 0;
 const core = __importStar(__nccwpck_require__(9093));
-const actions_swing_1 = __nccwpck_require__(7353);
+const actions_swing_1 = __nccwpck_require__(1518);
 const DEBIAN_BASED_DEPENDENT_PACKAGES = [
     "libglib2.0-0",
     "libgconf-2-4",
@@ -29422,7 +29422,8 @@ const SUSE_BASED_DEPENDENT_PACKAGES = [
     "libXrandr2",
     "mozilla-nss",
 ];
-const installDependencies = (platform) => __awaiter(void 0, void 0, void 0, function* () {
+const installDependencies = (platform, { noSudo }) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     if (platform.os !== "linux") {
         core.warning(`install-dependencies is only supported on Linux, but current platform is ${platform.os}`);
         return;
@@ -29446,7 +29447,8 @@ const installDependencies = (platform) => __awaiter(void 0, void 0, void 0, func
         }
         throw new Error(`Unsupported OS: ${osReleaseId}`);
     }))();
-    yield actions_swing_1.pkg.install(packages);
+    const sudo = !noSudo && ((_a = process.getuid) === null || _a === void 0 ? void 0 : _a.call(process)) !== 0;
+    yield actions_swing_1.pkg.install(packages, { sudo });
 });
 exports.installDependencies = installDependencies;
 
@@ -29533,9 +29535,10 @@ function run() {
             const version = core.getInput("chrome-version") || "latest";
             const platform = (0, platform_1.getPlatform)();
             const flagInstallDependencies = core.getInput("install-dependencies") === "true";
+            const noSudo = core.getInput("no-sudo") === "true";
             if (flagInstallDependencies) {
                 core.info("Installing dependencies");
-                yield (0, dependencies_1.installDependencies)(platform);
+                yield (0, dependencies_1.installDependencies)(platform, { noSudo });
             }
             core.info(`Setup chromium ${version}`);
             const binPath = yield installer.install(platform, version);
@@ -32124,7 +32127,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 7353:
+/***/ 1518:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -32144,7 +32147,7 @@ var core = __nccwpck_require__(9093);
 var exec = __nccwpck_require__(7775);
 ;// CONCATENATED MODULE: external "fs/promises"
 const promises_namespaceObject = require("fs/promises");
-;// CONCATENATED MODULE: ./node_modules/.pnpm/actions-swing@0.0.5_@actions+core@1.10.1_@actions+exec@1.1.1/node_modules/actions-swing/dist/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/actions-swing@0.0.6_@actions+core@1.10.1_@actions+exec@1.1.1/node_modules/actions-swing/dist/index.js
 var __defProp = Object.defineProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -32230,8 +32233,12 @@ var ZypperPackageManager = class {
       await (0,exec.exec)("zypper", ["install", "--no-confirm", ...packageName]);
     }
   }
-  async uninstall(packageName) {
-    await (0,exec.exec)("zypper", ["remove", "--no-confirm", ...packageName]);
+  async uninstall(packageName, opts) {
+    if (opts?.sudo) {
+      await (0,exec.exec)("sudo", ["zypper", "remove", "--no-confirm", ...packageName]);
+    } else {
+      await (0,exec.exec)("zypper", ["remove", "--no-confirm", ...packageName]);
+    }
   }
 };
 var AptPackageManager = class {
