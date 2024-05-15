@@ -1,6 +1,6 @@
 {
   "name": "setup-chrome",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Set up your GitHub Actions workflow with a specific version of chromium",
   "main": "dist/index.js",
   "packageManager": "pnpm@8.7.5",
@@ -33,7 +33,12 @@
     "type": "git",
     "url": "git+https://github.com/browser-actions/setup-chrome.git"
   },
-  "keywords": ["actions", "node", "setup", "chromium"],
+  "keywords": [
+    "actions",
+    "node",
+    "setup",
+    "chromium"
+  ],
   "author": "Shin'ya Ueoka",
   "license": "MIT",
   "bugs": {
