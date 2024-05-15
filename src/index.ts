@@ -50,10 +50,11 @@ async function run(): Promise<void> {
     const platform = getPlatform();
     const flagInstallDependencies =
       core.getInput("install-dependencies") === "true";
+    const noSudo = core.getInput("no-sudo") === "true";
 
     if (flagInstallDependencies) {
       core.info("Installing dependencies");
-      await installDependencies(platform);
+      await installDependencies(platform, { noSudo });
     }
 
     core.info(`Setup chromium ${version}`);

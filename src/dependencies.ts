@@ -52,7 +52,10 @@ const SUSE_BASED_DEPENDENT_PACKAGES = [
   "mozilla-nss",
 ];
 
-const installDependencies = async (platform: Platform): Promise<void> => {
+const installDependencies = async (
+  platform: Platform,
+  { noSudo }: { noSudo: boolean },
+) => {
   if (platform.os !== "linux") {
     core.warning(
       `install-dependencies is only supported on Linux, but current platform is ${platform.os}`,
@@ -79,8 +82,9 @@ const installDependencies = async (platform: Platform): Promise<void> => {
     }
     throw new Error(`Unsupported OS: ${osReleaseId}`);
   })();
+  const sudo = !noSudo && process.getuid?.() !== 0;
 
-  await pkg.install(packages);
+  await pkg.install(packages, { sudo });
 };
 
 export { installDependencies };
