@@ -20,9 +20,9 @@ export type DownloadResult = {
 export interface Installer {
   checkInstalled(version: string): Promise<InstallResult | undefined>;
 
-  download(version: string): Promise<DownloadResult>;
+  downloadBrowser(version: string): Promise<DownloadResult>;
 
-  install(version: string, archive: string): Promise<InstallResult>;
+  installBrowser(version: string, archive: string): Promise<InstallResult>;
 }
 
 export const install = async (
@@ -58,10 +58,10 @@ export const install = async (
   }
 
   core.info(`Attempting to download ${version}...`);
-  const { archive } = await installer.download(version);
+  const { archive } = await installer.downloadBrowser(version);
 
   core.info("Installing chromium...");
-  const { root, bin } = await installer.install(version, archive);
+  const { root, bin } = await installer.installBrowser(version, archive);
 
   return path.join(root, bin);
 };

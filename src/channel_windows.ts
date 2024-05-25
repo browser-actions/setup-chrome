@@ -33,7 +33,7 @@ export class WindowsChannelInstaller implements Installer {
     return { root, bin: "chrome.exe" };
   }
 
-  async download(version: string): Promise<DownloadResult> {
+  async downloadBrowser(version: string): Promise<DownloadResult> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
@@ -101,7 +101,10 @@ export class WindowsChannelInstaller implements Installer {
     return { archive: `${archivePath}.exe` };
   }
 
-  async install(version: string, archive: string): Promise<InstallResult> {
+  async installBrowser(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }

@@ -86,7 +86,7 @@ describe("KnownGoodVersionInstaller", () => {
       os: "linux",
       arch: "amd64",
     });
-    const downloaded = await installer.download("120.0.6099.x");
+    const downloaded = await installer.downloadBrowser("120.0.6099.x");
     expect(downloaded?.archive).toEqual("/tmp/chromium.zip");
   });
 });

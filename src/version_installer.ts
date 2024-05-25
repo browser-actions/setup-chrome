@@ -150,7 +150,7 @@ export class KnownGoodVersionInstaller implements Installer {
     }
   }
 
-  async download(version: string): Promise<DownloadResult> {
+  async downloadBrowser(version: string): Promise<DownloadResult> {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
@@ -165,7 +165,10 @@ export class KnownGoodVersionInstaller implements Installer {
     return { archive };
   }
 
-  async install(version: string, archive: string): Promise<InstallResult> {
+  async installBrowser(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);

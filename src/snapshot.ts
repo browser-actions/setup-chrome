@@ -16,7 +16,7 @@ export class SnapshotInstaller implements Installer {
     }
   }
 
-  async download(version: string): Promise<DownloadResult> {
+  async downloadBrowser(version: string): Promise<DownloadResult> {
     const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
       this.platform,
     )}%2F${version}%2F${makeBasename(this.platform)}?alt=media`;
@@ -26,7 +26,10 @@ export class SnapshotInstaller implements Installer {
     return { archive };
   }
 
-  async install(version: string, archive: string): Promise<InstallResult> {
+  async installBrowser(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
     const extPath = await tc.extractZip(archive);
     let root = (() => {
       switch (this.platform.os) {
@@ -70,7 +73,7 @@ export class LatestInstaller implements Installer {
     }
   }
 
-  async download(_version: string): Promise<DownloadResult> {
+  async downloadBrowser(_version: string): Promise<DownloadResult> {
     const latestVersionURL = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
       this.platform,
     )}%2FLAST_CHANGE?alt=media`;
@@ -82,11 +85,14 @@ export class LatestInstaller implements Installer {
     }
     const version = await resp.readBody();
 
-    return this.snapshotInstaller.download(version);
+    return this.snapshotInstaller.downloadBrowser(version);
   }
 
-  async install(version: string, archive: string): Promise<InstallResult> {
-    return this.snapshotInstaller.install(version, archive);
+  async installBrowser(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
+    return this.snapshotInstaller.installBrowser(version, archive);
   }
 }
 
