@@ -3,8 +3,9 @@ import * as core from "@actions/core";
 import { LinuxChannelInstaller } from "./channel_linux";
 import { MacOSChannelInstaller } from "./channel_macos";
 import { WindowsChannelInstaller } from "./channel_windows";
+import { LatestInstaller } from "./latest_installer";
 import { OS, type Platform } from "./platform";
-import { LatestInstaller, SnapshotInstaller } from "./snapshot";
+import { SnapshotInstaller } from "./snapshot_installer";
 import { parse } from "./version";
 import { KnownGoodVersionInstaller } from "./version_installer";
 
