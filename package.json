@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "ncc build src/index.ts",
+    "build:watch": "ncc build --watch src/index.ts",
     "package": "cp action.yml README.md dist/",
     "test": "vitest",
     "lint": "biome ci .",
