@@ -18,13 +18,25 @@ export const resolveLatestVersion = async (
   return resp.readBody();
 };
 
-export const downloadURL = (platform: Platform, version: string): string => {
+export const browserDownloadURL = (
+  platform: Platform,
+  version: string,
+): string => {
   return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
     platform,
-  )}%2F${version}%2F${makeBasename(platform)}?alt=media`;
+  )}%2F${version}%2F${browserFileName(platform)}?alt=media`;
 };
 
-const makeBasename = ({ os }: Platform): string => {
+export const driverDownloadURL = (
+  platform: Platform,
+  version: string,
+): string => {
+  return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(
+    platform,
+  )}%2F${version}%2F${driverFileName(platform)}?alt=media`;
+};
+
+const browserFileName = ({ os }: Platform): string => {
   switch (os) {
     case OS.DARWIN:
       return "chrome-mac.zip";
@@ -32,6 +44,17 @@ const makeBasename = ({ os }: Platform): string => {
       return "chrome-linux.zip";
     case OS.WINDOWS:
       return "chrome-win.zip";
+  }
+};
+
+const driverFileName = ({ os }: Platform): string => {
+  switch (os) {
+    case OS.DARWIN:
+      return "chromedriver_mac64.zip";
+    case OS.LINUX:
+      return "chromedriver_linux64.zip";
+    case OS.WINDOWS:
+      return "chromedriver_win32.zip";
   }
 };
 

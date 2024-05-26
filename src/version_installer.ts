@@ -30,12 +30,17 @@ export type KnownGoodVersion = {
       platform: KnownGoodVersionPlatform;
       url: string;
     }>;
+    chromedriver?: Array<{
+      platform: KnownGoodVersionPlatform;
+      url: string;
+    }>;
   };
 };
 
 type ResolvedVersion = {
   version: string;
-  chromeDownloadURL: string;
+  browserDownloadURL: string;
+  driverDownloadURL: string;
 };
 
 export class KnownGoodVersionResolver {
@@ -54,13 +59,26 @@ export class KnownGoodVersionResolver {
 
     const knownGoodVersions = await this.getKnownGoodVersions();
     for (const version of knownGoodVersions) {
-      if (spec.satisfies(version.version) && version.downloads.chrome) {
-        const found = version.downloads.chrome.find(
-          ({ platform }) => platform === this.platform,
-        );
-        if (found) {
-          return { version: version.version, chromeDownloadURL: found.url };
-        }
+      if (
+        !spec.satisfies(version.version) ||
+        !version.downloads.chrome ||
+        !version.downloads.chromedriver
+      ) {
+        continue;
+      }
+      const browser = version.downloads.chrome.find(
+        ({ platform }) => platform === this.platform,
+      );
+      const driver = version.downloads.chromedriver.find(
+        ({ platform }) => platform === this.platform,
+      );
+
+      if (browser && driver) {
+        return {
+          version: version.version,
+          browserDownloadURL: browser.url,
+          driverDownloadURL: driver.url,
+        };
       }
     }
   }
@@ -124,10 +142,11 @@ export class KnownGoodVersionInstaller implements Installer {
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
+
     core.info(
-      `Acquiring ${resolved.version} from ${resolved.chromeDownloadURL}`,
+      `Acquiring ${resolved.version} from ${resolved.browserDownloadURL}`,
     );
-    const archive = await tc.downloadTool(resolved.chromeDownloadURL);
+    const archive = await tc.downloadTool(resolved.browserDownloadURL);
     return { archive };
   }
 
@@ -155,6 +174,52 @@ export class KnownGoodVersionInstaller implements Installer {
           return "chrome";
         case OS.WINDOWS:
           return "chrome.exe";
+      }
+    })();
+    return { root: root, bin };
+  }
+
+  async downloadDriver(version: string): Promise<DownloadResult> {
+    const resolved = await this.versionResolver.resolve(version);
+    if (!resolved) {
+      throw new Error(`Version ${version} not found in known good versions`);
+    }
+
+    core.info(
+      `Acquiring ${resolved.version} from ${resolved.driverDownloadURL}`,
+    );
+    const archive = await tc.downloadTool(resolved.driverDownloadURL);
+    return { archive };
+  }
+
+  async installDriver(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
+    const resolved = await this.versionResolver.resolve(version);
+    if (!resolved) {
+      throw new Error(`Version ${version} not found in known good versions`);
+    }
+    const extPath = await tc.extractZip(archive);
+    const extAppRoot = path.join(
+      extPath,
+      `chromedriver-${this.knownGoodVersionPlatform}`,
+    );
+
+    const root = await cache.cacheDir(
+      extAppRoot,
+      "chromedriver",
+      resolved.version,
+    );
+    core.info(`Successfully Installed chromedriver to ${root}`);
+    const bin = (() => {
+      switch (this.platform.os) {
+        case OS.DARWIN:
+          return "chromedriver";
+        case OS.LINUX:
+          return "chromedriver";
+        case OS.WINDOWS:
+          return "chromedriver.exe";
       }
     })();
     return { root: root, bin };

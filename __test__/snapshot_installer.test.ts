@@ -33,10 +33,10 @@ describe("SnapshotInstaller", () => {
 
   describe("downloadBrowser", () => {
     test("downloads the browser", async () => {
-      tcDownloadToolSpy.mockResolvedValue("/path/to/downloaded.zip");
+      tcDownloadToolSpy.mockResolvedValue("/tmp/chrome.zip");
 
       const result = await installer.downloadBrowser("123456");
-      expect(result).toEqual({ archive: "/path/to/downloaded.zip" });
+      expect(result).toEqual({ archive: "/tmp/chrome.zip" });
       expect(tcDownloadToolSpy).toHaveBeenCalled();
     });
   });
@@ -48,9 +48,37 @@ describe("SnapshotInstaller", () => {
 
       const result = await installer.installBrowser(
         "123456",
-        "/path/to/archive",
+        "/tmp/chrome.zip",
       );
       expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(tcExtractZipSpy).toHaveBeenCalled();
+      expect(cacheCacheDirSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("downloadDriver", () => {
+    test("downloads the driver", async () => {
+      tcDownloadToolSpy.mockResolvedValue("/tmp/chromedriver.zip");
+
+      const result = await installer.downloadDriver("123456");
+      expect(result).toEqual({ archive: "/tmp/chromedriver.zip" });
+      expect(tcDownloadToolSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("installDriver", () => {
+    test("installs the driver", async () => {
+      tcExtractZipSpy.mockResolvedValue("/path/to/ext");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.installDriver(
+        "123456",
+        "/tmp/chromedriver.zip",
+      );
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
       expect(tcExtractZipSpy).toHaveBeenCalled();
       expect(cacheCacheDirSpy).toHaveBeenCalled();
     });

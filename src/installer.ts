@@ -24,6 +24,10 @@ export interface Installer {
   downloadBrowser(version: string): Promise<DownloadResult>;
 
   installBrowser(version: string, archive: string): Promise<InstallResult>;
+
+  downloadDriver(version: string): Promise<DownloadResult>;
+
+  installDriver(version: string, archive: string): Promise<InstallResult>;
 }
 
 export const install = async (

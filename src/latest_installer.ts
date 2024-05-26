@@ -21,10 +21,7 @@ export class LatestInstaller implements Installer {
     return this.snapshotInstaller.downloadBrowser(version);
   }
 
-  async installBrowser(
-    version: string,
-    archive: string,
-  ): Promise<InstallResult> {
-    return this.snapshotInstaller.installBrowser(version, archive);
-  }
+  installBrowser = this.snapshotInstaller.installBrowser;
+  downloadDriver = this.snapshotInstaller.downloadDriver;
+  installDriver = this.snapshotInstaller.installDriver;
 }
