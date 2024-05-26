@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.6.2...setup-chrome-v1.7.0) (2024-05-26)
+
+
+### Features
+
+* support installing a compatible version of ChromeDriver ([#548](https://github.com/browser-actions/setup-chrome/issues/548)) ([f0f75ba](https://github.com/browser-actions/setup-chrome/commit/f0f75ba773df0ba7c82aad050bc94bbb69a1e5f7))
+
 ## [1.6.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.6.1...setup-chrome-v1.6.2) (2024-05-15)
 
 
