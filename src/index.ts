@@ -99,8 +99,8 @@ const testVersion = async (
   const stdout = output.stdout.trim();
   if (
     !stdout.startsWith("Chromium ") &&
-    !stdout.startsWith("Google Chrome ") &&
     !stdout.startsWith("Google Chrome for Testing ") &&
+    !stdout.startsWith("Google Chrome ") &&
     !stdout.startsWith("ChromeDriver ")
   ) {
     throw new Error(
@@ -109,8 +109,8 @@ const testVersion = async (
   }
   const v = stdout
     .replace("Chromium ", "")
-    .replace("Google Chrome ", "")
     .replace("Google Chrome for Testing ", "")
+    .replace("Google Chrome ", "")
     .replace("ChromeDriver ", "")
     .split(" ", 1)[0];
   if (!/^\d+\.\d+\.\d+\.\d+$/.test(v)) {
