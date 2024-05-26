@@ -133,8 +133,9 @@ export class KnownGoodVersionResolver {
       throw new Error("Failed to get known good versions");
     }
 
-    this.cache = resp.result.versions.reverse();
+    resp.result.versions.reverse();
 
+    this.cache = resp.result.versions;
     return resp.result.versions;
   }
 }
