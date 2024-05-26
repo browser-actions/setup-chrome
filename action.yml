@@ -11,9 +11,9 @@ inputs:
     description: |-
       Install dependent packages for Google Chrome/Chromium (Linux only).
     default: false
-  no-install-chromedriver:
+  install-chromedriver:
     description: |-
-      Install only Google Chrome/Chromium browser and skip installing chromedriver
+      Install the compatible version of ChromeDriver with the installed Google Chrome/Chromium.
     default: false
   no-sudo:
     description: |-

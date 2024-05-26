@@ -125,8 +125,8 @@ async function run(): Promise<void> {
     const platform = getPlatform();
     const flagInstallDependencies =
       core.getInput("install-dependencies") === "true";
-    const noInstallChromedriver =
-      core.getInput("no-install-chromedriver") === "true";
+    const flgInstallChromedriver =
+      core.getInput("install-chromedriver") === "true";
     const noSudo = core.getInput("no-sudo") === "true";
 
     if (flagInstallDependencies) {
@@ -145,7 +145,7 @@ async function run(): Promise<void> {
     core.setOutput("chrome-version", actualBrowserVersion);
     core.info(`Successfully setup chromium ${actualBrowserVersion}`);
 
-    if (!noInstallChromedriver) {
+    if (flgInstallChromedriver) {
       core.info(`Setup chromedriver ${version}`);
 
       const driverBinPath = await installDriver(installer, version);

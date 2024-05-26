@@ -41,6 +41,7 @@ jobs:
         uses: ./
         with:
           chrome-version: ${{ matrix.version }}
+          install-chromedriver: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
@@ -84,6 +85,7 @@ jobs:
         uses: ./
         with:
           chrome-version: 120
+          install-chromedriver: true
           install-dependencies: true
         id: setup-chrome
       - run: |
