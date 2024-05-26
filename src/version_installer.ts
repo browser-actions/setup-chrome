@@ -26,11 +26,16 @@ export type KnownGoodVersion = {
   version: string;
   revision: string;
   downloads: {
-    chrome: Array<{
+    chrome?: Array<{
       platform: KnownGoodVersionPlatform;
       url: string;
     }>;
   };
+};
+
+type ResolvedVersion = {
+  version: string;
+  chromeDownloadURL: string;
 };
 
 export class KnownGoodVersionResolver {
@@ -40,55 +45,24 @@ export class KnownGoodVersionResolver {
 
   private knownGoodVersionsCache?: KnownGoodVersion[];
 
-  private readonly resolvedVersions = new Map<string, string>();
-
   constructor(platform: KnownGoodVersionPlatform) {
     this.platform = platform;
   }
 
-  async resolve(version: string): Promise<string | undefined> {
+  async resolve(version: string): Promise<ResolvedVersion | undefined> {
     const spec = parse(version);
-    if (this.resolvedVersions.has(spec.toString())) {
-      return this.resolvedVersions.get(spec.toString());
-    }
 
     const knownGoodVersions = await this.getKnownGoodVersions();
     for (const version of knownGoodVersions) {
-      if (!spec.satisfies(version.version)) {
-        continue;
-      }
-      const found = version.downloads.chrome.find(
-        ({ platform }) => platform === this.platform,
-      );
-      if (found) {
-        this.resolvedVersions.set(spec.toString(), version.version);
-        return version.version;
+      if (spec.satisfies(version.version) && version.downloads.chrome) {
+        const found = version.downloads.chrome.find(
+          ({ platform }) => platform === this.platform,
+        );
+        if (found) {
+          return { version: version.version, chromeDownloadURL: found.url };
+        }
       }
     }
-    return undefined;
-  }
-
-  async resolveUrl(version: string): Promise<string | undefined> {
-    const resolved = await this.resolve(version);
-    if (!resolved) {
-      return undefined;
-    }
-
-    const knownGoodVersions = await this.getKnownGoodVersions();
-    const knownGoodVersion = knownGoodVersions.find(
-      (v) => v.version === resolved.toString(),
-    );
-    if (!knownGoodVersion) {
-      return undefined;
-    }
-
-    const found = knownGoodVersion.downloads.chrome.find(
-      ({ platform }) => platform === this.platform,
-    );
-    if (!found) {
-      return undefined;
-    }
-    return found.url;
   }
 
   private async getKnownGoodVersions(): Promise<KnownGoodVersion[]> {
@@ -139,12 +113,7 @@ export class KnownGoodVersionInstaller implements Installer {
   }
 
   async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const resolved = await this.versionResolver.resolve(version);
-    if (!resolved) {
-      return undefined;
-    }
-
-    const root = await cache.find("chromium", resolved.toString());
+    const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
     }
@@ -155,13 +124,10 @@ export class KnownGoodVersionInstaller implements Installer {
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
-
-    const url = await this.versionResolver.resolveUrl(version);
-    if (!url) {
-      throw new Error(`Version ${version} not found in known good versions`);
-    }
-    const archive = await tc.downloadTool(url);
-    core.info(`Acquiring ${resolved} from ${url}`);
+    core.info(
+      `Acquiring ${resolved.version} from ${resolved.chromeDownloadURL}`,
+    );
+    const archive = await tc.downloadTool(resolved.chromeDownloadURL);
     return { archive };
   }
 
@@ -179,11 +145,7 @@ export class KnownGoodVersionInstaller implements Installer {
       `chrome-${this.knownGoodVersionPlatform}`,
     );
 
-    const root = await cache.cacheDir(
-      extAppRoot,
-      "chromium",
-      resolved.toString(),
-    );
+    const root = await cache.cacheDir(extAppRoot, "chromium", resolved.version);
     core.info(`Successfully Installed chromium to ${root}`);
     const bin = (() => {
       switch (this.platform.os) {
