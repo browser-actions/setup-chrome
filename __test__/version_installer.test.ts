@@ -37,12 +37,12 @@ describe("KnownGoodVersionInstaller", () => {
     arch: "amd64",
   });
 
-  test("checkInstalled should return installed path if installed", async () => {
+  test("checkInstalledBrowser should return installed path if installed", async () => {
     cacheFindSpy.mockResolvedValue(
       "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
     );
 
-    const installed = await installer.checkInstalled("120.0.6099.x");
+    const installed = await installer.checkInstalledBrowser("120.0.6099.x");
     expect(installed?.root).toEqual(
       "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
     );
@@ -71,6 +71,25 @@ describe("KnownGoodVersionInstaller", () => {
       "chromium",
       "120.0.6099.56",
     );
+  });
+
+  test("checkInstalledDriver should return undefined if not installed", async () => {
+    cacheFindSpy.mockResolvedValue(undefined);
+
+    const installed = await installer.checkInstalledDriver("120.0.6099.x");
+    expect(installed).toBeUndefined();
+  });
+
+  test("checkInstalledDriver should return installed path if installed", async () => {
+    cacheFindSpy.mockResolvedValue(
+      "/opt/hostedtoolcache/setup-chrome/chromedriver/120.0.6099.56/x64",
+    );
+
+    const installed = await installer.checkInstalledDriver("120.0.6099.x");
+    expect(installed?.root).toEqual(
+      "/opt/hostedtoolcache/setup-chrome/chromedriver/120.0.6099.56/x64",
+    );
+    expect(cacheFindSpy).toHaveBeenCalledWith("chromedriver", "120.0.6099.x");
   });
 
   test("downloadDriver should download driver archive", async () => {

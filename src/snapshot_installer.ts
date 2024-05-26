@@ -9,7 +9,9 @@ import { browserDownloadURL, driverDownloadURL } from "./snapshot_bucket";
 export class SnapshotInstaller implements Installer {
   constructor(private readonly platform: Platform) {}
 
-  async checkInstalled(version: string): Promise<InstallResult | undefined> {
+  async checkInstalledBrowser(
+    version: string,
+  ): Promise<InstallResult | undefined> {
     const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
@@ -53,6 +55,15 @@ export class SnapshotInstaller implements Installer {
     core.info(`Successfully Installed chromium to ${root}`);
 
     return { root, bin };
+  }
+
+  async checkInstalledDriver(
+    version: string,
+  ): Promise<InstallResult | undefined> {
+    const root = await cache.find("chromedriver", version);
+    if (root) {
+      return { root, bin: "chromedriver" };
+    }
   }
 
   async downloadDriver(version: string): Promise<DownloadResult> {

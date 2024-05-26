@@ -11,9 +11,11 @@ export class LatestInstaller implements Installer {
 
   constructor(private readonly platform: Platform) {}
 
-  async checkInstalled(_version: string): Promise<InstallResult | undefined> {
+  async checkInstalledBrowser(
+    _version: string,
+  ): Promise<InstallResult | undefined> {
     const snapshot = await this.getLatestSnapshot();
-    return this.snapshotInstaller.checkInstalled(snapshot);
+    return this.snapshotInstaller.checkInstalledBrowser(snapshot);
   }
 
   async downloadBrowser(_version: string): Promise<DownloadResult> {
@@ -27,6 +29,13 @@ export class LatestInstaller implements Installer {
   ): Promise<InstallResult> {
     const snapshot = await this.getLatestSnapshot();
     return this.snapshotInstaller.installBrowser(snapshot, archive);
+  }
+
+  async checkInstalledDriver(
+    _version: string,
+  ): Promise<InstallResult | undefined> {
+    const snapshot = await this.getLatestSnapshot();
+    return this.snapshotInstaller.checkInstalledDriver(snapshot);
   }
 
   async downloadDriver(_version: string): Promise<DownloadResult> {

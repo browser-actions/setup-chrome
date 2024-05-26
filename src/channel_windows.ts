@@ -28,12 +28,14 @@ export class WindowsChannelInstaller implements Installer {
     this.versionResolver = new LastKnownGoodVersionResolver(platform);
   }
 
-  async checkInstalled(version: string): Promise<InstallResult | undefined> {
+  async checkInstalledBrowser(
+    version: string,
+  ): Promise<InstallResult | undefined> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
 
-    const root = this.rootDir(version);
+    const root = this.browserRootDir(version);
     try {
       await fs.promises.stat(root);
     } catch (e) {
@@ -123,10 +125,10 @@ export class WindowsChannelInstaller implements Installer {
     }
     await exec.exec(archive, ["/silent", "/install"]);
 
-    return { root: this.rootDir(version), bin: "chrome.exe" };
+    return { root: this.browserRootDir(version), bin: "chrome.exe" };
   }
 
-  private rootDir(version: ReleaseChannelName) {
+  private browserRootDir(version: ReleaseChannelName) {
     switch (version) {
       case "stable":
         return "C:\\Program Files\\Google\\Chrome\\Application";
@@ -136,6 +138,15 @@ export class WindowsChannelInstaller implements Installer {
         return "C:\\Program Files\\Google\\Chrome Dev\\Application";
       case "canary":
         return "C:\\Program Files\\Google\\Chrome SxS\\Application";
+    }
+  }
+
+  async checkInstalledDriver(
+    version: string,
+  ): Promise<InstallResult | undefined> {
+    const root = await cache.find("chromedriver", version);
+    if (root) {
+      return { root, bin: "chromedriver" };
     }
   }
 

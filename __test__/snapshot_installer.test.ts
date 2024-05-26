@@ -15,18 +15,18 @@ afterEach(() => {
 describe("SnapshotInstaller", () => {
   const installer = new SnapshotInstaller({ os: "linux", arch: "amd64" });
 
-  describe("checkInstalled", () => {
+  describe("checkInstalledBrowser", () => {
     test("returns undefined if not installed", async () => {
       cacheFindSpy.mockResolvedValue(undefined);
 
-      const result = await installer.checkInstalled("123");
+      const result = await installer.checkInstalledBrowser("123456");
       expect(result).toBe(undefined);
     });
 
     test("returns install result if installed", async () => {
       cacheFindSpy.mockResolvedValue("/path/to/chromium");
 
-      const result = await installer.checkInstalled("123");
+      const result = await installer.checkInstalledBrowser("123456");
       expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
     });
   });
@@ -53,6 +53,25 @@ describe("SnapshotInstaller", () => {
       expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
       expect(tcExtractZipSpy).toHaveBeenCalled();
       expect(cacheCacheDirSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("checkInstalledDriver", () => {
+    test("returns undefined if not installed", async () => {
+      cacheFindSpy.mockResolvedValue(undefined);
+
+      const result = await installer.checkInstalledDriver("123456");
+      expect(result).toBe(undefined);
+    });
+
+    test("returns install result if installed", async () => {
+      cacheFindSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.checkInstalledDriver("123456");
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
     });
   });
 

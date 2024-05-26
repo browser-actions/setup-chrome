@@ -9,6 +9,7 @@ const fsStatSpy = vi.spyOn(fs.promises, "stat");
 const fsRenameSpy = vi.spyOn(fs.promises, "rename");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
 const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
+const cacheFindSpy = vi.spyOn(cache, "find");
 const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 const execSpy = vi.spyOn(exec, "exec");
 
@@ -22,16 +23,16 @@ describe("WindowsChannelInstaller", () => {
     arch: "amd64",
   });
 
-  describe("checkInstalled", () => {
+  describe("checkInstalledBrowser", () => {
     test("returns undefined if the root directory does not exist", async () => {
-      const result = await installer.checkInstalled("stable");
+      const result = await installer.checkInstalledBrowser("stable");
       expect(result).toBe(undefined);
     });
 
     test("returns the root directory and bin path if the root directory exists", async () => {
       fsStatSpy.mockResolvedValue(undefined);
 
-      const result = await installer.checkInstalled("stable");
+      const result = await installer.checkInstalledBrowser("stable");
       expect(result).toEqual({
         root: "C:\\Program Files\\Google\\Chrome\\Application",
         bin: "chrome.exe",
@@ -84,6 +85,25 @@ describe("WindowsChannelInstaller", () => {
         "C:\\path\\to\\downloaded\\installer.exe",
         ["/silent", "/install"],
       );
+    });
+  });
+
+  describe("checkInstalledDriver", () => {
+    test("return undefined if not installed", async () => {
+      cacheFindSpy.mockResolvedValue(undefined);
+
+      const result = await installer.checkInstalledDriver("stable");
+      expect(result).toBeUndefined();
+    });
+
+    test("return install result if installed", async () => {
+      cacheFindSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.checkInstalledDriver("stable");
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
     });
   });
 

@@ -20,11 +20,11 @@ afterEach(() => {
 describe("LinuxChannelInstaller", () => {
   const installer = new LinuxChannelInstaller({ os: "linux", arch: "amd64" });
 
-  describe("checkInstalled", () => {
+  describe("checkInstalledBrowser", () => {
     test("return undefined if not installed", async () => {
       cacheFindSpy.mockResolvedValue(undefined);
 
-      const result = await installer.checkInstalled("stable");
+      const result = await installer.checkInstalledBrowser("stable");
 
       expect(result).toBeUndefined();
     });
@@ -32,7 +32,7 @@ describe("LinuxChannelInstaller", () => {
     test("return install result if installed", async () => {
       cacheFindSpy.mockResolvedValue("/path/to/chromium");
 
-      const result = await installer.checkInstalled("stable");
+      const result = await installer.checkInstalledBrowser("stable");
 
       expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
     });
@@ -91,6 +91,25 @@ describe("LinuxChannelInstaller", () => {
         "chromium",
         "stable",
       );
+    });
+  });
+
+  describe("checkInstalledDriver", () => {
+    test("return undefined if not installed", async () => {
+      cacheFindSpy.mockResolvedValue(undefined);
+
+      const result = await installer.checkInstalledDriver("stable");
+      expect(result).toBeUndefined();
+    });
+
+    test("return install result if installed", async () => {
+      cacheFindSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.checkInstalledDriver("stable");
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
     });
   });
 

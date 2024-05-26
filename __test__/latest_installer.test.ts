@@ -24,7 +24,7 @@ describe("LatestInstaller", () => {
     test("returns undefined if not installed", async () => {
       cacheFindSpy.mockResolvedValue(undefined);
 
-      const result = await installer.checkInstalled("latest");
+      const result = await installer.checkInstalledBrowser("latest");
       expect(result).toBe(undefined);
       expect(cacheFindSpy).toHaveBeenCalledWith("chromium", "123456");
     });
@@ -32,7 +32,7 @@ describe("LatestInstaller", () => {
     test("returns install result if installed", async () => {
       cacheFindSpy.mockResolvedValue("/path/to/chromium");
 
-      const result = await installer.checkInstalled("latest");
+      const result = await installer.checkInstalledBrowser("latest");
       expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
     });
   });
@@ -65,6 +65,26 @@ describe("LatestInstaller", () => {
         "chromium",
         "123456",
       );
+    });
+  });
+
+  describe("checkInstalledDriver", () => {
+    test("returns undefined if not installed", async () => {
+      cacheFindSpy.mockResolvedValue(undefined);
+
+      const result = await installer.checkInstalledDriver("latest");
+      expect(result).toBe(undefined);
+      expect(cacheFindSpy).toHaveBeenCalledWith("chromedriver", "123456");
+    });
+
+    test("returns install result if installed", async () => {
+      cacheFindSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.checkInstalledDriver("latest");
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
     });
   });
 

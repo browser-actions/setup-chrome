@@ -19,14 +19,12 @@ export type DownloadResult = {
 };
 
 export interface Installer {
-  checkInstalled(version: string): Promise<InstallResult | undefined>;
-
+  checkInstalledBrowser(version: string): Promise<InstallResult | undefined>;
   downloadBrowser(version: string): Promise<DownloadResult>;
-
   installBrowser(version: string, archive: string): Promise<InstallResult>;
 
+  checkInstalledDriver(version: string): Promise<InstallResult | undefined>;
   downloadDriver(version: string): Promise<DownloadResult>;
-
   installDriver(version: string, archive: string): Promise<InstallResult>;
 }
 
@@ -56,7 +54,7 @@ export const install = async (
     }
   })();
 
-  const cache = await installer.checkInstalled(version);
+  const cache = await installer.checkInstalledBrowser(version);
   if (cache) {
     core.info(`Found in cache @ ${cache.root}`);
     return path.join(cache.root, cache.bin);

@@ -20,7 +20,9 @@ export class MacOSChannelInstaller implements Installer {
     this.versionResolver = new LastKnownGoodVersionResolver(platform);
   }
 
-  async checkInstalled(version: string): Promise<InstallResult | undefined> {
+  async checkInstalledBrowser(
+    version: string,
+  ): Promise<InstallResult | undefined> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
@@ -98,6 +100,15 @@ export class MacOSChannelInstaller implements Installer {
     core.info(`Successfully Installed chromium to ${root}`);
 
     return { root, bin: bin2 };
+  }
+
+  async checkInstalledDriver(
+    version: string,
+  ): Promise<InstallResult | undefined> {
+    const root = await cache.find("chromedriver", version);
+    if (root) {
+      return { root, bin: "chromedriver" };
+    }
   }
 
   async downloadDriver(version: string): Promise<DownloadResult> {

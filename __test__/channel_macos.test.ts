@@ -22,11 +22,11 @@ describe("MacOSChannelInstaller", () => {
     arch: "amd64",
   });
 
-  describe("checkInstalled", () => {
+  describe("checkInstalledBrowser", () => {
     test("return undefined if not installed", async () => {
       cacheFindSpy.mockResolvedValue(undefined);
 
-      const result = await installer.checkInstalled("stable");
+      const result = await installer.checkInstalledBrowser("stable");
 
       expect(result).toBeUndefined();
     });
@@ -34,7 +34,7 @@ describe("MacOSChannelInstaller", () => {
     test("return install result if installed", async () => {
       cacheFindSpy.mockResolvedValue("/path/to/Chromium.app");
 
-      const result = await installer.checkInstalled("stable");
+      const result = await installer.checkInstalledBrowser("stable");
 
       expect(result).toEqual({
         root: "/path/to/Chromium.app",
@@ -85,6 +85,25 @@ describe("MacOSChannelInstaller", () => {
         "chromium",
         "stable",
       );
+    });
+  });
+
+  describe("checkInstalledDriver", () => {
+    test("return undefined if not installed", async () => {
+      cacheFindSpy.mockResolvedValue(undefined);
+
+      const result = await installer.checkInstalledDriver("stable");
+      expect(result).toBeUndefined();
+    });
+
+    test("return install result if installed", async () => {
+      cacheFindSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.checkInstalledDriver("stable");
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
     });
   });
 
