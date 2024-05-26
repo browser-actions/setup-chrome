@@ -28835,8 +28835,8 @@ const os = __importStar(__nccwpck_require__(612));
 const path = __importStar(__nccwpck_require__(9411));
 const core = __importStar(__nccwpck_require__(9093));
 const version_1 = __nccwpck_require__(9750);
-function cacheDir(sourceDir, tool, version, arch = os.arch()) {
-    return __awaiter(this, void 0, void 0, function* () {
+function cacheDir(sourceDir_1, tool_1, version_2) {
+    return __awaiter(this, arguments, void 0, function* (sourceDir, tool, version, arch = os.arch()) {
         core.debug(`Caching tool ${tool} ${version} ${arch}`);
         core.debug(`source dir: ${sourceDir}`);
         if (!(yield fs.promises.stat(sourceDir)).isDirectory()) {
@@ -28854,7 +28854,7 @@ function cacheDir(sourceDir, tool, version, arch = os.arch()) {
     });
 }
 exports.cacheDir = cacheDir;
-const find = (toolName, versionSpec, arch = os.arch()) => __awaiter(void 0, void 0, void 0, function* () {
+const find = (toolName_1, versionSpec_1, ...args_1) => __awaiter(void 0, [toolName_1, versionSpec_1, ...args_1], void 0, function* (toolName, versionSpec, arch = os.arch()) {
     if (!toolName) {
         throw new Error("toolName parameter is required");
     }
@@ -28971,12 +28971,17 @@ const core = __importStar(__nccwpck_require__(9093));
 const exec = __importStar(__nccwpck_require__(7775));
 const tc = __importStar(__nccwpck_require__(5561));
 const cache = __importStar(__nccwpck_require__(2540));
+const chrome_for_testing_1 = __nccwpck_require__(3334);
 const version_1 = __nccwpck_require__(9750);
 class LinuxChannelInstaller {
     constructor(platform) {
+        if (platform.os !== "linux") {
+            throw new Error(`Unexpected OS: ${platform.os}`);
+        }
         this.platform = platform;
+        this.versionResolver = new chrome_for_testing_1.LastKnownGoodVersionResolver(platform);
     }
-    checkInstalled(version) {
+    checkInstalledBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             const root = yield cache.find("chromium", version);
             if (root) {
@@ -28984,7 +28989,7 @@ class LinuxChannelInstaller {
             }
         });
     }
-    download(version) {
+    downloadBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
@@ -29002,12 +29007,12 @@ class LinuxChannelInstaller {
                         return "https://dl.google.com/linux/direct/google-chrome-unstable_current_amd64.deb";
                 }
             })();
-            core.info(`Acquiring ${version} from ${url}`);
+            core.info(`Acquiring chrome ${version} from ${url}`);
             const archive = yield tc.downloadTool(url);
             return { archive };
         });
     }
-    install(version, archive) {
+    installBrowser(version, archive) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
@@ -29032,6 +29037,34 @@ class LinuxChannelInstaller {
             const root = yield cache.cacheDir(extdir, "chromium", version);
             core.info(`Successfully Installed chromium to ${root}`);
             return { root, bin: "chrome" };
+        });
+    }
+    checkInstalledDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = yield cache.find("chromedriver", version);
+            if (root) {
+                return { root, bin: "chromedriver" };
+            }
+        });
+    }
+    downloadDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resolved = yield this.versionResolver.resolve(version);
+            if (!resolved) {
+                throw new Error(`Version ${version} not found in the known good versions`);
+            }
+            core.info(`Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`);
+            const archive = yield tc.downloadTool(resolved.driverDownloadURL);
+            return { archive };
+        });
+    }
+    installDriver(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const extPath = yield tc.extractZip(archive);
+            const extAppRoot = node_path_1.default.join(extPath, `chromedriver-${this.versionResolver.platformString}`);
+            const root = yield cache.cacheDir(extAppRoot, "chromedriver", version);
+            core.info(`Successfully Installed chromedriver to ${root}`);
+            return { root, bin: "chromedriver" };
         });
     }
 }
@@ -29088,12 +29121,16 @@ const core = __importStar(__nccwpck_require__(9093));
 const exec = __importStar(__nccwpck_require__(7775));
 const tc = __importStar(__nccwpck_require__(5561));
 const cache = __importStar(__nccwpck_require__(2540));
+const chrome_for_testing_1 = __nccwpck_require__(3334);
 const version_1 = __nccwpck_require__(9750);
 class MacOSChannelInstaller {
     constructor(platform) {
-        this.platform = platform;
+        if (platform.os !== "darwin") {
+            throw new Error(`Unexpected OS: ${platform.os}`);
+        }
+        this.versionResolver = new chrome_for_testing_1.LastKnownGoodVersionResolver(platform);
     }
-    checkInstalled(version) {
+    checkInstalledBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
@@ -29104,7 +29141,7 @@ class MacOSChannelInstaller {
             }
         });
     }
-    download(version) {
+    downloadBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
@@ -29117,12 +29154,12 @@ class MacOSChannelInstaller {
                         return `https://dl.google.com/chrome/mac/universal/${version}/googlechrome${version}.dmg`;
                 }
             })();
-            core.info(`Acquiring ${version} from ${url}`);
+            core.info(`Acquiring chrome ${version} from ${url}`);
             const archive = yield tc.downloadTool(url);
             return { archive };
         });
     }
-    install(version, archive) {
+    installBrowser(version, archive) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
@@ -29168,6 +29205,34 @@ class MacOSChannelInstaller {
             return { root, bin: bin2 };
         });
     }
+    checkInstalledDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = yield cache.find("chromedriver", version);
+            if (root) {
+                return { root, bin: "chromedriver" };
+            }
+        });
+    }
+    downloadDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resolved = yield this.versionResolver.resolve(version);
+            if (!resolved) {
+                throw new Error(`Version ${version} not found in the known good versions`);
+            }
+            core.info(`Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`);
+            const archive = yield tc.downloadTool(resolved.driverDownloadURL);
+            return { archive };
+        });
+    }
+    installDriver(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const extPath = yield tc.extractZip(archive);
+            const extAppRoot = node_path_1.default.join(extPath, `chromedriver-${this.versionResolver.platformString}`);
+            const root = yield cache.cacheDir(extAppRoot, "chromedriver", version);
+            core.info(`Successfully Installed chromedriver to ${root}`);
+            return { root, bin: "chromedriver" };
+        });
+    }
 }
 exports.MacOSChannelInstaller = MacOSChannelInstaller;
 
@@ -29211,15 +29276,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.WindowsChannelInstaller = void 0;
-const node_fs_1 = __importDefault(__nccwpck_require__(7561));
+const fs = __importStar(__nccwpck_require__(7561));
+const path = __importStar(__nccwpck_require__(9411));
 const core = __importStar(__nccwpck_require__(9093));
 const exec = __importStar(__nccwpck_require__(7775));
 const tc = __importStar(__nccwpck_require__(5561));
+const cache = __importStar(__nccwpck_require__(2540));
+const chrome_for_testing_1 = __nccwpck_require__(3334);
 const platform_1 = __nccwpck_require__(1493);
 const version_1 = __nccwpck_require__(9750);
 const isENOENT = (e) => {
@@ -29227,16 +29292,20 @@ const isENOENT = (e) => {
 };
 class WindowsChannelInstaller {
     constructor(platform) {
+        if (platform.os !== "windows") {
+            throw new Error(`Unexpected OS: ${platform.os}`);
+        }
         this.platform = platform;
+        this.versionResolver = new chrome_for_testing_1.LastKnownGoodVersionResolver(platform);
     }
-    checkInstalled(version) {
+    checkInstalledBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
             }
-            const root = this.rootDir(version);
+            const root = this.browserRootDir(version);
             try {
-                yield node_fs_1.default.promises.stat(root);
+                yield fs.promises.stat(root);
             }
             catch (e) {
                 if (isENOENT(e)) {
@@ -29247,7 +29316,7 @@ class WindowsChannelInstaller {
             return { root, bin: "chrome.exe" };
         });
     }
-    download(version) {
+    downloadBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
@@ -29301,22 +29370,22 @@ class WindowsChannelInstaller {
                 .map(([key, value]) => `${key}=${value}`)
                 .join("&");
             const url = `https://dl.google.com/tag/s/${encodeURIComponent(params)}/${path[this.platform.arch][version]}`;
-            core.info(`Acquiring ${version} from ${url}`);
+            core.info(`Acquiring chrome ${version} from ${url}`);
             const archivePath = yield tc.downloadTool(url);
-            yield node_fs_1.default.promises.rename(archivePath, `${archivePath}.exe`);
+            yield fs.promises.rename(archivePath, `${archivePath}.exe`);
             return { archive: `${archivePath}.exe` };
         });
     }
-    install(version, archive) {
+    installBrowser(version, archive) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(0, version_1.isReleaseChannelName)(version)) {
                 throw new Error(`Unexpected version: ${version}`);
             }
             yield exec.exec(archive, ["/silent", "/install"]);
-            return { root: this.rootDir(version), bin: "chrome.exe" };
+            return { root: this.browserRootDir(version), bin: "chrome.exe" };
         });
     }
-    rootDir(version) {
+    browserRootDir(version) {
         switch (version) {
             case "stable":
                 return "C:\\Program Files\\Google\\Chrome\\Application";
@@ -29328,8 +29397,201 @@ class WindowsChannelInstaller {
                 return "C:\\Program Files\\Google\\Chrome SxS\\Application";
         }
     }
+    checkInstalledDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = yield cache.find("chromedriver", version);
+            if (root) {
+                return { root, bin: "chromedriver" };
+            }
+        });
+    }
+    downloadDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resolved = yield this.versionResolver.resolve(version);
+            if (!resolved) {
+                throw new Error(`Version ${version} not found in the known good versions`);
+            }
+            core.info(`Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`);
+            const archive = yield tc.downloadTool(resolved.driverDownloadURL);
+            return { archive };
+        });
+    }
+    installDriver(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const extPath = yield tc.extractZip(archive);
+            const extAppRoot = path.join(extPath, `chromedriver-${this.versionResolver.platformString}`);
+            const root = yield cache.cacheDir(extAppRoot, "chromedriver", version);
+            core.info(`Successfully Installed chromedriver to ${root}`);
+            return { root, bin: "chromedriver.exe" };
+        });
+    }
 }
 exports.WindowsChannelInstaller = WindowsChannelInstaller;
+
+
+/***/ }),
+
+/***/ 3334:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LastKnownGoodVersionResolver = exports.KnownGoodVersionResolver = void 0;
+const httpm = __importStar(__nccwpck_require__(6372));
+const platform_1 = __nccwpck_require__(1493);
+const version_1 = __nccwpck_require__(9750);
+const KNOWN_GOOD_VERSIONS_URL = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
+const LAST_KNOWN_GOOD_VERSION = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json";
+const platformString = (platform) => {
+    if (platform.os === platform_1.OS.LINUX && platform.arch === platform_1.Arch.AMD64) {
+        return "linux64";
+    }
+    else if (platform.os === platform_1.OS.DARWIN && platform.arch === platform_1.Arch.AMD64) {
+        return "mac-x64";
+    }
+    else if (platform.os === platform_1.OS.DARWIN && platform.arch === platform_1.Arch.ARM64) {
+        return "mac-arm64";
+    }
+    else if (platform.os === platform_1.OS.WINDOWS && platform.arch === platform_1.Arch.AMD64) {
+        return "win64";
+    }
+    else if (platform.os === platform_1.OS.WINDOWS && platform.arch === platform_1.Arch.I686) {
+        return "win32";
+    }
+    throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
+};
+class KnownGoodVersionResolver {
+    constructor(platform) {
+        this.http = new httpm.HttpClient("setup-chrome");
+        this.platformString = platformString(platform);
+    }
+    resolve(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            const spec = (0, version_1.parse)(version);
+            const knownGoodVersions = yield this.getKnownGoodVersions();
+            for (const version of knownGoodVersions) {
+                if (!spec.satisfies(version.version)) {
+                    continue;
+                }
+                const browser = (_a = version.downloads.chrome) === null || _a === void 0 ? void 0 : _a.find(({ platform }) => platform === this.platformString);
+                const driver = (_b = version.downloads.chromedriver) === null || _b === void 0 ? void 0 : _b.find(({ platform }) => platform === this.platformString);
+                if (browser && driver) {
+                    return {
+                        version: version.version,
+                        browserDownloadURL: browser.url,
+                        driverDownloadURL: driver.url,
+                    };
+                }
+            }
+        });
+    }
+    getKnownGoodVersions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.cache) {
+                return this.cache;
+            }
+            const resp = yield this.http.getJson(KNOWN_GOOD_VERSIONS_URL);
+            if (resp.statusCode !== httpm.HttpCodes.OK) {
+                throw new Error(`Failed to get known good versions: ${resp.statusCode}`);
+            }
+            if (resp.result === null) {
+                throw new Error("Failed to get known good versions");
+            }
+            resp.result.versions.reverse();
+            this.cache = resp.result.versions;
+            return resp.result.versions;
+        });
+    }
+}
+exports.KnownGoodVersionResolver = KnownGoodVersionResolver;
+class LastKnownGoodVersionResolver {
+    constructor(platform) {
+        this.http = new httpm.HttpClient("setup-chrome");
+        this.platformString = platformString(platform);
+    }
+    resolve(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            const spec = (0, version_1.parse)(version);
+            if (spec.value.type !== "channel") {
+                throw new Error(`Unexpected version: ${version}`);
+            }
+            const lastKnownGoodVersions = yield this.getLastKnownGoodVersions();
+            const downloads = (() => {
+                switch (spec.value.channel) {
+                    case "stable":
+                        return lastKnownGoodVersions.channels.Stable.downloads;
+                    case "beta":
+                        return lastKnownGoodVersions.channels.Beta.downloads;
+                    case "dev":
+                        return lastKnownGoodVersions.channels.Dev.downloads;
+                    case "canary":
+                        return lastKnownGoodVersions.channels.Canary.downloads;
+                }
+            })();
+            const browser = (_a = downloads.chrome) === null || _a === void 0 ? void 0 : _a.find(({ platform }) => platform === this.platformString);
+            const driver = (_b = downloads.chromedriver) === null || _b === void 0 ? void 0 : _b.find(({ platform }) => platform === this.platformString);
+            if (browser && driver) {
+                return {
+                    version: spec.value.channel,
+                    browserDownloadURL: browser.url,
+                    driverDownloadURL: driver.url,
+                };
+            }
+        });
+    }
+    getLastKnownGoodVersions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.cache) {
+                return this.cache;
+            }
+            const resp = yield this.http.getJson(LAST_KNOWN_GOOD_VERSION);
+            if (resp.statusCode !== httpm.HttpCodes.OK) {
+                throw new Error(`Failed to get last known good versions: ${resp.statusCode}`);
+            }
+            if (resp.result === null) {
+                throw new Error("Failed to get last known good versions");
+            }
+            this.cache = resp.result;
+            return resp.result;
+        });
+    }
+}
+exports.LastKnownGoodVersionResolver = LastKnownGoodVersionResolver;
 
 
 /***/ }),
@@ -29422,8 +29684,8 @@ const SUSE_BASED_DEPENDENT_PACKAGES = [
     "libXrandr2",
     "mozilla-nss",
 ];
-const installDependencies = (platform, { noSudo }) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const installDependencies = (platform_1, _a) => __awaiter(void 0, [platform_1, _a], void 0, function* (platform, { noSudo }) {
+    var _b;
     if (platform.os !== "linux") {
         core.warning(`install-dependencies is only supported on Linux, but current platform is ${platform.os}`);
         return;
@@ -29447,7 +29709,7 @@ const installDependencies = (platform, { noSudo }) => __awaiter(void 0, void 0, 
         }
         throw new Error(`Unsupported OS: ${osReleaseId}`);
     }))();
-    const sudo = !noSudo && ((_a = process.getuid) === null || _a === void 0 ? void 0 : _a.call(process)) !== 0;
+    const sudo = !noSudo && ((_b = process.getuid) === null || _b === void 0 ? void 0 : _b.call(process)) !== 0;
     yield actions_swing_1.pkg.install(packages, { sudo });
 });
 exports.installDependencies = installDependencies;
@@ -29499,12 +29761,63 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const node_path_1 = __importDefault(__nccwpck_require__(9411));
 const core = __importStar(__nccwpck_require__(9093));
 const exec = __importStar(__nccwpck_require__(7775));
+const channel_linux_1 = __nccwpck_require__(4585);
+const channel_macos_1 = __nccwpck_require__(610);
+const channel_windows_1 = __nccwpck_require__(7335);
 const dependencies_1 = __nccwpck_require__(1726);
-const installer = __importStar(__nccwpck_require__(3822));
+const latest_installer_1 = __nccwpck_require__(8003);
 const platform_1 = __nccwpck_require__(1493);
+const snapshot_installer_1 = __nccwpck_require__(186);
+const version_1 = __nccwpck_require__(9750);
+const version_installer_1 = __nccwpck_require__(1712);
 const hasErrorMessage = (e) => {
     return typeof e === "object" && e !== null && "message" in e;
 };
+const getInstaller = (platform, version) => {
+    const spec = (0, version_1.parse)(version);
+    switch (spec.value.type) {
+        case "latest":
+            return new latest_installer_1.LatestInstaller(platform);
+        case "channel":
+            switch (platform.os) {
+                case platform_1.OS.LINUX:
+                    return new channel_linux_1.LinuxChannelInstaller(platform);
+                case platform_1.OS.DARWIN:
+                    return new channel_macos_1.MacOSChannelInstaller(platform);
+                case platform_1.OS.WINDOWS:
+                    return new channel_windows_1.WindowsChannelInstaller(platform);
+            }
+            break;
+        case "snapshot":
+            return new snapshot_installer_1.SnapshotInstaller(platform);
+        case "four-parts":
+            return new version_installer_1.KnownGoodVersionInstaller(platform);
+    }
+};
+const installBrowser = (installer, version) => __awaiter(void 0, void 0, void 0, function* () {
+    const cache = yield installer.checkInstalledBrowser(version);
+    if (cache) {
+        core.info(`Found in cache of chrome ${version} @ ${cache.root}`);
+        return node_path_1.default.join(cache.root, cache.bin);
+    }
+    core.info(`Attempting to download chrome ${version}...`);
+    const { archive } = yield installer.downloadBrowser(version);
+    core.info("Installing chrome...");
+    const { root, bin } = yield installer.installBrowser(version, archive);
+    return node_path_1.default.join(root, bin);
+});
+const installDriver = (installer, version) => __awaiter(void 0, void 0, void 0, function* () {
+    const cache = yield installer.checkInstalledDriver(version);
+    if (cache) {
+        core.info(`Found in cache of chromedriver ${version} @ ${cache.root}`);
+        return node_path_1.default.join(cache.root, cache.bin);
+    }
+    core.info(`Attempting to download chromedriver ${version}...`);
+    const { archive } = yield installer.downloadDriver(version);
+    core.info("Installing chromedriver...");
+    const { root, bin } = yield installer.installDriver(version, archive);
+    return node_path_1.default.join(root, bin);
+});
 const testVersion = (platform, bin) => __awaiter(void 0, void 0, void 0, function* () {
     if (platform.os === platform_1.OS.WINDOWS) {
         const output = yield exec.getExecOutput("powershell", [
@@ -29518,16 +29831,25 @@ const testVersion = (platform, bin) => __awaiter(void 0, void 0, void 0, functio
     }
     const output = yield exec.getExecOutput(`"${bin}"`, ["--version"], {});
     if (output.exitCode !== 0) {
-        throw new Error(`chromium exits with status ${output.exitCode}: ${output.stderr}`);
+        throw new Error(`${node_path_1.default.basename(bin)} exits with status ${output.exitCode}: ${output.stderr}`);
     }
-    if (!output.stdout.startsWith("Chromium ") &&
-        !output.stdout.startsWith("Google Chrome ")) {
-        throw new Error(`chromium outputs unexpected results: ${output.stdout}`);
+    const stdout = output.stdout.trim();
+    if (!stdout.startsWith("Chromium ") &&
+        !stdout.startsWith("Google Chrome for Testing ") &&
+        !stdout.startsWith("Google Chrome ") &&
+        !stdout.startsWith("ChromeDriver ")) {
+        throw new Error(`${node_path_1.default.basename(bin)} outputs unexpected results: ${stdout}`);
     }
-    return output.stdout
+    const v = stdout
         .replace("Chromium ", "")
+        .replace("Google Chrome for Testing ", "")
         .replace("Google Chrome ", "")
+        .replace("ChromeDriver ", "")
         .split(" ", 1)[0];
+    if (!/^\d+\.\d+\.\d+\.\d+$/.test(v)) {
+        throw new Error(`Failed to parse version from: ${stdout}`);
+    }
+    return v;
 });
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29535,19 +29857,29 @@ function run() {
             const version = core.getInput("chrome-version") || "latest";
             const platform = (0, platform_1.getPlatform)();
             const flagInstallDependencies = core.getInput("install-dependencies") === "true";
+            const flgInstallChromedriver = core.getInput("install-chromedriver") === "true";
             const noSudo = core.getInput("no-sudo") === "true";
             if (flagInstallDependencies) {
                 core.info("Installing dependencies");
                 yield (0, dependencies_1.installDependencies)(platform, { noSudo });
             }
-            core.info(`Setup chromium ${version}`);
-            const binPath = yield installer.install(platform, version);
-            const installDir = node_path_1.default.dirname(binPath);
-            core.addPath(node_path_1.default.join(installDir));
-            const actualVersion = yield testVersion(platform, binPath);
-            core.info(`Successfully setup chromium version ${actualVersion}`);
-            core.setOutput("chrome-version", actualVersion);
-            core.setOutput("chrome-path", binPath);
+            core.info(`Setup chrome ${version}`);
+            const installer = getInstaller(platform, version);
+            const browserBinPath = yield installBrowser(installer, version);
+            const actualBrowserVersion = yield testVersion(platform, browserBinPath);
+            core.addPath(node_path_1.default.dirname(browserBinPath));
+            core.setOutput("chrome-path", browserBinPath);
+            core.setOutput("chrome-version", actualBrowserVersion);
+            core.info(`Successfully setup chromium ${actualBrowserVersion}`);
+            if (flgInstallChromedriver) {
+                core.info(`Setup chromedriver ${version}`);
+                const driverBinPath = yield installDriver(installer, version);
+                const actualDriverVersion = yield testVersion(platform, driverBinPath);
+                core.addPath(node_path_1.default.dirname(driverBinPath));
+                core.setOutput("chromedriver-path", driverBinPath);
+                core.setOutput("chromedriver-version", actualDriverVersion);
+                core.info(`Successfully setup chromedriver ${actualDriverVersion}`);
+            }
         }
         catch (error) {
             if (hasErrorMessage(error)) {
@@ -29564,34 +29896,11 @@ run();
 
 /***/ }),
 
-/***/ 3822:
+/***/ 8003:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -29601,54 +29910,62 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.install = void 0;
-const node_path_1 = __importDefault(__nccwpck_require__(9411));
-const core = __importStar(__nccwpck_require__(9093));
-const channel_linux_1 = __nccwpck_require__(4585);
-const channel_macos_1 = __nccwpck_require__(610);
-const channel_windows_1 = __nccwpck_require__(7335);
-const platform_1 = __nccwpck_require__(1493);
-const snapshot_1 = __nccwpck_require__(8423);
-const version_1 = __nccwpck_require__(9750);
-const version_installer_1 = __nccwpck_require__(1712);
-const install = (platform, version) => __awaiter(void 0, void 0, void 0, function* () {
-    const installer = (() => {
-        const spec = (0, version_1.parse)(version);
-        switch (spec.value.type) {
-            case "latest":
-                return new snapshot_1.LatestInstaller(platform);
-            case "channel":
-                switch (platform.os) {
-                    case platform_1.OS.LINUX:
-                        return new channel_linux_1.LinuxChannelInstaller(platform);
-                    case platform_1.OS.DARWIN:
-                        return new channel_macos_1.MacOSChannelInstaller(platform);
-                    case platform_1.OS.WINDOWS:
-                        return new channel_windows_1.WindowsChannelInstaller(platform);
-                }
-                break;
-            case "snapshot":
-                return new snapshot_1.SnapshotInstaller(platform);
-            case "four-parts":
-                return new version_installer_1.KnownGoodVersionInstaller(platform);
-        }
-    })();
-    const cache = yield installer.checkInstalled(version);
-    if (cache) {
-        core.info(`Found in cache @ ${cache.root}`);
-        return node_path_1.default.join(cache.root, cache.bin);
+exports.LatestInstaller = void 0;
+const snapshot_bucket_1 = __nccwpck_require__(777);
+const snapshot_installer_1 = __nccwpck_require__(186);
+class LatestInstaller {
+    constructor(platform) {
+        this.platform = platform;
+        this.snapshotInstaller = new snapshot_installer_1.SnapshotInstaller(this.platform);
     }
-    core.info(`Attempting to download ${version}...`);
-    const { archive } = yield installer.download(version);
-    core.info("Installing chromium...");
-    const { root, bin } = yield installer.install(version, archive);
-    return node_path_1.default.join(root, bin);
-});
-exports.install = install;
+    checkInstalledBrowser(_version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield this.getLatestSnapshot();
+            return this.snapshotInstaller.checkInstalledBrowser(snapshot);
+        });
+    }
+    downloadBrowser(_version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield this.getLatestSnapshot();
+            return this.snapshotInstaller.downloadBrowser(snapshot);
+        });
+    }
+    installBrowser(_version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield this.getLatestSnapshot();
+            return this.snapshotInstaller.installBrowser(snapshot, archive);
+        });
+    }
+    checkInstalledDriver(_version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield this.getLatestSnapshot();
+            return this.snapshotInstaller.checkInstalledDriver(snapshot);
+        });
+    }
+    downloadDriver(_version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const version = yield this.getLatestSnapshot();
+            return this.snapshotInstaller.downloadDriver(version);
+        });
+    }
+    installDriver(_version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield this.getLatestSnapshot();
+            return this.snapshotInstaller.installDriver(snapshot, archive);
+        });
+    }
+    getLatestSnapshot() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.latestSnapshotCache) {
+                return Promise.resolve(this.latestSnapshotCache);
+            }
+            this.latestSnapshotCache = yield (0, snapshot_bucket_1.resolveLatestVersion)(this.platform);
+            return this.latestSnapshotCache;
+        });
+    }
+}
+exports.LatestInstaller = LatestInstaller;
 
 
 /***/ }),
@@ -29711,7 +30028,7 @@ exports.getPlatform = getPlatform;
 
 /***/ }),
 
-/***/ 8423:
+/***/ 777:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -29748,100 +30065,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.LatestInstaller = exports.SnapshotInstaller = void 0;
-const node_path_1 = __importDefault(__nccwpck_require__(9411));
-const core = __importStar(__nccwpck_require__(9093));
+exports.driverDownloadURL = exports.browserDownloadURL = exports.resolveLatestVersion = void 0;
 const httpm = __importStar(__nccwpck_require__(6372));
-const tc = __importStar(__nccwpck_require__(5561));
-const cache = __importStar(__nccwpck_require__(2540));
 const platform_1 = __nccwpck_require__(1493);
-class SnapshotInstaller {
-    constructor(platform) {
-        this.platform = platform;
+const resolveLatestVersion = (platform) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(platform)}%2FLAST_CHANGE?alt=media`;
+    const http = new httpm.HttpClient("setup-chrome");
+    const resp = yield http.get(url);
+    if (resp.message.statusCode !== httpm.HttpCodes.OK) {
+        throw new Error(`Failed to get latest version: server returns ${resp.message.statusCode}`);
     }
-    checkInstalled(version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const root = yield cache.find("chromium", version);
-            if (root) {
-                return { root, bin: "chrome" };
-            }
-        });
-    }
-    download(version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2F${version}%2F${makeBasename(this.platform)}?alt=media`;
-            core.info(`Acquiring ${version} from ${url}`);
-            const archive = yield tc.downloadTool(url);
-            return { archive };
-        });
-    }
-    install(version, archive) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const extPath = yield tc.extractZip(archive);
-            let root = (() => {
-                switch (this.platform.os) {
-                    case platform_1.OS.DARWIN:
-                        return node_path_1.default.join(extPath, "chrome-mac");
-                    case platform_1.OS.LINUX:
-                        return node_path_1.default.join(extPath, "chrome-linux");
-                    case platform_1.OS.WINDOWS:
-                        return node_path_1.default.join(extPath, "chrome-win");
-                }
-            })();
-            const bin = (() => {
-                switch (this.platform.os) {
-                    case platform_1.OS.DARWIN:
-                        return "Chromium.app/Contents/MacOS/Chromium";
-                    case platform_1.OS.LINUX:
-                        return "chrome";
-                    case platform_1.OS.WINDOWS:
-                        return "chrome.exe";
-                }
-            })();
-            root = yield cache.cacheDir(root, "chromium", version);
-            core.info(`Successfully Installed chromium to ${root}`);
-            return { root, bin };
-        });
-    }
-}
-exports.SnapshotInstaller = SnapshotInstaller;
-class LatestInstaller {
-    constructor(platform) {
-        this.platform = platform;
-        this.http = new httpm.HttpClient("setup-chrome");
-        this.snapshotInstaller = new SnapshotInstaller(this.platform);
-    }
-    checkInstalled(version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const root = yield cache.find("chromium", version);
-            if (root) {
-                return { root, bin: "chrome" };
-            }
-        });
-    }
-    download(_version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const latestVersionURL = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(this.platform)}%2FLAST_CHANGE?alt=media`;
-            const resp = yield this.http.get(latestVersionURL);
-            if (resp.message.statusCode !== httpm.HttpCodes.OK) {
-                throw new Error(`Failed to get latest version: server returns ${resp.message.statusCode}`);
-            }
-            const version = yield resp.readBody();
-            return this.snapshotInstaller.download(version);
-        });
-    }
-    install(version, archive) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.snapshotInstaller.install(version, archive);
-        });
-    }
-}
-exports.LatestInstaller = LatestInstaller;
-const makeBasename = ({ os }) => {
+    return resp.readBody();
+});
+exports.resolveLatestVersion = resolveLatestVersion;
+const browserDownloadURL = (platform, version) => {
+    return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(platform)}%2F${version}%2F${browserFileName(platform)}?alt=media`;
+};
+exports.browserDownloadURL = browserDownloadURL;
+const driverDownloadURL = (platform, version) => {
+    return `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/${makePlatformPart(platform)}%2F${version}%2F${driverFileName(platform)}?alt=media`;
+};
+exports.driverDownloadURL = driverDownloadURL;
+const browserFileName = ({ os }) => {
     switch (os) {
         case platform_1.OS.DARWIN:
             return "chrome-mac.zip";
@@ -29849,6 +30095,16 @@ const makeBasename = ({ os }) => {
             return "chrome-linux.zip";
         case platform_1.OS.WINDOWS:
             return "chrome-win.zip";
+    }
+};
+const driverFileName = ({ os }) => {
+    switch (os) {
+        case platform_1.OS.DARWIN:
+            return "chromedriver_mac64.zip";
+        case platform_1.OS.LINUX:
+            return "chromedriver_linux64.zip";
+        case platform_1.OS.WINDOWS:
+            return "chromedriver_win32.zip";
     }
 };
 const makePlatformPart = ({ os, arch }) => {
@@ -29872,6 +30128,149 @@ const makePlatformPart = ({ os, arch }) => {
     }
     throw new Error(`Unsupported platform "${os}" "${arch}"`);
 };
+
+
+/***/ }),
+
+/***/ 186:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SnapshotInstaller = void 0;
+const path = __importStar(__nccwpck_require__(9411));
+const core = __importStar(__nccwpck_require__(9093));
+const tc = __importStar(__nccwpck_require__(5561));
+const cache = __importStar(__nccwpck_require__(2540));
+const platform_1 = __nccwpck_require__(1493);
+const snapshot_bucket_1 = __nccwpck_require__(777);
+class SnapshotInstaller {
+    constructor(platform) {
+        this.platform = platform;
+    }
+    checkInstalledBrowser(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = yield cache.find("chromium", version);
+            if (root) {
+                return { root, bin: "chrome" };
+            }
+        });
+    }
+    downloadBrowser(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = (0, snapshot_bucket_1.browserDownloadURL)(this.platform, version);
+            core.info(`Acquiring chrome ${version} from ${url}`);
+            const archive = yield tc.downloadTool(url);
+            return { archive };
+        });
+    }
+    installBrowser(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const extPath = yield tc.extractZip(archive);
+            let root = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return path.join(extPath, "chrome-mac");
+                    case platform_1.OS.LINUX:
+                        return path.join(extPath, "chrome-linux");
+                    case platform_1.OS.WINDOWS:
+                        return path.join(extPath, "chrome-win");
+                }
+            })();
+            const bin = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return "Chromium.app/Contents/MacOS/Chromium";
+                    case platform_1.OS.LINUX:
+                        return "chrome";
+                    case platform_1.OS.WINDOWS:
+                        return "chrome.exe";
+                }
+            })();
+            root = yield cache.cacheDir(root, "chromium", version);
+            core.info(`Successfully Installed chromium to ${root}`);
+            return { root, bin };
+        });
+    }
+    checkInstalledDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = yield cache.find("chromedriver", version);
+            if (root) {
+                return { root, bin: "chromedriver" };
+            }
+        });
+    }
+    downloadDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = (0, snapshot_bucket_1.driverDownloadURL)(this.platform, version);
+            core.info(`Acquiring chromedriver ${version} from ${url}`);
+            const archive = yield tc.downloadTool(url);
+            return { archive };
+        });
+    }
+    installDriver(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const extPath = yield tc.extractZip(archive);
+            let root = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return path.join(extPath, "chromedriver_mac64");
+                    case platform_1.OS.LINUX:
+                        return path.join(extPath, "chromedriver_linux64");
+                    case platform_1.OS.WINDOWS:
+                        return path.join(extPath, "chromedriver_win32");
+                }
+            })();
+            const bin = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return "chromedriver";
+                    case platform_1.OS.LINUX:
+                        return "chromedriver";
+                    case platform_1.OS.WINDOWS:
+                        return "chromedriver.exe";
+                }
+            })();
+            root = yield cache.cacheDir(root, "chromedriver", version);
+            core.info(`Successfully Installed chromedriver to ${root}`);
+            return { root, bin };
+        });
+    }
+}
+exports.SnapshotInstaller = SnapshotInstaller;
 
 
 /***/ }),
@@ -30080,136 +30479,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.KnownGoodVersionInstaller = exports.KnownGoodVersionResolver = void 0;
+exports.KnownGoodVersionInstaller = void 0;
 const node_path_1 = __importDefault(__nccwpck_require__(9411));
 const core = __importStar(__nccwpck_require__(9093));
-const httpm = __importStar(__nccwpck_require__(6372));
 const tc = __importStar(__nccwpck_require__(5561));
 const cache = __importStar(__nccwpck_require__(2540));
+const chrome_for_testing_1 = __nccwpck_require__(3334);
 const platform_1 = __nccwpck_require__(1493);
-const version_1 = __nccwpck_require__(9750);
-const KNOWN_GOOD_VERSIONS_URL = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
-class KnownGoodVersionResolver {
-    constructor(platform) {
-        this.http = new httpm.HttpClient("setup-chrome");
-        this.resolvedVersions = new Map();
-        this.platform = platform;
-    }
-    resolve(version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const spec = (0, version_1.parse)(version);
-            if (this.resolvedVersions.has(spec.toString())) {
-                return this.resolvedVersions.get(spec.toString());
-            }
-            const knownGoodVersions = yield this.getKnownGoodVersions();
-            for (const version of knownGoodVersions) {
-                if (!spec.satisfies(version.version)) {
-                    continue;
-                }
-                const found = version.downloads.chrome.find(({ platform }) => platform === this.platform);
-                if (found) {
-                    this.resolvedVersions.set(spec.toString(), version.version);
-                    return version.version;
-                }
-            }
-            return undefined;
-        });
-    }
-    resolveUrl(version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const resolved = yield this.resolve(version);
-            if (!resolved) {
-                return undefined;
-            }
-            const knownGoodVersions = yield this.getKnownGoodVersions();
-            const knownGoodVersion = knownGoodVersions.find((v) => v.version === resolved.toString());
-            if (!knownGoodVersion) {
-                return undefined;
-            }
-            const found = knownGoodVersion.downloads.chrome.find(({ platform }) => platform === this.platform);
-            if (!found) {
-                return undefined;
-            }
-            return found.url;
-        });
-    }
-    getKnownGoodVersions() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.knownGoodVersionsCache) {
-                return this.knownGoodVersionsCache;
-            }
-            const resp = yield this.http.getJson(KNOWN_GOOD_VERSIONS_URL);
-            if (resp.statusCode !== httpm.HttpCodes.OK) {
-                throw new Error(`Failed to get known good versions: ${resp.statusCode}`);
-            }
-            if (resp.result === null) {
-                throw new Error("Failed to get known good versions");
-            }
-            this.knownGoodVersionsCache = resp.result.versions.reverse();
-            return resp.result.versions;
-        });
-    }
-}
-exports.KnownGoodVersionResolver = KnownGoodVersionResolver;
 class KnownGoodVersionInstaller {
     constructor(platform) {
         this.platform = platform;
-        if (platform.os === platform_1.OS.LINUX && platform.arch === platform_1.Arch.AMD64) {
-            this.knownGoodVersionPlatform = "linux64";
-        }
-        else if (platform.os === platform_1.OS.DARWIN && platform.arch === platform_1.Arch.AMD64) {
-            this.knownGoodVersionPlatform = "mac-x64";
-        }
-        else if (platform.os === platform_1.OS.DARWIN && platform.arch === platform_1.Arch.ARM64) {
-            this.knownGoodVersionPlatform = "mac-arm64";
-        }
-        else if (platform.os === platform_1.OS.WINDOWS && platform.arch === platform_1.Arch.AMD64) {
-            this.knownGoodVersionPlatform = "win64";
-        }
-        else if (platform.os === platform_1.OS.WINDOWS && platform.arch === platform_1.Arch.I686) {
-            this.knownGoodVersionPlatform = "win32";
-        }
-        else {
-            throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
-        }
-        this.versionResolver = new KnownGoodVersionResolver(this.knownGoodVersionPlatform);
+        this.versionResolver = new chrome_for_testing_1.KnownGoodVersionResolver(this.platform);
     }
-    checkInstalled(version) {
+    checkInstalledBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resolved = yield this.versionResolver.resolve(version);
-            if (!resolved) {
-                return undefined;
-            }
-            const root = yield cache.find("chromium", resolved.toString());
+            const root = yield cache.find("chromium", version);
             if (root) {
                 return { root, bin: "chrome" };
             }
         });
     }
-    download(version) {
+    downloadBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
             const resolved = yield this.versionResolver.resolve(version);
             if (!resolved) {
                 throw new Error(`Version ${version} not found in known good versions`);
             }
-            const url = yield this.versionResolver.resolveUrl(version);
-            if (!url) {
-                throw new Error(`Version ${version} not found in known good versions`);
-            }
-            const archive = yield tc.downloadTool(url);
-            core.info(`Acquiring ${resolved} from ${url}`);
+            core.info(`Acquiring chrome ${resolved.version} from ${resolved.browserDownloadURL}`);
+            const archive = yield tc.downloadTool(resolved.browserDownloadURL);
             return { archive };
         });
     }
-    install(version, archive) {
+    installBrowser(version, archive) {
         return __awaiter(this, void 0, void 0, function* () {
             const resolved = yield this.versionResolver.resolve(version);
             if (!resolved) {
                 throw new Error(`Version ${version} not found in known good versions`);
             }
             const extPath = yield tc.extractZip(archive);
-            const extAppRoot = node_path_1.default.join(extPath, `chrome-${this.knownGoodVersionPlatform}`);
-            const root = yield cache.cacheDir(extAppRoot, "chromium", resolved.toString());
+            const extAppRoot = node_path_1.default.join(extPath, `chrome-${this.versionResolver.platformString}`);
+            const root = yield cache.cacheDir(extAppRoot, "chromium", resolved.version);
             core.info(`Successfully Installed chromium to ${root}`);
             const bin = (() => {
                 switch (this.platform.os) {
@@ -30219,6 +30528,48 @@ class KnownGoodVersionInstaller {
                         return "chrome";
                     case platform_1.OS.WINDOWS:
                         return "chrome.exe";
+                }
+            })();
+            return { root: root, bin };
+        });
+    }
+    checkInstalledDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = yield cache.find("chromedriver", version);
+            if (root) {
+                return { root, bin: "chromedriver" };
+            }
+        });
+    }
+    downloadDriver(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resolved = yield this.versionResolver.resolve(version);
+            if (!resolved) {
+                throw new Error(`Version ${version} not found in known good versions`);
+            }
+            core.info(`Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`);
+            const archive = yield tc.downloadTool(resolved.driverDownloadURL);
+            return { archive };
+        });
+    }
+    installDriver(version, archive) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resolved = yield this.versionResolver.resolve(version);
+            if (!resolved) {
+                throw new Error(`Version ${version} not found in known good versions`);
+            }
+            const extPath = yield tc.extractZip(archive);
+            const extAppRoot = node_path_1.default.join(extPath, `chromedriver-${this.versionResolver.platformString}`);
+            const root = yield cache.cacheDir(extAppRoot, "chromedriver", resolved.version);
+            core.info(`Successfully Installed chromedriver to ${root}`);
+            const bin = (() => {
+                switch (this.platform.os) {
+                    case platform_1.OS.DARWIN:
+                        return "chromedriver";
+                    case platform_1.OS.LINUX:
+                        return "chromedriver";
+                    case platform_1.OS.WINDOWS:
+                        return "chromedriver.exe";
                 }
             })();
             return { root: root, bin };
