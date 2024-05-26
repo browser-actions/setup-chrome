@@ -48,7 +48,4 @@ jobs:
           git push origin v$major_version --force
           git push origin v$full_version
 
-          git tag -a $tag_name $GITHUB_SHA -m "Release v$full_version"
-          git push origin $tag_name
-
         if: ${{ steps.release.outputs.release_created }}
