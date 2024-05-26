@@ -11,6 +11,10 @@ inputs:
     description: |-
       Install dependent packages for Google Chrome/Chromium (Linux only).
     default: false
+  no-install-chromedriver:
+    description: |-
+      Install only Google Chrome/Chromium browser and skip installing chromedriver
+    default: false
   no-sudo:
     description: |-
       Do not use sudo to install Google Chrome/Chromium (Linux only).
@@ -20,6 +24,10 @@ outputs:
     description: 'The installed Google Chrome/Chromium version. Useful when given a latest version.'
   chrome-path:
     description: 'The installed Google Chrome/Chromium path.'
+  chromedriver-version:
+    description: 'The installed ChromeDriver version. Useful when given a latest version.'
+  chromedriver-path:
+    description: 'The installed ChromeDriver path.'
 runs:
   using: 'node20'
   main: 'index.js'
