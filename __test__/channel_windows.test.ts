@@ -2,11 +2,14 @@ import * as fs from "node:fs";
 import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import { afterEach, describe, expect, test, vi } from "vitest";
+import * as cache from "../src/cache";
 import { WindowsChannelInstaller } from "../src/channel_windows";
 
 const fsStatSpy = vi.spyOn(fs.promises, "stat");
 const fsRenameSpy = vi.spyOn(fs.promises, "rename");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
+const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
+const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 const execSpy = vi.spyOn(exec, "exec");
 
 afterEach(() => {
@@ -84,15 +87,28 @@ describe("WindowsChannelInstaller", () => {
     });
   });
 
-  describe("unsupported platform", () => {
-    test("throws an error if the platform is not supported", async () => {
-      const installer2 = new WindowsChannelInstaller({
-        os: "windows",
-        arch: "arm64",
-      });
-      await expect(installer2.downloadBrowser("stable")).rejects.toThrow(
-        'Chrome stable not supported for platform "windows" "arm64"',
+  describe("downloadDriver", () => {
+    test("downloads the stable chromedriver", async () => {
+      tcDownloadToolSpy.mockResolvedValue("C:\\path\\to\\downloaded\\file.zip");
+
+      const result = await installer.downloadDriver("stable");
+      expect(result).toEqual({ archive: "C:\\path\\to\\downloaded\\file.zip" });
+    });
+  });
+
+  describe("installDriver", () => {
+    test("installs the stable chromedriver", async () => {
+      tcExtractZipSpy.mockResolvedValue("C:\\path\\to\\extract\\directory");
+      cacheCacheDirSpy.mockResolvedValue("C:\\path\\to\\chromedriver");
+
+      const result = await installer.installDriver(
+        "stable",
+        "C:\\path\\to\\downloaded\\file.zip",
       );
+      expect(result).toEqual({
+        root: "C:\\path\\to\\chromedriver",
+        bin: "chromedriver.exe",
+      });
     });
   });
 });

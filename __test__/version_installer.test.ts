@@ -4,10 +4,7 @@ import * as httpm from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
-import {
-  KnownGoodVersionInstaller,
-  KnownGoodVersionResolver,
-} from "../src/version_installer";
+import { KnownGoodVersionInstaller } from "../src/version_installer";
 
 const getJsonSpy = vi.spyOn(httpm.HttpClient.prototype, "getJson");
 const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
@@ -32,31 +29,6 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.resetAllMocks();
-});
-
-describe("VersionResolver", () => {
-  test.each`
-    spec               | version            | browserURL                                                                                                | driverURL
-    ${"120.0.6099.5"}  | ${"120.0.6099.5"}  | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.5/linux64/chrome-linux64.zip"}  | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.5/linux64/chromedriver-linux64.zip"}
-    ${"120.0.6099.x"}  | ${"120.0.6099.56"} | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.56/linux64/chrome-linux64.zip"} | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.56/linux64/chromedriver-linux64.zip"}
-    ${"1234.0.6099.x"} | ${undefined}       | ${undefined}                                                                                              | ${undefined}
-  `(
-    "should resolve known good versions for $spec",
-    async ({ spec, version, browserURL, driverURL }) => {
-      const resolver = new KnownGoodVersionResolver("linux64");
-      const resolved = await resolver.resolve(spec);
-      expect(resolved?.version).toEqual(version);
-      expect(resolved?.browserDownloadURL).toEqual(browserURL);
-      expect(resolved?.driverDownloadURL).toEqual(driverURL);
-    },
-  );
-
-  test("should cache known good versions", async () => {
-    const resolver = new KnownGoodVersionResolver("linux64");
-    await resolver.resolve("120.0.6099.5");
-    await resolver.resolve("120.0.6099.18");
-    expect(getJsonSpy).toHaveBeenCalledTimes(1);
-  });
 });
 
 describe("KnownGoodVersionInstaller", () => {

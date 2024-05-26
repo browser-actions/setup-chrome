@@ -8,6 +8,7 @@ import { MacOSChannelInstaller } from "../src/channel_macos";
 const cacheFindSpy = vi.spyOn(cache, "find");
 const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
+const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
 const fsSymlinkSpy = vi.spyOn(fs.promises, "symlink");
 const execSpy = vi.spyOn(exec, "exec");
 
@@ -82,6 +83,44 @@ describe("MacOSChannelInstaller", () => {
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
         "/Volumes/downloaded.dmg/Google Chrome.app",
         "chromium",
+        "stable",
+      );
+    });
+  });
+
+  describe("downloadDriver", () => {
+    test("throw error if version is not release channel", async () => {
+      await expect(installer.downloadDriver("foo")).rejects.toThrowError(
+        "Invalid version: foo",
+      );
+    });
+
+    test("download driver", async () => {
+      tcDownloadToolSpy.mockResolvedValue("/path/to/downloaded.zip");
+
+      const result = await installer.downloadDriver("stable");
+
+      expect(result).toEqual({ archive: "/path/to/downloaded.zip" });
+    });
+  });
+
+  describe("installDriver", () => {
+    test("install driver", async () => {
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chromedriver");
+      tcExtractZipSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.installDriver(
+        "stable",
+        "/path/to/chromedriver.zip",
+      );
+
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
+      expect(cacheCacheDirSpy).toHaveBeenCalledWith(
+        "/path/to/chromedriver/chromedriver-mac-x64",
+        "chromedriver",
         "stable",
       );
     });

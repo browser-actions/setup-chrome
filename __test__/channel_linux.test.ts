@@ -8,6 +8,7 @@ import { LinuxChannelInstaller } from "../src/channel_linux";
 const cacheFindSpy = vi.spyOn(cache, "find");
 const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
+const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
 const execSpy = vi.spyOn(exec, "exec");
 const fsMkdtempSpy = vi.spyOn(fs.promises, "mkdtemp");
 const fsUnlinkSpy = vi.spyOn(fs.promises, "unlink");
@@ -88,6 +89,45 @@ describe("LinuxChannelInstaller", () => {
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
         "/deb-abcdef",
         "chromium",
+        "stable",
+      );
+    });
+  });
+
+  describe("downloadDriver", () => {
+    test("throw error if version is not release channel", async () => {
+      await expect(installer.downloadDriver("foo")).rejects.toThrowError(
+        "Invalid version: foo",
+      );
+    });
+
+    test("download stable version", async () => {
+      tcDownloadToolSpy.mockResolvedValue("/tmp/chromedirver.zip");
+
+      const result = await installer.downloadDriver("stable");
+
+      expect(result).toEqual({ archive: "/tmp/chromedirver.zip" });
+      expect(tcDownloadToolSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("installDriver", () => {
+    test("install stable version", async () => {
+      tcExtractZipSpy.mockResolvedValue("/tmp/chromedriver");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chromedriver");
+
+      const result = await installer.installDriver(
+        "stable",
+        "/path/to/downloaded.deb",
+      );
+
+      expect(result).toEqual({
+        root: "/path/to/chromedriver",
+        bin: "chromedriver",
+      });
+      expect(cacheCacheDirSpy).toHaveBeenCalledWith(
+        "/tmp/chromedriver/chromedriver-linux64",
+        "chromedriver",
         "stable",
       );
     });
