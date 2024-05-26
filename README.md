@@ -4,12 +4,12 @@
 
 # setup-chrome
 
-This action sets by Google Chrome/Chromium for use in actions by:
+This action sets-up Google Chrome/Chromium for GitHub Actions. This action supports the following features:
 
-- [X] Install and setup latest Chromium
-- [X] Cross platform runner (macOS, Linux, Windows)
-- [X] Install Google Chrome by channel (stable, beta, dev, and canary)
-- [X] Install by version number (88.0.4324, or 88.0)
+- Install and setup the Google Chrome onto the runner.
+- Install a specific version of Google Chrome/Chromium by the version number, commit position, and release channel.
+- Cross-platform runner support (Windows, macOS, Linux) and self-hosted runner support.
+- Install the compatible versions of ChromeDriver with the browser.
 
 ## Usage
 
@@ -29,6 +29,17 @@ steps:
   - uses: browser-actions/setup-chrome@v1
     with:
       chrome-version: 120
+```
+
+The action support installing the compatible ChromeDriver with the browser.
+You can use the `install-chromedriver` to install the ChromeDriver.
+
+```yaml
+steps:
+  - uses: browser-actions/setup-chrome@v1
+    with:
+      chrome-version: 120
+      install-chromedriver: true
 ```
 
 If you use the self-hosted runner, your runner may not have the required dependencies on the system.
@@ -77,11 +88,15 @@ steps:
   Default: `latest`
 - `install-dependencies`: *(Optional)* Install the required dependencies for the Google Chrome/Chromium to run.
   Default: `false`
+- `install-chromedriver`: *(Optional)* Install the compatible ChromeDriver with the browser.
+  Default: `false`
 
 ### Outputs
 
 - `chrome-path`: The installed Google Chrome/Chromium binary path.
 - `chrome-version`: The installed Google Chrome/Chromium version.
+- `chromedriver-path`: The installed ChromeDriver binary path.
+- `chromedriver-version`: The installed ChromeDriver version.
 
 [snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
