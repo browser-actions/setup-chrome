@@ -106,11 +106,15 @@ const testVersion = async (
       `${path.basename(bin)} outputs unexpected results: ${stdout}`,
     );
   }
-  return stdout
+  const v = stdout
     .replace("Chromium ", "")
     .replace("Google Chrome ", "")
     .replace("ChromeDriver ", "")
     .split(" ", 1)[0];
+  if (!/^\d+\.\d+\.\d+\.\d+$/.test(v)) {
+    throw new Error(`Failed to parse version from: ${stdout}`);
+  }
+  return v;
 };
 
 async function run(): Promise<void> {
