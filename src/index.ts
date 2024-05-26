@@ -148,8 +148,7 @@ async function run(): Promise<void> {
     if (!noInstallChromedriver) {
       core.info(`Setup chromedriver ${version}`);
 
-      const driverInstaller = new SnapshotInstaller(platform);
-      const driverBinPath = await installDriver(driverInstaller, version);
+      const driverBinPath = await installDriver(installer, version);
       const actualDriverVersion = await testVersion(platform, driverBinPath);
 
       core.addPath(path.dirname(driverBinPath));
