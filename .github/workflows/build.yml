@@ -41,13 +41,16 @@ jobs:
         uses: ./
         with:
           chrome-version: ${{ matrix.version }}
+          install-chromedriver: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
           "${{ steps.setup-chrome.outputs.chrome-path }}" --version
+          "${{ steps.setup-chrome.outputs.chromedriver-path }}" --version
       - if: runner.os == 'Windows'
         run: |
           (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
+          (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chromedriver-path }}").Source).VersionInfo.ProductVersion
 
   test-install-dependencies:
     needs: [build]
@@ -82,7 +85,9 @@ jobs:
         uses: ./
         with:
           chrome-version: 120
+          install-chromedriver: true
           install-dependencies: true
         id: setup-chrome
       - run: |
           "${{ steps.setup-chrome.outputs.chrome-path }}" --version
+          "${{ steps.setup-chrome.outputs.chromedriver-path }}" --version

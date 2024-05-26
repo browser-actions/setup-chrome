@@ -1,7 +1,10 @@
-import fs from "node:fs";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
+import * as cache from "./cache";
+import { LastKnownGoodVersionResolver } from "./chrome_for_testing";
 import type { DownloadResult, InstallResult, Installer } from "./installer";
 import { Arch, type Platform } from "./platform";
 import { type ReleaseChannelName, isReleaseChannelName } from "./version";
@@ -13,14 +16,26 @@ const isENOENT = (e: unknown): boolean => {
 };
 
 export class WindowsChannelInstaller implements Installer {
-  constructor(private readonly platform: Platform) {}
+  private readonly platform: Platform;
+  private readonly versionResolver: LastKnownGoodVersionResolver;
 
-  async checkInstalled(version: string): Promise<InstallResult | undefined> {
+  constructor(platform: Platform) {
+    if (platform.os !== "windows") {
+      throw new Error(`Unexpected OS: ${platform.os}`);
+    }
+
+    this.platform = platform;
+    this.versionResolver = new LastKnownGoodVersionResolver(platform);
+  }
+
+  async checkInstalledBrowser(
+    version: string,
+  ): Promise<InstallResult | undefined> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
 
-    const root = this.rootDir(version);
+    const root = this.browserRootDir(version);
     try {
       await fs.promises.stat(root);
     } catch (e) {
@@ -33,7 +48,7 @@ export class WindowsChannelInstaller implements Installer {
     return { root, bin: "chrome.exe" };
   }
 
-  async download(version: string): Promise<DownloadResult> {
+  async downloadBrowser(version: string): Promise<DownloadResult> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
@@ -94,23 +109,26 @@ export class WindowsChannelInstaller implements Installer {
       path[this.platform.arch][version]
     }`;
 
-    core.info(`Acquiring ${version} from ${url}`);
+    core.info(`Acquiring chrome ${version} from ${url}`);
     const archivePath = await tc.downloadTool(url);
 
     await fs.promises.rename(archivePath, `${archivePath}.exe`);
     return { archive: `${archivePath}.exe` };
   }
 
-  async install(version: string, archive: string): Promise<InstallResult> {
+  async installBrowser(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
     await exec.exec(archive, ["/silent", "/install"]);
 
-    return { root: this.rootDir(version), bin: "chrome.exe" };
+    return { root: this.browserRootDir(version), bin: "chrome.exe" };
   }
 
-  private rootDir(version: ReleaseChannelName) {
+  private browserRootDir(version: ReleaseChannelName) {
     switch (version) {
       case "stable":
         return "C:\\Program Files\\Google\\Chrome\\Application";
@@ -121,5 +139,44 @@ export class WindowsChannelInstaller implements Installer {
       case "canary":
         return "C:\\Program Files\\Google\\Chrome SxS\\Application";
     }
+  }
+
+  async checkInstalledDriver(
+    version: string,
+  ): Promise<InstallResult | undefined> {
+    const root = await cache.find("chromedriver", version);
+    if (root) {
+      return { root, bin: "chromedriver" };
+    }
+  }
+
+  async downloadDriver(version: string): Promise<DownloadResult> {
+    const resolved = await this.versionResolver.resolve(version);
+    if (!resolved) {
+      throw new Error(
+        `Version ${version} not found in the known good versions`,
+      );
+    }
+
+    core.info(
+      `Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`,
+    );
+    const archive = await tc.downloadTool(resolved.driverDownloadURL);
+    return { archive };
+  }
+
+  async installDriver(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
+    const extPath = await tc.extractZip(archive);
+    const extAppRoot = path.join(
+      extPath,
+      `chromedriver-${this.versionResolver.platformString}`,
+    );
+
+    const root = await cache.cacheDir(extAppRoot, "chromedriver", version);
+    core.info(`Successfully Installed chromedriver to ${root}`);
+    return { root, bin: "chromedriver.exe" };
   }
 }

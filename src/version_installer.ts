@@ -1,171 +1,47 @@
 import path from "node:path";
 import * as core from "@actions/core";
-import * as httpm from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
+import { KnownGoodVersionResolver } from "./chrome_for_testing";
 import type { DownloadResult, InstallResult, Installer } from "./installer";
-import { Arch, OS, type Platform } from "./platform";
-import { parse } from "./version";
-
-const KNOWN_GOOD_VERSIONS_URL =
-  "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
-
-export type KnownGoodVersionsJson = {
-  timestamp: string;
-  versions: KnownGoodVersion[];
-};
-
-export type KnownGoodVersionPlatform =
-  | "linux64"
-  | "mac-arm64"
-  | "mac-x64"
-  | "win32"
-  | "win64";
-
-export type KnownGoodVersion = {
-  version: string;
-  revision: string;
-  downloads: {
-    chrome: Array<{
-      platform: KnownGoodVersionPlatform;
-      url: string;
-    }>;
-  };
-};
-
-export class KnownGoodVersionResolver {
-  private readonly http = new httpm.HttpClient("setup-chrome");
-
-  private readonly platform: KnownGoodVersionPlatform;
-
-  private knownGoodVersionsCache?: KnownGoodVersion[];
-
-  private readonly resolvedVersions = new Map<string, string>();
-
-  constructor(platform: KnownGoodVersionPlatform) {
-    this.platform = platform;
-  }
-
-  async resolve(version: string): Promise<string | undefined> {
-    const spec = parse(version);
-    if (this.resolvedVersions.has(spec.toString())) {
-      return this.resolvedVersions.get(spec.toString());
-    }
-
-    const knownGoodVersions = await this.getKnownGoodVersions();
-    for (const version of knownGoodVersions) {
-      if (!spec.satisfies(version.version)) {
-        continue;
-      }
-      const found = version.downloads.chrome.find(
-        ({ platform }) => platform === this.platform,
-      );
-      if (found) {
-        this.resolvedVersions.set(spec.toString(), version.version);
-        return version.version;
-      }
-    }
-    return undefined;
-  }
-
-  async resolveUrl(version: string): Promise<string | undefined> {
-    const resolved = await this.resolve(version);
-    if (!resolved) {
-      return undefined;
-    }
-
-    const knownGoodVersions = await this.getKnownGoodVersions();
-    const knownGoodVersion = knownGoodVersions.find(
-      (v) => v.version === resolved.toString(),
-    );
-    if (!knownGoodVersion) {
-      return undefined;
-    }
-
-    const found = knownGoodVersion.downloads.chrome.find(
-      ({ platform }) => platform === this.platform,
-    );
-    if (!found) {
-      return undefined;
-    }
-    return found.url;
-  }
-
-  private async getKnownGoodVersions(): Promise<KnownGoodVersion[]> {
-    if (this.knownGoodVersionsCache) {
-      return this.knownGoodVersionsCache;
-    }
-
-    const resp = await this.http.getJson<KnownGoodVersionsJson>(
-      KNOWN_GOOD_VERSIONS_URL,
-    );
-    if (resp.statusCode !== httpm.HttpCodes.OK) {
-      throw new Error(`Failed to get known good versions: ${resp.statusCode}`);
-    }
-    if (resp.result === null) {
-      throw new Error("Failed to get known good versions");
-    }
-
-    this.knownGoodVersionsCache = resp.result.versions.reverse();
-
-    return resp.result.versions;
-  }
-}
+import { OS, type Platform } from "./platform";
 
 export class KnownGoodVersionInstaller implements Installer {
   private readonly versionResolver: KnownGoodVersionResolver;
   private readonly platform: Platform;
-  private readonly knownGoodVersionPlatform: KnownGoodVersionPlatform;
 
   constructor(platform: Platform) {
     this.platform = platform;
-    if (platform.os === OS.LINUX && platform.arch === Arch.AMD64) {
-      this.knownGoodVersionPlatform = "linux64";
-    } else if (platform.os === OS.DARWIN && platform.arch === Arch.AMD64) {
-      this.knownGoodVersionPlatform = "mac-x64";
-    } else if (platform.os === OS.DARWIN && platform.arch === Arch.ARM64) {
-      this.knownGoodVersionPlatform = "mac-arm64";
-    } else if (platform.os === OS.WINDOWS && platform.arch === Arch.AMD64) {
-      this.knownGoodVersionPlatform = "win64";
-    } else if (platform.os === OS.WINDOWS && platform.arch === Arch.I686) {
-      this.knownGoodVersionPlatform = "win32";
-    } else {
-      throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
-    }
 
-    this.versionResolver = new KnownGoodVersionResolver(
-      this.knownGoodVersionPlatform,
-    );
+    this.versionResolver = new KnownGoodVersionResolver(this.platform);
   }
 
-  async checkInstalled(version: string): Promise<InstallResult | undefined> {
-    const resolved = await this.versionResolver.resolve(version);
-    if (!resolved) {
-      return undefined;
-    }
-
-    const root = await cache.find("chromium", resolved.toString());
+  async checkInstalledBrowser(
+    version: string,
+  ): Promise<InstallResult | undefined> {
+    const root = await cache.find("chromium", version);
     if (root) {
       return { root, bin: "chrome" };
     }
   }
 
-  async download(version: string): Promise<DownloadResult> {
+  async downloadBrowser(version: string): Promise<DownloadResult> {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
 
-    const url = await this.versionResolver.resolveUrl(version);
-    if (!url) {
-      throw new Error(`Version ${version} not found in known good versions`);
-    }
-    const archive = await tc.downloadTool(url);
-    core.info(`Acquiring ${resolved} from ${url}`);
+    core.info(
+      `Acquiring chrome ${resolved.version} from ${resolved.browserDownloadURL}`,
+    );
+    const archive = await tc.downloadTool(resolved.browserDownloadURL);
     return { archive };
   }
 
-  async install(version: string, archive: string): Promise<InstallResult> {
+  async installBrowser(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
@@ -173,14 +49,10 @@ export class KnownGoodVersionInstaller implements Installer {
     const extPath = await tc.extractZip(archive);
     const extAppRoot = path.join(
       extPath,
-      `chrome-${this.knownGoodVersionPlatform}`,
+      `chrome-${this.versionResolver.platformString}`,
     );
 
-    const root = await cache.cacheDir(
-      extAppRoot,
-      "chromium",
-      resolved.toString(),
-    );
+    const root = await cache.cacheDir(extAppRoot, "chromium", resolved.version);
     core.info(`Successfully Installed chromium to ${root}`);
     const bin = (() => {
       switch (this.platform.os) {
@@ -190,6 +62,61 @@ export class KnownGoodVersionInstaller implements Installer {
           return "chrome";
         case OS.WINDOWS:
           return "chrome.exe";
+      }
+    })();
+    return { root: root, bin };
+  }
+
+  async checkInstalledDriver(
+    version: string,
+  ): Promise<InstallResult | undefined> {
+    const root = await cache.find("chromedriver", version);
+    if (root) {
+      return { root, bin: "chromedriver" };
+    }
+  }
+
+  async downloadDriver(version: string): Promise<DownloadResult> {
+    const resolved = await this.versionResolver.resolve(version);
+    if (!resolved) {
+      throw new Error(`Version ${version} not found in known good versions`);
+    }
+
+    core.info(
+      `Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`,
+    );
+    const archive = await tc.downloadTool(resolved.driverDownloadURL);
+    return { archive };
+  }
+
+  async installDriver(
+    version: string,
+    archive: string,
+  ): Promise<InstallResult> {
+    const resolved = await this.versionResolver.resolve(version);
+    if (!resolved) {
+      throw new Error(`Version ${version} not found in known good versions`);
+    }
+    const extPath = await tc.extractZip(archive);
+    const extAppRoot = path.join(
+      extPath,
+      `chromedriver-${this.versionResolver.platformString}`,
+    );
+
+    const root = await cache.cacheDir(
+      extAppRoot,
+      "chromedriver",
+      resolved.version,
+    );
+    core.info(`Successfully Installed chromedriver to ${root}`);
+    const bin = (() => {
+      switch (this.platform.os) {
+        case OS.DARWIN:
+          return "chromedriver";
+        case OS.LINUX:
+          return "chromedriver";
+        case OS.WINDOWS:
+          return "chromedriver.exe";
       }
     })();
     return { root: root, bin };

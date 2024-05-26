@@ -1,6 +1,6 @@
 {
   "files": {
-    "ignore": ["__test__/data/", "package.json"]
+    "ignore": ["./dist/", "__test__/data/", "package.json"]
   },
   "linter": {
     "enabled": true,

@@ -4,12 +4,13 @@ import * as httpm from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
-import {
-  KnownGoodVersionInstaller,
-  KnownGoodVersionResolver,
-} from "../src/version_installer";
+import { KnownGoodVersionInstaller } from "../src/version_installer";
 
 const getJsonSpy = vi.spyOn(httpm.HttpClient.prototype, "getJson");
+const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
+const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
+const cacheFindSpy = vi.spyOn(cache, "find");
+const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 
 beforeEach(() => {
   const mockDataPath = path.join(
@@ -30,63 +31,91 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 
-describe("VersionResolver", () => {
-  test.each`
-    spec               | resolved
-    ${"120.0.6099.5"}  | ${"120.0.6099.5"}
-    ${"120.0.6099.x"}  | ${"120.0.6099.56"}
-    ${"1234.0.6099.x"} | ${undefined}
-  `("should resolve known good versions", async ({ spec, resolved }) => {
-    const resolver = new KnownGoodVersionResolver("linux64");
-    const version = await resolver.resolve(spec);
-    expect(version?.toString()).toEqual(resolved);
-  });
-
-  test("should resolve an url for a known good version", async () => {
-    const resolver = new KnownGoodVersionResolver("linux64");
-    const url = await resolver.resolveUrl("120.0.6099.x");
-    expect(url).toEqual(
-      "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.56/linux64/chrome-linux64.zip",
-    );
-  });
-
-  test("should cache known good versions", async () => {
-    const resolver = new KnownGoodVersionResolver("linux64");
-    await resolver.resolve("120.0.6099.5");
-    await resolver.resolve("120.0.6099.18");
-    expect(getJsonSpy).toHaveBeenCalledTimes(1);
-  });
-});
-
 describe("KnownGoodVersionInstaller", () => {
-  const tcFindSpy = vi.spyOn(cache, "find");
-  const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
+  const installer = new KnownGoodVersionInstaller({
+    os: "linux",
+    arch: "amd64",
+  });
 
-  test("should return installed path if installed", async () => {
-    tcFindSpy.mockImplementation((name: string, version: string) => {
-      return Promise.resolve(
-        `/opt/hostedtoolcache/setup-chrome/${name}/${version}/x64`,
-      );
-    });
+  test("checkInstalledBrowser should return installed path if installed", async () => {
+    cacheFindSpy.mockResolvedValue(
+      "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
+    );
 
-    const installer = new KnownGoodVersionInstaller({
-      os: "linux",
-      arch: "amd64",
-    });
-    const installed = await installer.checkInstalled("120.0.6099.x");
+    const installed = await installer.checkInstalledBrowser("120.0.6099.x");
     expect(installed?.root).toEqual(
       "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
     );
-    expect(tcFindSpy).toHaveBeenCalledWith("chromium", "120.0.6099.56");
+    expect(cacheFindSpy).toHaveBeenCalledWith("chromium", "120.0.6099.x");
   });
 
-  test("should download zip archive", async () => {
+  test("downloadBrowser should download browser archive", async () => {
     tcDownloadToolSpy.mockImplementation(async () => "/tmp/chromium.zip");
-    const installer = new KnownGoodVersionInstaller({
-      os: "linux",
-      arch: "amd64",
-    });
-    const downloaded = await installer.download("120.0.6099.x");
+
+    const downloaded = await installer.downloadBrowser("120.0.6099.x");
     expect(downloaded?.archive).toEqual("/tmp/chromium.zip");
+    expect(tcDownloadToolSpy).toHaveBeenCalled();
+  });
+
+  test("installDriver should install browser", async () => {
+    tcExtractZipSpy.mockImplementation(async () => "/tmp/extracted");
+    cacheCacheDirSpy.mockImplementation(async () => "/path/to/chromium");
+
+    const installed = await installer.installBrowser(
+      "120.0.6099.x",
+      "/tmp/chromium.zip",
+    );
+    expect(installed).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+    expect(cacheCacheDirSpy).toHaveBeenCalledWith(
+      "/tmp/extracted/chrome-linux64",
+      "chromium",
+      "120.0.6099.56",
+    );
+  });
+
+  test("checkInstalledDriver should return undefined if not installed", async () => {
+    cacheFindSpy.mockResolvedValue(undefined);
+
+    const installed = await installer.checkInstalledDriver("120.0.6099.x");
+    expect(installed).toBeUndefined();
+  });
+
+  test("checkInstalledDriver should return installed path if installed", async () => {
+    cacheFindSpy.mockResolvedValue(
+      "/opt/hostedtoolcache/setup-chrome/chromedriver/120.0.6099.56/x64",
+    );
+
+    const installed = await installer.checkInstalledDriver("120.0.6099.x");
+    expect(installed?.root).toEqual(
+      "/opt/hostedtoolcache/setup-chrome/chromedriver/120.0.6099.56/x64",
+    );
+    expect(cacheFindSpy).toHaveBeenCalledWith("chromedriver", "120.0.6099.x");
+  });
+
+  test("downloadDriver should download driver archive", async () => {
+    tcDownloadToolSpy.mockImplementation(async () => "/tmp/chromedriver.zip");
+
+    const downloaded = await installer.downloadDriver("120.0.6099.x");
+    expect(downloaded?.archive).toEqual("/tmp/chromedriver.zip");
+    expect(tcDownloadToolSpy).toHaveBeenCalled();
+  });
+
+  test("installDriver should install driver", async () => {
+    tcExtractZipSpy.mockImplementation(async () => "/tmp/extracted");
+    cacheCacheDirSpy.mockImplementation(async () => "/path/to/chromedriver");
+
+    const installed = await installer.installDriver(
+      "120.0.6099.x",
+      "/tmp/chromedriver.zip",
+    );
+    expect(installed).toEqual({
+      root: "/path/to/chromedriver",
+      bin: "chromedriver",
+    });
+    expect(cacheCacheDirSpy).toHaveBeenCalledWith(
+      "/tmp/extracted/chromedriver-linux64",
+      "chromedriver",
+      "120.0.6099.56",
+    );
   });
 });
