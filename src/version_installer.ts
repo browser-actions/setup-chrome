@@ -4,7 +4,7 @@ import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
 import { KnownGoodVersionResolver } from "./chrome_for_testing";
 import type { DownloadResult, InstallResult, Installer } from "./installer";
-import { Arch, OS, type Platform } from "./platform";
+import { OS, type Platform } from "./platform";
 
 export class KnownGoodVersionInstaller implements Installer {
   private readonly versionResolver: KnownGoodVersionResolver;
@@ -32,7 +32,7 @@ export class KnownGoodVersionInstaller implements Installer {
     }
 
     core.info(
-      `Acquiring ${resolved.version} from ${resolved.browserDownloadURL}`,
+      `Acquiring chrome ${resolved.version} from ${resolved.browserDownloadURL}`,
     );
     const archive = await tc.downloadTool(resolved.browserDownloadURL);
     return { archive };
@@ -83,7 +83,7 @@ export class KnownGoodVersionInstaller implements Installer {
     }
 
     core.info(
-      `Acquiring ${resolved.version} from ${resolved.driverDownloadURL}`,
+      `Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`,
     );
     const archive = await tc.downloadTool(resolved.driverDownloadURL);
     return { archive };

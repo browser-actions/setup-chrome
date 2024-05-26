@@ -46,7 +46,7 @@ export class MacOSChannelInstaller implements Installer {
       }
     })();
 
-    core.info(`Acquiring ${version} from ${url}`);
+    core.info(`Acquiring chrome ${version} from ${url}`);
     const archive = await tc.downloadTool(url);
     return { archive };
   }
@@ -120,7 +120,7 @@ export class MacOSChannelInstaller implements Installer {
     }
 
     core.info(
-      `Acquiring ${resolved.version} from ${resolved.driverDownloadURL}`,
+      `Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`,
     );
     const archive = await tc.downloadTool(resolved.driverDownloadURL);
     return { archive };

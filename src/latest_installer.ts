@@ -1,4 +1,3 @@
-import * as cache from "./cache";
 import type { DownloadResult, InstallResult, Installer } from "./installer";
 import type { Platform } from "./platform";
 import { resolveLatestVersion } from "./snapshot_bucket";

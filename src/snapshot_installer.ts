@@ -20,7 +20,7 @@ export class SnapshotInstaller implements Installer {
 
   async downloadBrowser(version: string): Promise<DownloadResult> {
     const url = browserDownloadURL(this.platform, version);
-    core.info(`Acquiring ${version} from ${url}`);
+    core.info(`Acquiring chrome ${version} from ${url}`);
     const archive = await tc.downloadTool(url);
     return { archive };
   }
@@ -68,7 +68,7 @@ export class SnapshotInstaller implements Installer {
 
   async downloadDriver(version: string): Promise<DownloadResult> {
     const url = driverDownloadURL(this.platform, version);
-    core.info(`Acquiring ${version} from ${url}`);
+    core.info(`Acquiring chromedriver ${version} from ${url}`);
     const archive = await tc.downloadTool(url);
     return { archive };
   }

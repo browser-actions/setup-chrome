@@ -109,7 +109,7 @@ export class WindowsChannelInstaller implements Installer {
       path[this.platform.arch][version]
     }`;
 
-    core.info(`Acquiring ${version} from ${url}`);
+    core.info(`Acquiring chrome ${version} from ${url}`);
     const archivePath = await tc.downloadTool(url);
 
     await fs.promises.rename(archivePath, `${archivePath}.exe`);
@@ -159,7 +159,7 @@ export class WindowsChannelInstaller implements Installer {
     }
 
     core.info(
-      `Acquiring ${resolved.version} from ${resolved.driverDownloadURL}`,
+      `Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`,
     );
     const archive = await tc.downloadTool(resolved.driverDownloadURL);
     return { archive };
