@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.0...setup-chrome-v1.7.1) (2024-05-27)
+
+
+### Bug Fixes
+
+* try to install browser version when user will not install ChromeDriver ([#551](https://github.com/browser-actions/setup-chrome/issues/551)) ([f5596e0](https://github.com/browser-actions/setup-chrome/commit/f5596e0a950ec3cf422a66d3d9c180bfa8edde65)), closes [#550](https://github.com/browser-actions/setup-chrome/issues/550)
+
 ## [1.7.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.6.2...setup-chrome-v1.7.0) (2024-05-26)
 
 
