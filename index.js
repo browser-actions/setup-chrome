@@ -29498,7 +29498,26 @@ class KnownGoodVersionResolver {
         this.http = new httpm.HttpClient("setup-chrome");
         this.platformString = platformString(platform);
     }
-    resolve(version) {
+    resolveBrowserOnly(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const spec = (0, version_1.parse)(version);
+            const knownGoodVersions = yield this.getKnownGoodVersions();
+            for (const version of knownGoodVersions) {
+                if (!spec.satisfies(version.version)) {
+                    continue;
+                }
+                const browser = (_a = version.downloads.chrome) === null || _a === void 0 ? void 0 : _a.find(({ platform }) => platform === this.platformString);
+                if (browser) {
+                    return {
+                        version: version.version,
+                        browserDownloadURL: browser.url,
+                    };
+                }
+            }
+        });
+    }
+    resolveBrowserAndDriver(version) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
             const spec = (0, version_1.parse)(version);
@@ -29773,7 +29792,7 @@ const version_installer_1 = __nccwpck_require__(1712);
 const hasErrorMessage = (e) => {
     return typeof e === "object" && e !== null && "message" in e;
 };
-const getInstaller = (platform, version) => {
+const getInstaller = (platform, version, { resolveBrowserVersionOnly }) => {
     const spec = (0, version_1.parse)(version);
     switch (spec.value.type) {
         case "latest":
@@ -29791,7 +29810,9 @@ const getInstaller = (platform, version) => {
         case "snapshot":
             return new snapshot_installer_1.SnapshotInstaller(platform);
         case "four-parts":
-            return new version_installer_1.KnownGoodVersionInstaller(platform);
+            return new version_installer_1.KnownGoodVersionInstaller(platform, {
+                resolveBrowserVersionOnly,
+            });
     }
 };
 const installBrowser = (installer, version) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29864,7 +29885,10 @@ function run() {
                 yield (0, dependencies_1.installDependencies)(platform, { noSudo });
             }
             core.info(`Setup chrome ${version}`);
-            const installer = getInstaller(platform, version);
+            const resolveBrowserVersionOnly = !flgInstallChromedriver;
+            const installer = getInstaller(platform, version, {
+                resolveBrowserVersionOnly,
+            });
             const browserBinPath = yield installBrowser(installer, version);
             const actualBrowserVersion = yield testVersion(platform, browserBinPath);
             core.addPath(node_path_1.default.dirname(browserBinPath));
@@ -30487,8 +30511,9 @@ const cache = __importStar(__nccwpck_require__(2540));
 const chrome_for_testing_1 = __nccwpck_require__(3334);
 const platform_1 = __nccwpck_require__(1493);
 class KnownGoodVersionInstaller {
-    constructor(platform) {
+    constructor(platform, { resolveBrowserVersionOnly }) {
         this.platform = platform;
+        this.resolveBrowserVersionOnly = resolveBrowserVersionOnly;
         this.versionResolver = new chrome_for_testing_1.KnownGoodVersionResolver(this.platform);
     }
     checkInstalledBrowser(version) {
@@ -30501,7 +30526,9 @@ class KnownGoodVersionInstaller {
     }
     downloadBrowser(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resolved = yield this.versionResolver.resolve(version);
+            const resolved = this.resolveBrowserVersionOnly
+                ? yield this.versionResolver.resolveBrowserOnly(version)
+                : yield this.versionResolver.resolveBrowserAndDriver(version);
             if (!resolved) {
                 throw new Error(`Version ${version} not found in known good versions`);
             }
@@ -30512,7 +30539,9 @@ class KnownGoodVersionInstaller {
     }
     installBrowser(version, archive) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resolved = yield this.versionResolver.resolve(version);
+            const resolved = this.resolveBrowserVersionOnly
+                ? yield this.versionResolver.resolveBrowserOnly(version)
+                : yield this.versionResolver.resolveBrowserAndDriver(version);
             if (!resolved) {
                 throw new Error(`Version ${version} not found in known good versions`);
             }
@@ -30543,7 +30572,10 @@ class KnownGoodVersionInstaller {
     }
     downloadDriver(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resolved = yield this.versionResolver.resolve(version);
+            if (this.resolveBrowserVersionOnly) {
+                throw new Error("Unexpectedly trying to download chromedriver");
+            }
+            const resolved = yield this.versionResolver.resolveBrowserAndDriver(version);
             if (!resolved) {
                 throw new Error(`Version ${version} not found in known good versions`);
             }
@@ -30554,7 +30586,10 @@ class KnownGoodVersionInstaller {
     }
     installDriver(version, archive) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resolved = yield this.versionResolver.resolve(version);
+            if (this.resolveBrowserVersionOnly) {
+                throw new Error("Unexpectedly trying to install chromedriver");
+            }
+            const resolved = yield this.versionResolver.resolveBrowserAndDriver(version);
             if (!resolved) {
                 throw new Error(`Version ${version} not found in known good versions`);
             }
