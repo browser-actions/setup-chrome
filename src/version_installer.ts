@@ -7,12 +7,16 @@ import type { DownloadResult, InstallResult, Installer } from "./installer";
 import { OS, type Platform } from "./platform";
 
 export class KnownGoodVersionInstaller implements Installer {
-  private readonly versionResolver: KnownGoodVersionResolver;
   private readonly platform: Platform;
+  private readonly resolveBrowserVersionOnly: boolean;
+  private readonly versionResolver: KnownGoodVersionResolver;
 
-  constructor(platform: Platform) {
+  constructor(
+    platform: Platform,
+    { resolveBrowserVersionOnly }: { resolveBrowserVersionOnly: boolean },
+  ) {
     this.platform = platform;
-
+    this.resolveBrowserVersionOnly = resolveBrowserVersionOnly;
     this.versionResolver = new KnownGoodVersionResolver(this.platform);
   }
 
@@ -26,7 +30,9 @@ export class KnownGoodVersionInstaller implements Installer {
   }
 
   async downloadBrowser(version: string): Promise<DownloadResult> {
-    const resolved = await this.versionResolver.resolve(version);
+    const resolved = this.resolveBrowserVersionOnly
+      ? await this.versionResolver.resolveBrowserOnly(version)
+      : await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
@@ -42,7 +48,9 @@ export class KnownGoodVersionInstaller implements Installer {
     version: string,
     archive: string,
   ): Promise<InstallResult> {
-    const resolved = await this.versionResolver.resolve(version);
+    const resolved = this.resolveBrowserVersionOnly
+      ? await this.versionResolver.resolveBrowserOnly(version)
+      : await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
@@ -77,7 +85,12 @@ export class KnownGoodVersionInstaller implements Installer {
   }
 
   async downloadDriver(version: string): Promise<DownloadResult> {
-    const resolved = await this.versionResolver.resolve(version);
+    if (this.resolveBrowserVersionOnly) {
+      throw new Error("Unexpectedly trying to download chromedriver");
+    }
+
+    const resolved =
+      await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
@@ -93,7 +106,12 @@ export class KnownGoodVersionInstaller implements Installer {
     version: string,
     archive: string,
   ): Promise<InstallResult> {
-    const resolved = await this.versionResolver.resolve(version);
+    if (this.resolveBrowserVersionOnly) {
+      throw new Error("Unexpectedly trying to install chromedriver");
+    }
+
+    const resolved =
+      await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
