@@ -94,11 +94,6 @@ export class KnownGoodVersionInstaller implements Installer {
     if (!resolved) {
       throw new Error(`Version ${version} not found in known good versions`);
     }
-    if (!resolved.driverDownloadURL) {
-      throw new Error(
-        `Version ${version} does not have a known good chromedriver version`,
-      );
-    }
 
     core.info(
       `Acquiring chromedriver ${resolved.version} from ${resolved.driverDownloadURL}`,
