@@ -76,6 +76,11 @@ const platformString = (platform: Platform): PlatformString => {
   throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
 };
 
+type BrowserOnlyResolvedVersion = {
+  version: string;
+  browserDownloadURL: string;
+};
+
 type ResolvedVersion = {
   version: string;
   browserDownloadURL: string;
@@ -93,9 +98,32 @@ export class KnownGoodVersionResolver {
     this.platformString = platformString(platform);
   }
 
-  async resolve(version: string): Promise<ResolvedVersion | undefined> {
+  async resolveBrowserOnly(
+    version: string,
+  ): Promise<BrowserOnlyResolvedVersion | undefined> {
     const spec = parse(version);
+    const knownGoodVersions = await this.getKnownGoodVersions();
+    for (const version of knownGoodVersions) {
+      if (!spec.satisfies(version.version)) {
+        continue;
+      }
+      const browser = version.downloads.chrome?.find(
+        ({ platform }) => platform === this.platformString,
+      );
 
+      if (browser) {
+        return {
+          version: version.version,
+          browserDownloadURL: browser.url,
+        };
+      }
+    }
+  }
+
+  async resolveBrowserAndDriver(
+    version: string,
+  ): Promise<ResolvedVersion | undefined> {
+    const spec = parse(version);
     const knownGoodVersions = await this.getKnownGoodVersions();
     for (const version of knownGoodVersions) {
       if (!spec.satisfies(version.version)) {

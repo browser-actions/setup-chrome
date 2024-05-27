@@ -41,7 +41,7 @@ describe("KnownGoodVersionResolver", () => {
         os: "linux",
         arch: "amd64",
       });
-      const resolved = await resolver.resolve(spec);
+      const resolved = await resolver.resolveBrowserAndDriver(spec);
       expect(resolved?.version).toEqual(version);
       expect(resolved?.browserDownloadURL).toEqual(browserURL);
       expect(resolved?.driverDownloadURL).toEqual(driverURL);
@@ -53,9 +53,25 @@ describe("KnownGoodVersionResolver", () => {
       os: "linux",
       arch: "amd64",
     });
-    await resolver.resolve("120.0.6099.5");
-    await resolver.resolve("120.0.6099.18");
+    await resolver.resolveBrowserAndDriver("120.0.6099.5");
+    await resolver.resolveBrowserAndDriver("120.0.6099.18");
     expect(getJsonSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test("should resolve only browser download URL", async () => {
+    const resolver = new KnownGoodVersionResolver({
+      os: "linux",
+      arch: "amd64",
+    });
+
+    const resolved1 = await resolver.resolveBrowserAndDriver("113.0.5672.0");
+    expect(resolved1).toBeUndefined();
+
+    const resolved2 = await resolver.resolveBrowserOnly("113.0.5672.0");
+    expect(resolved2?.version).toEqual("113.0.5672.0");
+    expect(resolved2?.browserDownloadURL).toEqual(
+      "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/113.0.5672.0/linux64/chrome-linux64.zip",
+    );
   });
 
   test("unsupported platform", async () => {

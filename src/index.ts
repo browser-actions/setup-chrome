@@ -16,7 +16,11 @@ const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
   return typeof e === "object" && e !== null && "message" in e;
 };
 
-const getInstaller = (platform: Platform, version: string) => {
+const getInstaller = (
+  platform: Platform,
+  version: string,
+  { resolveBrowserVersionOnly }: { resolveBrowserVersionOnly: boolean },
+) => {
   const spec = parse(version);
   switch (spec.value.type) {
     case "latest":
@@ -34,7 +38,9 @@ const getInstaller = (platform: Platform, version: string) => {
     case "snapshot":
       return new SnapshotInstaller(platform);
     case "four-parts":
-      return new KnownGoodVersionInstaller(platform);
+      return new KnownGoodVersionInstaller(platform, {
+        resolveBrowserVersionOnly,
+      });
   }
 };
 
@@ -136,7 +142,10 @@ async function run(): Promise<void> {
 
     core.info(`Setup chrome ${version}`);
 
-    const installer = getInstaller(platform, version);
+    const resolveBrowserVersionOnly = !flgInstallChromedriver;
+    const installer = getInstaller(platform, version, {
+      resolveBrowserVersionOnly,
+    });
     const browserBinPath = await installBrowser(installer, version);
     const actualBrowserVersion = await testVersion(platform, browserBinPath);
 

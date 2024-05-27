@@ -32,10 +32,13 @@ afterEach(() => {
 });
 
 describe("KnownGoodVersionInstaller", () => {
-  const installer = new KnownGoodVersionInstaller({
-    os: "linux",
-    arch: "amd64",
-  });
+  const installer = new KnownGoodVersionInstaller(
+    {
+      os: "linux",
+      arch: "amd64",
+    },
+    { resolveBrowserVersionOnly: false },
+  );
 
   test("checkInstalledBrowser should return installed path if installed", async () => {
     cacheFindSpy.mockResolvedValue(
@@ -100,6 +103,19 @@ describe("KnownGoodVersionInstaller", () => {
     expect(tcDownloadToolSpy).toHaveBeenCalled();
   });
 
+  test("downloadDriver should throw an error when browser only mode", async () => {
+    const installer = new KnownGoodVersionInstaller(
+      {
+        os: "linux",
+        arch: "amd64",
+      },
+      { resolveBrowserVersionOnly: true },
+    );
+    expect(installer.downloadDriver("120.0.6099.x")).rejects.toThrowError(
+      "Unexpectedly trying to download chromedriver",
+    );
+  });
+
   test("installDriver should install driver", async () => {
     tcExtractZipSpy.mockImplementation(async () => "/tmp/extracted");
     cacheCacheDirSpy.mockImplementation(async () => "/path/to/chromedriver");
@@ -117,5 +133,18 @@ describe("KnownGoodVersionInstaller", () => {
       "chromedriver",
       "120.0.6099.56",
     );
+  });
+
+  test("installDriver should throw an error when browser only mode", async () => {
+    const installer = new KnownGoodVersionInstaller(
+      {
+        os: "linux",
+        arch: "amd64",
+      },
+      { resolveBrowserVersionOnly: true },
+    );
+    expect(
+      installer.installDriver("120.0.6099.x", "/tmp/chromedriver.zip"),
+    ).rejects.toThrowError("Unexpectedly trying to install chromedriver");
   });
 });
