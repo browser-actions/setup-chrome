@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.1...setup-chrome-v1.7.2) (2024-07-13)
+
+
+### Bug Fixes
+
+* sign published tags and commits ([#573](https://github.com/browser-actions/setup-chrome/issues/573)) ([d5fbe5f](https://github.com/browser-actions/setup-chrome/commit/d5fbe5f06ceee6c9cff2cc9ac4c80ca19f410a57)), closes [#558](https://github.com/browser-actions/setup-chrome/issues/558)
+
 ## [1.7.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.0...setup-chrome-v1.7.1) (2024-05-27)
 
 
