@@ -94,7 +94,7 @@ const installDependencies = async (
       case "linuxmint":
         return DEBIAN_BASED_DEPENDENT_PACKAGES;
       case "ubuntu":
-        return versionId === "24"
+        return parseInt(versionId.split(".")[0], 10) >= 24
           ? UBUNTU_24_DEPENDENT_PACKAGES
           : DEBIAN_BASED_DEPENDENT_PACKAGES;
       case "opensuse":
