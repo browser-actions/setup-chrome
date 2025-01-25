@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.3](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.2...setup-chrome-v1.7.3) (2025-01-25)
+
+
+### Bug Fixes
+
+* support ubuntu 24 ([#620](https://github.com/browser-actions/setup-chrome/issues/620)) ([fffa33d](https://github.com/browser-actions/setup-chrome/commit/fffa33d133898c34a1bcbb9e79f27731e4a8b0dc)), closes [#618](https://github.com/browser-actions/setup-chrome/issues/618)
+
 ## [1.7.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.1...setup-chrome-v1.7.2) (2024-07-13)
 
 
