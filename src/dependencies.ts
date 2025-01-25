@@ -19,6 +19,25 @@ const DEBIAN_BASED_DEPENDENT_PACKAGES = [
   "xdg-utils",
 ];
 
+const UBUNTU_24_DEPENDENT_PACKAGES = [
+  "libasound2t64",
+  "libatk-bridge2.0-0",
+  "libatk1.0-0",
+  "libcairo2",
+  "libcups2",
+  "libdbus-1-3",
+  "libexpat1",
+  "libgbm1",
+  "libglib2.0-0",
+  "libnss3",
+  "libpango-1.0-0",
+  "libxcomposite1",
+  "libxdamage1",
+  "libxfixes3",
+  "libxkbcommon0",
+  "libxrandr2",
+];
+
 const FEDORA_BASED_DEPENDENT_PACKAGES = [
   "alsa-lib",
   "atk",
@@ -64,23 +83,26 @@ const installDependencies = async (
   }
 
   const packages = await (async () => {
-    const osReleaseId = await runtime.getOsReleaseId();
-    switch (osReleaseId) {
+    const { ID: id, VERSION_ID: versionId } = await runtime.loadOsRelease();
+    switch (id) {
       case "rhel":
       case "centos":
       case "ol":
       case "fedora":
         return FEDORA_BASED_DEPENDENT_PACKAGES;
       case "debian":
-      case "ubuntu":
       case "linuxmint":
         return DEBIAN_BASED_DEPENDENT_PACKAGES;
+      case "ubuntu":
+        return versionId === "24"
+          ? UBUNTU_24_DEPENDENT_PACKAGES
+          : DEBIAN_BASED_DEPENDENT_PACKAGES;
       case "opensuse":
       case "opensuse-leap":
       case "sles":
         return SUSE_BASED_DEPENDENT_PACKAGES;
     }
-    throw new Error(`Unsupported OS: ${osReleaseId}`);
+    throw new Error(`Unsupported OS: ${id}`);
   })();
   const sudo = !noSudo && process.getuid?.() !== 0;
 
