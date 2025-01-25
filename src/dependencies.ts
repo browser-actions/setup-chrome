@@ -21,14 +21,14 @@ const DEBIAN_BASED_DEPENDENT_PACKAGES = [
 
 const UBUNTU_24_DEPENDENT_PACKAGES = [
   "libasound2t64",
-  "libatk-bridge2.0-0",
-  "libatk1.0-0",
+  "libatk-bridge2.0-0t64",
+  "libatk1.0-0t64",
   "libcairo2",
-  "libcups2",
+  "libcups2t64",
   "libdbus-1-3",
   "libexpat1",
   "libgbm1",
-  "libglib2.0-0",
+  "libglib2.0-0t64",
   "libnss3",
   "libpango-1.0-0",
   "libxcomposite1",
