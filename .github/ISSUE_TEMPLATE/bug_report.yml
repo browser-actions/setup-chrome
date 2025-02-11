@@ -1,0 +1,53 @@
+name: 🐞 Bug Report
+description: File a bug report
+title: "🐞 <title>"
+labels: ["bug"]
+projects: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    attributes:
+      label: What is happening?
+      description: Please provide a clear and concise description of what the bug is.
+      placeholder: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Version where you found the bug
+      description: What version of the action are you using?
+      placeholder: vX.Y.Z (e.g. v1.0.0) or find it in the logs if you're using a latest version
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Runner specifics
+      description: What runner are you using? Self-hosted, GitHub-hosted, or a specific cloud provider?
+      placeholder: e.g. ubuntu-latest, macos-latest, windows-latest, Self-hosted, etc.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Action workflow configuration
+      description: Full workflow file content or a snippet that reproduces the issue.
+      placeholder: |
+        steps:
+          - uses: browser-actions/setup-chrome@latest
+            with:
+              chrome-version: 'latest'
+      render: yaml
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Link to the workflow run
+      description: Please provide a link to the workflow run where you encountered the bug.
+      placeholder: 'https://github.com/...'
+  - type: textarea
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
