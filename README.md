@@ -90,6 +90,8 @@ steps:
   Default: `false`
 - `install-chromedriver`: *(Optional)* Install the compatible ChromeDriver with the browser.
   Default: `false`
+- `no-sudo`: *(Optional)* Do not use sudo to install Google Chrome/Chromium (Linux only).
+  Default: `false`
 
 ### Outputs
 
