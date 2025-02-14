@@ -16,7 +16,7 @@
     "actions-swing": "^0.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.2",
+    "@biomejs/biome": "^1.9.3",
     "@types/node": "^20.6.2",
     "@vercel/ncc": "^0.38.1",
     "typescript": "^5.4.5",
