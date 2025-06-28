@@ -36,7 +36,7 @@ jobs:
       - name: Install Google Chrome
         uses: ./
         with:
-          chrome-version: ${{ matrix.version }}
+          chrome-version: stable
           install-chromedriver: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
