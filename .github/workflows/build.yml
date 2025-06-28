@@ -29,8 +29,8 @@ jobs:
     needs: [build]
     strategy:
       matrix:
-        os: [windows, windows-11-arm]
-        version: [stable, beta, dev]
+        os: [windows-11-arm]
+        version: [stable]
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/download-artifact@v4
