@@ -52,7 +52,7 @@ export class WindowsChannelInstaller implements Installer {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
-    if (version === "canary" || this.platform.arch === Arch.ARM64) {
+    if (version === "canary") {
       throw new Error(
         `Chrome ${version} not supported for platform "${this.platform.os}" "${this.platform.arch}"`,
       );
@@ -76,19 +76,13 @@ export class WindowsChannelInstaller implements Installer {
     const ap = {
       [Arch.AMD64]: "-arch_x64-statsdef_1",
       [Arch.I686]: "-arch_x86-statsdef_1",
+      [Arch.ARM64]: "-arch_arm64-statsdef_1",
     };
     const installdataindex = "empty";
     const path = {
-      [Arch.AMD64]: {
-        stable: "chrome/install/ChromeStandaloneSetup64.exe",
-        beta: "chrome/install/beta/ChromeBetaStandaloneSetup64.exe",
-        dev: "chrome/install/dev/ChromeDevStandaloneSetup64.exe",
-      },
-      [Arch.I686]: {
-        stable: "chrome/install/ChromeStandaloneSetup.exe",
-        beta: "chrome/install/beta/ChromeBetaStandaloneSetup.exe",
-        dev: "chrome/install/dev/ChromeDevStandaloneSetup.exe",
-      },
+      [Arch.AMD64]: "update2/installers/ChromeSetup.exe",
+      [Arch.I686]: "update2/installers/ChromeSetup.exe",
+      [Arch.ARM64]: "update2/installers/experimental/0/ChromeSetup.exe",
     };
 
     const params = [
@@ -106,7 +100,7 @@ export class WindowsChannelInstaller implements Installer {
       .join("&");
 
     const url = `https://dl.google.com/tag/s/${encodeURIComponent(params)}/${
-      path[this.platform.arch][version]
+      path[this.platform.arch]
     }`;
 
     core.info(`Acquiring chrome ${version} from ${url}`);
