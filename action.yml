@@ -15,6 +15,11 @@ inputs:
     description: |-
       Install the compatible version of ChromeDriver with the installed Google Chrome/Chromium.
     default: false
+  force-install:
+    description: |-
+      Force installation even if Chrome/Chromium is already available in the runner.
+    default: false
+    required: false
   no-sudo:
     description: |-
       Do not use sudo to install Google Chrome/Chromium (Linux only).

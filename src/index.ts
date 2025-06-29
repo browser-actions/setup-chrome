@@ -44,11 +44,21 @@ const getInstaller = (
   }
 };
 
-const installBrowser = async (installer: Installer, version: string) => {
-  const cache = await installer.checkInstalledBrowser(version);
-  if (cache) {
-    core.info(`Found in cache of chrome ${version} @ ${cache.root}`);
-    return path.join(cache.root, cache.bin);
+const installBrowser = async (
+  installer: Installer,
+  version: string,
+  forceInstall = false,
+) => {
+  if (!forceInstall) {
+    const cache = await installer.checkInstalledBrowser(version);
+    if (cache) {
+      core.info(`Found in cache of chrome ${version} @ ${cache.root}`);
+      return path.join(cache.root, cache.bin);
+    }
+  } else {
+    core.info(
+      `Force install enabled, skipping cache check for chrome ${version}`,
+    );
   }
 
   core.info(`Attempting to download chrome ${version}...`);
@@ -60,11 +70,21 @@ const installBrowser = async (installer: Installer, version: string) => {
   return path.join(root, bin);
 };
 
-const installDriver = async (installer: Installer, version: string) => {
-  const cache = await installer.checkInstalledDriver(version);
-  if (cache) {
-    core.info(`Found in cache of chromedriver ${version} @ ${cache.root}`);
-    return path.join(cache.root, cache.bin);
+const installDriver = async (
+  installer: Installer,
+  version: string,
+  forceInstall = false,
+) => {
+  if (!forceInstall) {
+    const cache = await installer.checkInstalledDriver(version);
+    if (cache) {
+      core.info(`Found in cache of chromedriver ${version} @ ${cache.root}`);
+      return path.join(cache.root, cache.bin);
+    }
+  } else {
+    core.info(
+      `Force install enabled, skipping cache check for chromedriver ${version}`,
+    );
   }
 
   core.info(`Attempting to download chromedriver ${version}...`);
@@ -134,6 +154,7 @@ async function run(): Promise<void> {
     const flgInstallChromedriver =
       core.getInput("install-chromedriver") === "true";
     const noSudo = core.getInput("no-sudo") === "true";
+    const forceInstall = core.getInput("force-install") === "true";
 
     if (flagInstallDependencies) {
       core.info("Installing dependencies");
@@ -146,7 +167,11 @@ async function run(): Promise<void> {
     const installer = getInstaller(platform, version, {
       resolveBrowserVersionOnly,
     });
-    const browserBinPath = await installBrowser(installer, version);
+    const browserBinPath = await installBrowser(
+      installer,
+      version,
+      forceInstall,
+    );
     const actualBrowserVersion = await testVersion(platform, browserBinPath);
 
     core.addPath(path.dirname(browserBinPath));
@@ -157,7 +182,11 @@ async function run(): Promise<void> {
     if (flgInstallChromedriver) {
       core.info(`Setup chromedriver ${version}`);
 
-      const driverBinPath = await installDriver(installer, version);
+      const driverBinPath = await installDriver(
+        installer,
+        version,
+        forceInstall,
+      );
       const actualDriverVersion = await testVersion(platform, driverBinPath);
 
       core.addPath(path.dirname(driverBinPath));
