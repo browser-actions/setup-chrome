@@ -13,7 +13,8 @@ export type PlatformString =
   | "mac-arm64"
   | "mac-x64"
   | "win32"
-  | "win64";
+  | "win64"
+  | "win-arm64";
 
 export type LastKnownGoodVersionsJson = {
   timestamp: string;
@@ -72,6 +73,8 @@ const platformString = (platform: Platform): PlatformString => {
     return "win64";
   } else if (platform.os === OS.WINDOWS && platform.arch === Arch.I686) {
     return "win32";
+  } else if (platform.os === OS.WINDOWS && platform.arch === Arch.ARM64) {
+    return "win-arm64";
   }
   throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
 };
