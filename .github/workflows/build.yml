@@ -28,6 +28,9 @@ jobs:
   test:
     needs: [build]
     runs-on: windows-11-arm
+    strategy:
+      matrix:
+        chrome-version: [stable, beta, dev]
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -36,7 +39,7 @@ jobs:
       - name: Install Google Chrome
         uses: ./
         with:
-          chrome-version: stable
+          chrome-version: ${{ matrix.chrome-version }}
           force-install: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
