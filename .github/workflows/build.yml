@@ -37,6 +37,7 @@ jobs:
         uses: ./
         with:
           chrome-version: stable
+          force-install: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
