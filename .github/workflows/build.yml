@@ -37,6 +37,8 @@ jobs:
         with:
           name: dist
 
+      - name: Check RUNNER_TOOL_CACHE value
+        run: echo "RUNNER_TOOL_CACHE=${{ env.RUNNER_TOOL_CACHE }}"
       - name: Install Google Chrome
         uses: ./
         with:
