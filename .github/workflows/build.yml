@@ -45,4 +45,3 @@ jobs:
       - if: runner.os == 'Windows'
         run: |
           (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
-          (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chromedriver-path }}").Source).VersionInfo.ProductVersion
