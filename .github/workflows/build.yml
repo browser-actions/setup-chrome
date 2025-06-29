@@ -40,7 +40,6 @@ jobs:
         uses: ./
         with:
           chrome-version: ${{ matrix.chrome-version }}
-          force-install: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
