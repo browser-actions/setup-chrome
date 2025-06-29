@@ -74,6 +74,7 @@ const platformString = (platform: Platform): PlatformString => {
   } else if (platform.os === OS.WINDOWS && platform.arch === Arch.I686) {
     return "win32";
   } else if (platform.os === OS.WINDOWS && platform.arch === Arch.ARM64) {
+    // The Chrome for Testing project does not provide a win-arm64 version, but it's required by the channel installers.
     return "win-arm64";
   }
   throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
