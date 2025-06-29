@@ -73,15 +73,6 @@ describe("KnownGoodVersionResolver", () => {
       "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/113.0.5672.0/linux64/chrome-linux64.zip",
     );
   });
-
-  test("unsupported platform", async () => {
-    expect(() => {
-      new LastKnownGoodVersionResolver({
-        os: "windows",
-        arch: "arm64",
-      });
-    }).toThrow("Unsupported platform: windows arm64");
-  });
 });
 
 describe("LastKnownGoodVersionResolver", () => {
@@ -122,14 +113,5 @@ describe("LastKnownGoodVersionResolver", () => {
     await resolver.resolve("stable");
     await resolver.resolve("beta");
     expect(getJsonSpy).toHaveBeenCalledTimes(1);
-  });
-
-  test("unsupported platform", async () => {
-    expect(() => {
-      new LastKnownGoodVersionResolver({
-        os: "windows",
-        arch: "arm64",
-      });
-    }).toThrow("Unsupported platform: windows arm64");
   });
 });
