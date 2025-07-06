@@ -76,7 +76,7 @@ describe("MacOSChannelInstaller", () => {
         bin: "Contents/MacOS/Google Chrome for Testing",
       });
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
-        "/path/to/archive/Google Chrome for Testing.app",
+        "/path/to/archive/chrome-mac-x64/Google Chrome for Testing.app",
         "chrome",
         "stable",
       );

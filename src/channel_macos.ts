@@ -58,7 +58,11 @@ export class MacOSChannelInstaller implements Installer {
     }
 
     const extPath = await tc.extractZip(archive);
-    const extAppRoot = path.join(extPath, "Google Chrome for Testing.app");
+    const extAppRoot = path.join(
+      extPath,
+      `chrome-${this.versionResolver.platformString}`,
+      "Google Chrome for Testing.app",
+    );
 
     const root = await cache.cacheDir(extAppRoot, "chrome", version);
     core.info(`Successfully Installed chrome to ${root}`);
