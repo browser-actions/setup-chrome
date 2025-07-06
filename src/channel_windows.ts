@@ -35,17 +35,11 @@ export class WindowsChannelInstaller implements Installer {
       throw new Error(`Unexpected version: ${version}`);
     }
 
-    const root = this.browserRootDir(version);
-    try {
-      await fs.promises.stat(root);
-    } catch (e) {
-      if (isENOENT(e)) {
-        return undefined;
-      }
-      throw e;
-    }
-
-    return { root, bin: "chrome.exe" };
+    // Skip checking if the browser is installed by the official installer.
+    // The official installer installs to the default location and
+    // some github-hosted runners have outdated versions.
+    // It enables us to use the latest version of the browser.
+    return undefined;
   }
 
   async downloadBrowser(version: string): Promise<DownloadResult> {
