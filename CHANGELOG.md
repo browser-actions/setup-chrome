@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.3...setup-chrome-v2.0.0) (2025-07-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use chrome for testing as default ([#632](https://github.com/browser-actions/setup-chrome/issues/632))
+
+### Features
+
+* Use chrome for testing as default ([#632](https://github.com/browser-actions/setup-chrome/issues/632)) ([3bb0bd6](https://github.com/browser-actions/setup-chrome/commit/3bb0bd6d007ec9466e7bbfd8ad353069f10b2bc2))
+
 ## [1.7.3](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.2...setup-chrome-v1.7.3) (2025-01-25)
 
 
