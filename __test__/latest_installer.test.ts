@@ -26,14 +26,14 @@ describe("LatestInstaller", () => {
 
       const result = await installer.checkInstalledBrowser("latest");
       expect(result).toBe(undefined);
-      expect(cacheFindSpy).toHaveBeenCalledWith("chromium", "123456");
+      expect(cacheFindSpy).toHaveBeenCalledWith("chrome", "123456");
     });
 
     test("returns install result if installed", async () => {
-      cacheFindSpy.mockResolvedValue("/path/to/chromium");
+      cacheFindSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.checkInstalledBrowser("latest");
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
     });
   });
 
@@ -52,17 +52,17 @@ describe("LatestInstaller", () => {
   describe("installBrowser", () => {
     test("installs the browser", async () => {
       tcExtractZipSpy.mockResolvedValue("/path/to/ext");
-      cacheCacheDirSpy.mockResolvedValue("/path/to/chromium");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.installBrowser(
         "latest",
         "/tmp/chrome.zip",
       );
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
       expect(tcExtractZipSpy).toHaveBeenCalled();
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
         "/path/to/ext/chrome-linux",
-        "chromium",
+        "chrome",
         "123456",
       );
     });

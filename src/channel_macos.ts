@@ -24,7 +24,7 @@ export class MacOSChannelInstaller implements Installer {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
-    const root = await cache.find("chromium", version);
+    const root = await cache.find("chrome", version);
     if (root) {
       return { root, bin: "Contents/MacOS/Google Chrome for Testing" };
     }
@@ -60,8 +60,8 @@ export class MacOSChannelInstaller implements Installer {
     const extPath = await tc.extractZip(archive);
     const extAppRoot = path.join(extPath, "Google Chrome for Testing.app");
 
-    const root = await cache.cacheDir(extAppRoot, "chromium", version);
-    core.info(`Successfully Installed chromium to ${root}`);
+    const root = await cache.cacheDir(extAppRoot, "chrome", version);
+    core.info(`Successfully Installed chrome to ${root}`);
 
     return { root, bin: "Contents/MacOS/Google Chrome for Testing" };
   }

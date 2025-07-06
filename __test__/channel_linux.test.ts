@@ -25,11 +25,11 @@ describe("LinuxChannelInstaller", () => {
     });
 
     test("return install result if installed", async () => {
-      cacheFindSpy.mockResolvedValue("/path/to/chromium");
+      cacheFindSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.checkInstalledBrowser("stable");
 
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
     });
   });
 
@@ -59,17 +59,17 @@ describe("LinuxChannelInstaller", () => {
 
     test("install stable version", async () => {
       tcExtractZipSpy.mockResolvedValue("/deb-abcdef");
-      cacheCacheDirSpy.mockResolvedValue("/path/to/chromium");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.installBrowser(
         "stable",
         "/path/to/downloaded.deb",
       );
 
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
         "/deb-abcdef/chrome-linux64",
-        "chromium",
+        "chrome",
         "stable",
       );
     });

@@ -23,7 +23,7 @@ export class KnownGoodVersionInstaller implements Installer {
   async checkInstalledBrowser(
     version: string,
   ): Promise<InstallResult | undefined> {
-    const root = await cache.find("chromium", version);
+    const root = await cache.find("chrome", version);
     if (root) {
       return { root, bin: "chrome" };
     }
@@ -60,8 +60,8 @@ export class KnownGoodVersionInstaller implements Installer {
       `chrome-${this.versionResolver.platformString}`,
     );
 
-    const root = await cache.cacheDir(extAppRoot, "chromium", resolved.version);
-    core.info(`Successfully Installed chromium to ${root}`);
+    const root = await cache.cacheDir(extAppRoot, "chrome", resolved.version);
+    core.info(`Successfully Installed chrome to ${root}`);
     const bin = (() => {
       switch (this.platform.os) {
         case OS.DARWIN:

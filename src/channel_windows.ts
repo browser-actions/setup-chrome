@@ -27,7 +27,7 @@ export class WindowsChannelInstaller implements Installer {
       throw new Error(`Unexpected version: ${version}`);
     }
 
-    const root = await cache.find("chromium", version);
+    const root = await cache.find("chrome", version);
     if (root) {
       return { root, bin: "chrome.exe" };
     }
@@ -66,8 +66,8 @@ export class WindowsChannelInstaller implements Installer {
       `chrome-${this.versionResolver.platformString}`,
     );
 
-    const root = await cache.cacheDir(extAppRoot, "chromium", version);
-    core.info(`Successfully Installed chromium to ${root}`);
+    const root = await cache.cacheDir(extAppRoot, "chrome", version);
+    core.info(`Successfully Installed chrome to ${root}`);
 
     return { root, bin: "chrome.exe" };
   }

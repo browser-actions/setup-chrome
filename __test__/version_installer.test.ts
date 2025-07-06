@@ -42,36 +42,36 @@ describe("KnownGoodVersionInstaller", () => {
 
   test("checkInstalledBrowser should return installed path if installed", async () => {
     cacheFindSpy.mockResolvedValue(
-      "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
+      "/opt/hostedtoolcache/setup-chrome/chrome/120.0.6099.56/x64",
     );
 
     const installed = await installer.checkInstalledBrowser("120.0.6099.x");
     expect(installed?.root).toEqual(
-      "/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.56/x64",
+      "/opt/hostedtoolcache/setup-chrome/chrome/120.0.6099.56/x64",
     );
-    expect(cacheFindSpy).toHaveBeenCalledWith("chromium", "120.0.6099.x");
+    expect(cacheFindSpy).toHaveBeenCalledWith("chrome", "120.0.6099.x");
   });
 
   test("downloadBrowser should download browser archive", async () => {
-    tcDownloadToolSpy.mockImplementation(async () => "/tmp/chromium.zip");
+    tcDownloadToolSpy.mockImplementation(async () => "/tmp/chrome.zip");
 
     const downloaded = await installer.downloadBrowser("120.0.6099.x");
-    expect(downloaded?.archive).toEqual("/tmp/chromium.zip");
+    expect(downloaded?.archive).toEqual("/tmp/chrome.zip");
     expect(tcDownloadToolSpy).toHaveBeenCalled();
   });
 
   test("installDriver should install browser", async () => {
     tcExtractZipSpy.mockImplementation(async () => "/tmp/extracted");
-    cacheCacheDirSpy.mockImplementation(async () => "/path/to/chromium");
+    cacheCacheDirSpy.mockImplementation(async () => "/path/to/chrome");
 
     const installed = await installer.installBrowser(
       "120.0.6099.x",
-      "/tmp/chromium.zip",
+      "/tmp/chrome.zip",
     );
-    expect(installed).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+    expect(installed).toEqual({ root: "/path/to/chrome", bin: "chrome" });
     expect(cacheCacheDirSpy).toHaveBeenCalledWith(
       "/tmp/extracted/chrome-linux64",
-      "chromium",
+      "chrome",
       "120.0.6099.56",
     );
   });

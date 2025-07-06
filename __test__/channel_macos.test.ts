@@ -77,7 +77,7 @@ describe("MacOSChannelInstaller", () => {
       });
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
         "/path/to/archive/Google Chrome for Testing.app",
-        "chromium",
+        "chrome",
         "stable",
       );
     });
