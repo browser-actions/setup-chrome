@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu, macos, windows]
-        version: ["", 1295939, 120, dev]
+        version: ["", 1295939, 120, dev, latest]
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/download-artifact@v4

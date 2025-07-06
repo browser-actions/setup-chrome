@@ -1,6 +1,6 @@
 export type InstallResult = {
-  root: string; // root is a directory containing all contents for chromium
-  bin: string; // bin is a sub-path to chromium executable binary from root
+  root: string; // root is a directory containing all contents for chrome
+  bin: string; // bin is a sub-path to chrome executable binary from root
 };
 
 export type DownloadResult = {

@@ -127,7 +127,7 @@ const testVersion = async (
 
 async function run(): Promise<void> {
   try {
-    const version = core.getInput("chrome-version") || "latest";
+    const version = core.getInput("chrome-version") || "stable";
     const platform = getPlatform();
     const flagInstallDependencies =
       core.getInput("install-dependencies") === "true";
@@ -152,7 +152,7 @@ async function run(): Promise<void> {
     core.addPath(path.dirname(browserBinPath));
     core.setOutput("chrome-path", browserBinPath);
     core.setOutput("chrome-version", actualBrowserVersion);
-    core.info(`Successfully setup chromium ${actualBrowserVersion}`);
+    core.info(`Successfully setup chrome ${actualBrowserVersion}`);
 
     if (flgInstallChromedriver) {
       core.info(`Setup chromedriver ${version}`);

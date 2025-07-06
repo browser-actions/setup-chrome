@@ -14,7 +14,7 @@ This action sets-up Google Chrome/Chromium for GitHub Actions. This action suppo
 ## Usage
 
 Here is a basic usage.
-The action installs the latest build by default.
+The action installs the stable version of Chrome for Testing by default.
 
 ```yaml
 steps:
@@ -58,9 +58,9 @@ steps:
 
 The action supports the following version formats:
 
-- The latest snapshot `latest` (default).
+- The latest snapshot `latest`.
 - Commit positions like `1295939`.  You can find commit positions from [here][snapshots].
-- Google Chrome release channels: `stable`, `beta`, `dev` and `canary`
+- Google Chrome release channels: `stable` (default), `beta`, `dev` and `canary`
 - Specific versions: `119`, `120.0.6099`, `121.0.6100.0`.  The version are resolved by [Chrome for Testing][].
 
 [Chrome for Testing]: https://googlechromelabs.github.io/chrome-for-testing/

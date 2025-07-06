@@ -12,7 +12,7 @@ export class SnapshotInstaller implements Installer {
   async checkInstalledBrowser(
     version: string,
   ): Promise<InstallResult | undefined> {
-    const root = await cache.find("chromium", version);
+    const root = await cache.find("chrome", version);
     if (root) {
       return { root, bin: "chrome" };
     }
@@ -51,8 +51,8 @@ export class SnapshotInstaller implements Installer {
       }
     })();
 
-    root = await cache.cacheDir(root, "chromium", version);
-    core.info(`Successfully Installed chromium to ${root}`);
+    root = await cache.cacheDir(root, "chrome", version);
+    core.info(`Successfully Installed chrome to ${root}`);
 
     return { root, bin };
   }

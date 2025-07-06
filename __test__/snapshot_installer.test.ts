@@ -24,10 +24,10 @@ describe("SnapshotInstaller", () => {
     });
 
     test("returns install result if installed", async () => {
-      cacheFindSpy.mockResolvedValue("/path/to/chromium");
+      cacheFindSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.checkInstalledBrowser("123456");
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
     });
   });
 
@@ -44,13 +44,13 @@ describe("SnapshotInstaller", () => {
   describe("installBrowser", () => {
     test("installs the browser", async () => {
       tcExtractZipSpy.mockResolvedValue("/path/to/ext");
-      cacheCacheDirSpy.mockResolvedValue("/path/to/chromium");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.installBrowser(
         "123456",
         "/tmp/chrome.zip",
       );
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
       expect(tcExtractZipSpy).toHaveBeenCalled();
       expect(cacheCacheDirSpy).toHaveBeenCalled();
     });

@@ -1,5 +1,3 @@
-import * as fs from "node:fs";
-import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
@@ -9,9 +7,6 @@ const cacheFindSpy = vi.spyOn(cache, "find");
 const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
 const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
-const execSpy = vi.spyOn(exec, "exec");
-const fsMkdtempSpy = vi.spyOn(fs.promises, "mkdtemp");
-const fsUnlinkSpy = vi.spyOn(fs.promises, "unlink");
 
 afterEach(() => {
   vi.resetAllMocks();
@@ -30,11 +25,11 @@ describe("LinuxChannelInstaller", () => {
     });
 
     test("return install result if installed", async () => {
-      cacheFindSpy.mockResolvedValue("/path/to/chromium");
+      cacheFindSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.checkInstalledBrowser("stable");
 
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
     });
   });
 
@@ -42,12 +37,6 @@ describe("LinuxChannelInstaller", () => {
     test("throw error if version is not release channel", async () => {
       await expect(installer.downloadBrowser("foo")).rejects.toThrowError(
         "Unexpected version: foo",
-      );
-    });
-
-    test("throw error if version is canary", async () => {
-      await expect(installer.downloadBrowser("canary")).rejects.toThrowError(
-        "Chrome canary not supported for platform linux amd64",
       );
     });
 
@@ -64,31 +53,23 @@ describe("LinuxChannelInstaller", () => {
   describe("installBrowser", () => {
     test("throw error if version is not release channel", async () => {
       await expect(
-        installer.installBrowser("foo", "/path/to/downloaded.deb"),
+        installer.installBrowser("foo", "/path/to/downloaded.zip"),
       ).rejects.toThrowError("Unexpected version: foo");
     });
 
-    test("throw error if version is canary", async () => {
-      await expect(
-        installer.installBrowser("canary", "/path/to/downloaded.deb"),
-      ).rejects.toThrowError("Chrome canary not supported for Linux");
-    });
-
     test("install stable version", async () => {
-      fsMkdtempSpy.mockResolvedValue("/deb-abcdef");
-      fsUnlinkSpy.mockResolvedValue(undefined);
-      execSpy.mockResolvedValue(0);
-      cacheCacheDirSpy.mockResolvedValue("/path/to/chromium");
+      tcExtractZipSpy.mockResolvedValue("/deb-abcdef");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/chrome");
 
       const result = await installer.installBrowser(
         "stable",
         "/path/to/downloaded.deb",
       );
 
-      expect(result).toEqual({ root: "/path/to/chromium", bin: "chrome" });
+      expect(result).toEqual({ root: "/path/to/chrome", bin: "chrome" });
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
-        "/deb-abcdef",
-        "chromium",
+        "/deb-abcdef/chrome-linux64",
+        "chrome",
         "stable",
       );
     });
