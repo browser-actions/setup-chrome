@@ -1,5 +1,3 @@
-import * as fs from "node:fs";
-import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
@@ -9,8 +7,6 @@ const cacheFindSpy = vi.spyOn(cache, "find");
 const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
 const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
-const fsSymlinkSpy = vi.spyOn(fs.promises, "symlink");
-const execSpy = vi.spyOn(exec, "exec");
 
 afterEach(() => {
   vi.resetAllMocks();
@@ -38,7 +34,7 @@ describe("MacOSChannelInstaller", () => {
 
       expect(result).toEqual({
         root: "/path/to/Chromium.app",
-        bin: "Contents/MacOS/chrome",
+        bin: "Contents/MacOS/Google Chrome for Testing",
       });
     });
   });
@@ -67,9 +63,8 @@ describe("MacOSChannelInstaller", () => {
     });
 
     test("install stable version", async () => {
-      execSpy.mockResolvedValue(0);
-      fsSymlinkSpy.mockResolvedValue();
-      cacheCacheDirSpy.mockResolvedValue("/path/to/Chromium.app");
+      tcExtractZipSpy.mockResolvedValue("/path/to/archive");
+      cacheCacheDirSpy.mockResolvedValue("/path/to/Chromium for Testing.app");
 
       const result = await installer.installBrowser(
         "stable",
@@ -77,11 +72,11 @@ describe("MacOSChannelInstaller", () => {
       );
 
       expect(result).toEqual({
-        root: "/path/to/Chromium.app",
-        bin: "Contents/MacOS/chrome",
+        root: "/path/to/Chromium for Testing.app",
+        bin: "Contents/MacOS/Google Chrome for Testing",
       });
       expect(cacheCacheDirSpy).toHaveBeenCalledWith(
-        "/Volumes/downloaded.dmg/Google Chrome.app",
+        "/path/to/archive/Google Chrome for Testing.app",
         "chromium",
         "stable",
       );

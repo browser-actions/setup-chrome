@@ -1,17 +1,14 @@
 import * as fs from "node:fs";
-import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
 import { WindowsChannelInstaller } from "../src/channel_windows";
 
-const fsStatSpy = vi.spyOn(fs.promises, "stat");
 const fsRenameSpy = vi.spyOn(fs.promises, "rename");
 const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
 const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
 const cacheFindSpy = vi.spyOn(cache, "find");
 const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
-const execSpy = vi.spyOn(exec, "exec");
 
 afterEach(() => {
   vi.resetAllMocks();
@@ -25,21 +22,20 @@ describe("WindowsChannelInstaller", () => {
 
   describe("checkInstalledBrowser", () => {
     test("returns undefined if the root directory does not exist", async () => {
+      cacheFindSpy.mockResolvedValue(undefined);
+
       const result = await installer.checkInstalledBrowser("stable");
       expect(result).toBe(undefined);
     });
 
     test("returns the root directory and bin path if the root directory exists", async () => {
-      fsStatSpy.mockResolvedValue(undefined);
+      cacheFindSpy.mockResolvedValue("C:\\path\\to\\chrome");
 
       const result = await installer.checkInstalledBrowser("stable");
       expect(result).toEqual({
-        root: "C:\\Program Files\\Google\\Chrome\\Application",
+        root: "C:\\path\\to\\chrome",
         bin: "chrome.exe",
       });
-      expect(fsStatSpy).toHaveBeenCalledWith(
-        "C:\\Program Files\\Google\\Chrome\\Application",
-      );
     });
   });
 
@@ -70,21 +66,17 @@ describe("WindowsChannelInstaller", () => {
     });
 
     test("install the stable version of Chrome", async () => {
-      execSpy.mockResolvedValue(undefined);
-      fsRenameSpy.mockResolvedValue(undefined);
+      tcExtractZipSpy.mockResolvedValue("C:\\path\\to\\extract\\directory");
+      cacheCacheDirSpy.mockResolvedValue("C:\\path\\to\\chrome");
 
       const result = await installer.installBrowser(
         "stable",
-        "C:\\path\\to\\downloaded\\installer.exe",
+        "C:\\path\\to\\downloaded\\file.zip",
       );
       expect(result).toEqual({
-        root: "C:\\Program Files\\Google\\Chrome\\Application",
+        root: "C:\\path\\to\\chrome",
         bin: "chrome.exe",
       });
-      expect(execSpy).toHaveBeenCalledWith(
-        "C:\\path\\to\\downloaded\\installer.exe",
-        ["/silent", "/install"],
-      );
     });
   });
 
@@ -97,11 +89,11 @@ describe("WindowsChannelInstaller", () => {
     });
 
     test("return install result if installed", async () => {
-      cacheFindSpy.mockResolvedValue("/path/to/chromedriver");
+      cacheFindSpy.mockResolvedValue("C:\\path\\to\\chromedriver");
 
       const result = await installer.checkInstalledDriver("stable");
       expect(result).toEqual({
-        root: "/path/to/chromedriver",
+        root: "C:\\path\\to\\chromedriver",
         bin: "chromedriver",
       });
     });
