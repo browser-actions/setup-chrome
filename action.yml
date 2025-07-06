@@ -5,7 +5,7 @@ inputs:
   chrome-version:
     description: |-
       The Google Chrome/Chromium version to install and use.
-    default: latest
+    default: stable
     required: false
   install-dependencies:
     description: |-
