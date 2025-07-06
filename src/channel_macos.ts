@@ -10,12 +10,15 @@ import { isReleaseChannelName } from "./version";
 export class MacOSChannelInstaller implements Installer {
   private readonly versionResolver: LastKnownGoodVersionResolver;
 
+  private readonly platform: Platform;
+
   constructor(platform: Platform) {
     if (platform.os !== "darwin") {
       throw new Error(`Unexpected OS: ${platform.os}`);
     }
 
     this.versionResolver = new LastKnownGoodVersionResolver(platform);
+    this.platform = platform;
   }
 
   async checkInstalledBrowser(
@@ -38,7 +41,7 @@ export class MacOSChannelInstaller implements Installer {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(
-        `Version ${version} not found in chrome for testing versions`,
+        `Version ${version} not found in chrome for testing versions for ${this.platform.os} ${this.platform.arch}`,
       );
     }
 
@@ -83,7 +86,7 @@ export class MacOSChannelInstaller implements Installer {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(
-        `Version ${version} not found in chrome for testing versions`,
+        `Version ${version} not found in chrome for testing versions for ${this.platform.os} ${this.platform.arch}`,
       );
     }
 

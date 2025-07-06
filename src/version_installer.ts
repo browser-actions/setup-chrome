@@ -34,7 +34,9 @@ export class KnownGoodVersionInstaller implements Installer {
       ? await this.versionResolver.resolveBrowserOnly(version)
       : await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
-      throw new Error(`Version ${version} not found in known good versions`);
+      throw new Error(
+        `Version ${version} not found in known good versions for ${this.platform.os} ${this.platform.arch}`,
+      );
     }
 
     core.info(
@@ -52,7 +54,9 @@ export class KnownGoodVersionInstaller implements Installer {
       ? await this.versionResolver.resolveBrowserOnly(version)
       : await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
-      throw new Error(`Version ${version} not found in known good versions`);
+      throw new Error(
+        `Version ${version} not found in known good versions for ${this.platform.os} ${this.platform.arch}`,
+      );
     }
     const extPath = await tc.extractZip(archive);
     const extAppRoot = path.join(
@@ -92,7 +96,9 @@ export class KnownGoodVersionInstaller implements Installer {
     const resolved =
       await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
-      throw new Error(`Version ${version} not found in known good versions`);
+      throw new Error(
+        `Version ${version} not found in known good versions for ${this.platform.os} ${this.platform.arch}`,
+      );
     }
 
     core.info(
@@ -113,7 +119,9 @@ export class KnownGoodVersionInstaller implements Installer {
     const resolved =
       await this.versionResolver.resolveBrowserAndDriver(version);
     if (!resolved) {
-      throw new Error(`Version ${version} not found in known good versions`);
+      throw new Error(
+        `Version ${version} not found in known good versions for ${this.platform.os} ${this.platform.arch}`,
+      );
     }
     const extPath = await tc.extractZip(archive);
     const extAppRoot = path.join(

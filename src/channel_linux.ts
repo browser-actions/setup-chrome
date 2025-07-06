@@ -41,7 +41,7 @@ export class LinuxChannelInstaller implements Installer {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(
-        `Version ${version} not found in chrome for testing versions`,
+        `Version ${version} not found in chrome for testing versions for ${this.platform.os} ${this.platform.arch}`,
       );
     }
 
@@ -85,7 +85,7 @@ export class LinuxChannelInstaller implements Installer {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(
-        `Version ${version} not found in chrome for testing versions`,
+        `Version ${version} not found in chrome for testing versions for ${this.platform.os} ${this.platform.arch}`,
       );
     }
 
