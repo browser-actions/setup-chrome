@@ -1,7 +1,5 @@
-import fs from "node:fs";
 import path from "node:path";
 import * as core from "@actions/core";
-import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
 import { LastKnownGoodVersionResolver } from "./chrome_for_testing";
@@ -28,7 +26,7 @@ export class MacOSChannelInstaller implements Installer {
     }
     const root = await cache.find("chromium", version);
     if (root) {
-      return { root, bin: "Contents/MacOS/chrome" };
+      return { root, bin: "Contents/MacOS/Google Chrome for Testing" };
     }
   }
 
@@ -37,17 +35,17 @@ export class MacOSChannelInstaller implements Installer {
       throw new Error(`Unexpected version: ${version}`);
     }
 
-    const url = (() => {
-      switch (version) {
-        case "stable":
-          return "https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg";
-        default:
-          return `https://dl.google.com/chrome/mac/universal/${version}/googlechrome${version}.dmg`;
-      }
-    })();
+    const resolved = await this.versionResolver.resolve(version);
+    if (!resolved) {
+      throw new Error(
+        `Version ${version} not found in chrome for testing versions`,
+      );
+    }
 
-    core.info(`Acquiring chrome ${version} from ${url}`);
-    const archive = await tc.downloadTool(url);
+    core.info(
+      `Acquiring chrome ${version} from ${resolved.browserDownloadURL}`,
+    );
+    const archive = await tc.downloadTool(resolved.browserDownloadURL);
     return { archive };
   }
 
@@ -58,48 +56,14 @@ export class MacOSChannelInstaller implements Installer {
     if (!isReleaseChannelName(version)) {
       throw new Error(`Unexpected version: ${version}`);
     }
-    const mountpoint = path.join("/Volumes", path.basename(archive));
-    await exec.exec("hdiutil", [
-      "attach",
-      "-quiet",
-      "-noautofsck",
-      "-noautoopen",
-      "-mountpoint",
-      mountpoint,
-      archive,
-    ]);
 
-    let root = (() => {
-      switch (version) {
-        case "stable":
-          return path.join(mountpoint, "Google Chrome.app");
-        case "beta":
-          return path.join(mountpoint, "Google Chrome Beta.app");
-        case "dev":
-          return path.join(mountpoint, "Google Chrome Dev.app");
-        case "canary":
-          return path.join(mountpoint, "Google Chrome Canary.app");
-      }
-    })();
-    const bin = (() => {
-      switch (version) {
-        case "stable":
-          return "Contents/MacOS/Google Chrome";
-        case "beta":
-          return "Contents/MacOS/Google Chrome Beta";
-        case "dev":
-          return "Contents/MacOS/Google Chrome Dev";
-        case "canary":
-          return "Contents/MacOS/Google Chrome Canary";
-      }
-    })();
-    const bin2 = path.join(path.dirname(bin), "chrome");
+    const extPath = await tc.extractZip(archive);
+    const extAppRoot = path.join(extPath, "Google Chrome for Testing.app");
 
-    root = await cache.cacheDir(root, "chromium", version);
-    await fs.promises.symlink(path.basename(bin), path.join(root, bin2));
+    const root = await cache.cacheDir(extAppRoot, "chromium", version);
     core.info(`Successfully Installed chromium to ${root}`);
 
-    return { root, bin: bin2 };
+    return { root, bin: "Contents/MacOS/Google Chrome for Testing" };
   }
 
   async checkInstalledDriver(
@@ -115,7 +79,7 @@ export class MacOSChannelInstaller implements Installer {
     const resolved = await this.versionResolver.resolve(version);
     if (!resolved) {
       throw new Error(
-        `Version ${version} not found in the known good versions`,
+        `Version ${version} not found in chrome for testing versions`,
       );
     }
 
