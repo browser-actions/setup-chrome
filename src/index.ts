@@ -127,7 +127,7 @@ const testVersion = async (
 
 async function run(): Promise<void> {
   try {
-    const version = core.getInput("chrome-version") || "latest";
+    const version = core.getInput("chrome-version") || "stable";
     const platform = getPlatform();
     const flagInstallDependencies =
       core.getInput("install-dependencies") === "true";
