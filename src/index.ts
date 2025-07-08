@@ -1,47 +1,14 @@
 import path from "node:path";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import { LinuxChannelInstaller } from "./channel_linux";
-import { MacOSChannelInstaller } from "./channel_macos";
-import { WindowsChannelInstaller } from "./channel_windows";
 import { installDependencies } from "./dependencies";
 import type { Installer } from "./installer";
-import { LatestInstaller } from "./latest_installer";
+import { getInstaller } from "./installer_factory";
 import { OS, type Platform, getPlatform } from "./platform";
-import { SnapshotInstaller } from "./snapshot_installer";
 import { parse } from "./version";
-import { KnownGoodVersionInstaller } from "./version_installer";
 
 const hasErrorMessage = (e: unknown): e is { message: string | Error } => {
   return typeof e === "object" && e !== null && "message" in e;
-};
-
-const getInstaller = (
-  platform: Platform,
-  version: string,
-  { resolveBrowserVersionOnly }: { resolveBrowserVersionOnly: boolean },
-) => {
-  const spec = parse(version);
-  switch (spec.value.type) {
-    case "latest":
-      return new LatestInstaller(platform);
-    case "channel":
-      switch (platform.os) {
-        case OS.LINUX:
-          return new LinuxChannelInstaller(platform);
-        case OS.DARWIN:
-          return new MacOSChannelInstaller(platform);
-        case OS.WINDOWS:
-          return new WindowsChannelInstaller(platform);
-      }
-      break;
-    case "snapshot":
-      return new SnapshotInstaller(platform);
-    case "four-parts":
-      return new KnownGoodVersionInstaller(platform, {
-        resolveBrowserVersionOnly,
-      });
-  }
 };
 
 const installBrowser = async (installer: Installer, version: string) => {
