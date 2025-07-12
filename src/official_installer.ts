@@ -111,7 +111,7 @@ export class OfficialInstaller implements Installer {
     await exec.exec(archive, ["/silent", "/install"]);
 
     // DEBUG show files recursively in Windows
-    if (this.platform.os === "windows" && !process.env.CI) {
+    if (this.platform.os === "windows") {
       const getFilesRecursively = (dir: string) => {
         for (const file of fs.readdirSync(dir)) {
           if (fs.statSync(path.join(dir, file)).isDirectory()) {
