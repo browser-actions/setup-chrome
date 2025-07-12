@@ -71,7 +71,7 @@ export class OfficialInstaller implements Installer {
       dev: "Google Chrome Dev",
       canary: "Google Chrome Canary",
     };
-    const needsadmin = "prefers";
+    const needsadmin = this.platform.arch === "arm64" ? "false" : "prefers";
     const ap = "arm64-statsdef_1";
     const installdataindex = "empty";
     const key = "update2/installers/experimental/0/ChromeSetup.exe";
