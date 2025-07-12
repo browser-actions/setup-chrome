@@ -102,6 +102,15 @@ steps:
 
 [snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
+## Supported browsers
+
+|                                      | Linux x64 | Mac x64 | Mac Arm64 | Windows | Windows Arm64 |
+| ---                                  | ---       | ---     | ---       | ---     | ---           |
+| Channel name (e.g. `stable`)         | ✅        | ✅      | ✅        | ✅      | ❌            |
+| Commit position (e.g. `1295939`)     | ✅        | ✅      | ✅        | ✅      | ✅            |
+| Specific version (e.g. `120.0.6099`) | ✅        | ✅      | ✅        | ✅      | ❌            |
+| Latest snapshot                      | ✅        | ✅      | ✅        | ✅      | ✅            |
+
 ## License
 
 [MIT](LICENSE)
