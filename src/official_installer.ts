@@ -110,13 +110,19 @@ export class OfficialInstaller implements Installer {
     }
     await exec.exec(archive, ["/silent", "/install"]);
 
-    // DEBUG show files in tree in Windows
+    // DEBUG show files recursively in Windows
     if (this.platform.os === "windows") {
-      await exec.exec("Get-ChildItem", [
-        "-Recurse",
-        "-Path",
-        "C:\\Program Files",
-      ]);
+      const getFilesRecursively = (dir: string) => {
+        fs.readdirSync(dir).forEach((file) => {
+          if (fs.statSync(path.join(dir, file)).isDirectory()) {
+            getFilesRecursively(path.join(dir, file));
+          } else {
+            console.log(path.join(dir, file));
+          }
+        });
+      };
+
+      getFilesRecursively("C:\\Program Files\\Google");
     }
 
     return { root: this.browserRootDir(version), bin: "chrome.exe" };
