@@ -47,14 +47,16 @@ const browserFileName = ({ os }: Platform): string => {
   }
 };
 
-const driverFileName = ({ os }: Platform): string => {
+const driverFileName = ({ os, arch }: Platform): string => {
   switch (os) {
     case OS.DARWIN:
       return "chromedriver_mac64.zip";
     case OS.LINUX:
       return "chromedriver_linux64.zip";
     case OS.WINDOWS:
-      return "chromedriver_win32.zip";
+      return arch === Arch.ARM64
+        ? "chromedriver_win64.zip"
+        : "chromedriver_win32.zip";
   }
 };
 
@@ -71,6 +73,8 @@ const makePlatformPart = ({ os, arch }: Platform): string => {
     return "Win";
   } else if (os === OS.WINDOWS && arch === Arch.AMD64) {
     return "Win_x64";
+  } else if (os === OS.WINDOWS && arch === Arch.ARM64) {
+    return "Win_Arm64";
   }
   throw new Error(`Unsupported platform "${os}" "${arch}"`);
 };
