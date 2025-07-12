@@ -137,7 +137,7 @@ export class OfficialInstaller implements Installer {
       case "dev":
         return "C:\\Program Files\\Google\\Chrome Dev\\Application";
       case "canary":
-        return "C:\\Program Files\\Google\\Chrome Canary\\Application";
+        return "C:\\Program Files\\Google\\Chrome\\Application";
     }
   }
 
