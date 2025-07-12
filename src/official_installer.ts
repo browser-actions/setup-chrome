@@ -113,13 +113,13 @@ export class OfficialInstaller implements Installer {
     // DEBUG show files recursively in Windows
     if (this.platform.os === "windows") {
       const getFilesRecursively = (dir: string) => {
-        fs.readdirSync(dir).forEach((file) => {
+        for (const file of fs.readdirSync(dir)) {
           if (fs.statSync(path.join(dir, file)).isDirectory()) {
             getFilesRecursively(path.join(dir, file));
           } else {
             console.log(path.join(dir, file));
           }
-        });
+        }
       };
 
       getFilesRecursively("C:\\Program Files\\Google");
