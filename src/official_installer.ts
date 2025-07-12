@@ -122,7 +122,7 @@ export class OfficialInstaller implements Installer {
         }
       };
 
-      getFilesRecursively("C:\\Program Files\\Google");
+      getFilesRecursively("C:\\Program Files");
     }
 
     return { root: this.browserRootDir(), bin: "chrome.exe" };
