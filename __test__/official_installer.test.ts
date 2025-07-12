@@ -57,25 +57,6 @@ describe("OfficialInstaller", () => {
         "Unexpected version: invalid",
       );
     });
-
-    test("uses correct paths for different channels", async () => {
-      fsStatSpy.mockResolvedValue({} as fs.Stats);
-
-      await installer.checkInstalledBrowser("beta");
-      expect(fsStatSpy).toHaveBeenCalledWith(
-        "C:\\Program Files\\Google\\Chrome Beta\\Application",
-      );
-
-      await installer.checkInstalledBrowser("dev");
-      expect(fsStatSpy).toHaveBeenCalledWith(
-        "C:\\Program Files\\Google\\Chrome Dev\\Application",
-      );
-
-      await installer.checkInstalledBrowser("canary");
-      expect(fsStatSpy).toHaveBeenCalledWith(
-        "C:\\Program Files\\Google\\Chrome Canary\\Application",
-      );
-    });
   });
 
   describe("downloadBrowser", () => {

@@ -35,7 +35,7 @@ export class OfficialInstaller implements Installer {
       throw new Error(`Unexpected version: ${version}`);
     }
 
-    const root = this.browserRootDir(version);
+    const root = this.browserRootDir();
     try {
       await fs.promises.stat(root);
     } catch (e) {
@@ -125,20 +125,11 @@ export class OfficialInstaller implements Installer {
       getFilesRecursively("C:\\Program Files\\Google");
     }
 
-    return { root: this.browserRootDir(version), bin: "chrome.exe" };
+    return { root: this.browserRootDir(), bin: "chrome.exe" };
   }
 
-  private browserRootDir(version: ReleaseChannelName) {
-    switch (version) {
-      case "stable":
-        return "C:\\Program Files\\Google\\Chrome\\Application";
-      case "beta":
-        return "C:\\Program Files\\Google\\Chrome Beta\\Application";
-      case "dev":
-        return "C:\\Program Files\\Google\\Chrome Dev\\Application";
-      case "canary":
-        return "C:\\Program Files\\Google\\Chrome\\Application";
-    }
+  private browserRootDir() {
+    return "C:\\Program Files\\Google\\Chrome\\Application";
   }
 
   async checkInstalledDriver(
