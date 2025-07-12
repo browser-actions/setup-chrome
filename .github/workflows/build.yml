@@ -68,6 +68,9 @@ jobs:
         with:
           chrome-version: ${{ matrix.version }}
         id: setup-chrome
+      - name: Check installed path
+        run: |
+          Get-ChildItem -Recurse -Path "C:\Program Files\Google"
       - if: runner.os == 'Windows'
         run: |
           (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
