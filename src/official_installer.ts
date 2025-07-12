@@ -115,7 +115,7 @@ export class OfficialInstaller implements Installer {
       await exec.exec("Get-ChildItem", [
         "-Recurse",
         "-Path",
-        "C:\\Program Files\\Google",
+        "C:\\Program Files",
       ]);
     }
 
