@@ -110,6 +110,15 @@ export class OfficialInstaller implements Installer {
     }
     await exec.exec(archive, ["/silent", "/install"]);
 
+    // DEBUG show files in tree in Windows
+    if (this.platform.os === "windows") {
+      await exec.exec("Get-ChildItem", [
+        "-Recurse",
+        "-Path",
+        "C:\\Program Files\\Google",
+      ]);
+    }
+
     return { root: this.browserRootDir(version), bin: "chrome.exe" };
   }
 
