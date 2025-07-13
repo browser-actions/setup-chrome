@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.0.0...setup-chrome-v2.1.0) (2025-07-13)
+
+
+### Features
+
+* Support snapshot installs on Windows ARM64 ([#635](https://github.com/browser-actions/setup-chrome/issues/635)) ([12261ee](https://github.com/browser-actions/setup-chrome/commit/12261eecfc27fd348f856db2511f0960e8d9863f))
+
 ## [2.0.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v1.7.3...setup-chrome-v2.0.0) (2025-07-06)
 
 
