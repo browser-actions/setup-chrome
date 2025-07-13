@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
 import type { DownloadResult, InstallResult, Installer } from "./installer";
-import { OS, type Platform } from "./platform";
+import { Arch, OS, type Platform } from "./platform";
 import { browserDownloadURL, driverDownloadURL } from "./snapshot_bucket";
 
 export class SnapshotInstaller implements Installer {
@@ -85,7 +85,9 @@ export class SnapshotInstaller implements Installer {
         case OS.LINUX:
           return path.join(extPath, "chromedriver_linux64");
         case OS.WINDOWS:
-          return path.join(extPath, "chromedriver_win32");
+          return this.platform.arch === Arch.ARM64
+            ? path.join(extPath, "chromedriver_win64")
+            : path.join(extPath, "chromedriver_win32");
       }
     })();
     const bin = (() => {

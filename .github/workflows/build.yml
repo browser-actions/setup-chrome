@@ -52,6 +52,24 @@ jobs:
           (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
           (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chromedriver-path }}").Source).VersionInfo.ProductVersion
 
+  test-windows-arm:
+    needs: [build]
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+
+      - name: Install Google Chrome
+        uses: ./
+        with:
+          chrome-version: 1485971
+          install-chromedriver: true
+        id: setup-chrome
+      - run: |
+          (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chrome-path }}").Source).VersionInfo.ProductVersion
+          (Get-Item (Get-Command "${{ steps.setup-chrome.outputs.chromedriver-path }}").Source).VersionInfo.ProductVersion
+
   test-install-dependencies:
     needs: [build]
     strategy:

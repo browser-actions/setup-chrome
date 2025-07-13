@@ -18,7 +18,7 @@ The action installs the stable version of Chrome for Testing by default.
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@v1
+  - uses: browser-actions/setup-chrome@v2
   - run: chrome --version
 ```
 
@@ -26,7 +26,7 @@ To install a specific channel, use `chrome-version` input.
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@v1
+  - uses: browser-actions/setup-chrome@v2
     with:
       chrome-version: 120
 ```
@@ -36,7 +36,7 @@ You can use the `install-chromedriver` to install the ChromeDriver.
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@v1
+  - uses: browser-actions/setup-chrome@v2
     with:
       chrome-version: 120
       install-chromedriver: true
@@ -48,7 +48,7 @@ It installs the required dependencies for the Google Chrome/Chromium to run auto
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@v1
+  - uses: browser-actions/setup-chrome@v2
     with:
       chrome-version: 120
       install-dependencies: true
@@ -74,7 +74,7 @@ To get the installed binary path, use `chrome-path` output of the action:
 
 ```yaml
 steps:
-  - uses: browser-actions/setup-chrome@v1
+  - uses: browser-actions/setup-chrome@v2
     id: setup-chrome
   - run: |
       ${{ steps.setup-chrome.outputs.chrome-path }} --version
@@ -101,6 +101,15 @@ steps:
 - `chromedriver-version`: The installed ChromeDriver version.
 
 [snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
+
+## Supported platforms
+
+|                                      | Linux x64 | Mac x64 | Mac Arm64 | Windows | Windows Arm64 |
+| ---                                  | ---       | ---     | ---       | ---     | ---           |
+| Channel name (e.g. `stable`)         | ✅        | ✅      | ✅        | ✅      | ❌            |
+| Commit position (e.g. `1295939`)     | ✅        | ✅      | ✅        | ✅      | ✅            |
+| Specific version (e.g. `120.0.6099`) | ✅        | ✅      | ✅        | ✅      | ❌            |
+| Latest snapshot                      | ✅        | ✅      | ✅        | ✅      | ✅            |
 
 ## License
 
