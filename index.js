@@ -30011,14 +30011,16 @@ const browserFileName = ({ os }) => {
             return "chrome-win.zip";
     }
 };
-const driverFileName = ({ os }) => {
+const driverFileName = ({ os, arch }) => {
     switch (os) {
         case platform_1.OS.DARWIN:
             return "chromedriver_mac64.zip";
         case platform_1.OS.LINUX:
             return "chromedriver_linux64.zip";
         case platform_1.OS.WINDOWS:
-            return "chromedriver_win32.zip";
+            return arch === platform_1.Arch.ARM64
+                ? "chromedriver_win64.zip"
+                : "chromedriver_win32.zip";
     }
 };
 const makePlatformPart = ({ os, arch }) => {
@@ -30039,6 +30041,9 @@ const makePlatformPart = ({ os, arch }) => {
     }
     else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.AMD64) {
         return "Win_x64";
+    }
+    else if (os === platform_1.OS.WINDOWS && arch === platform_1.Arch.ARM64) {
+        return "Win_Arm64";
     }
     throw new Error(`Unsupported platform "${os}" "${arch}"`);
 };
@@ -30165,7 +30170,9 @@ class SnapshotInstaller {
                     case platform_1.OS.LINUX:
                         return path.join(extPath, "chromedriver_linux64");
                     case platform_1.OS.WINDOWS:
-                        return path.join(extPath, "chromedriver_win32");
+                        return this.platform.arch === platform_1.Arch.ARM64
+                            ? path.join(extPath, "chromedriver_win64")
+                            : path.join(extPath, "chromedriver_win32");
                 }
             })();
             const bin = (() => {
