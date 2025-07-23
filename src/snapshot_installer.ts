@@ -14,7 +14,8 @@ export class SnapshotInstaller implements Installer {
   ): Promise<InstallResult | undefined> {
     const root = await cache.find("chrome", version);
     if (root) {
-      return { root, bin: "chrome" };
+      const bin = this.platformChromeBin();
+      return { root, bin };
     }
   }
 
@@ -40,16 +41,7 @@ export class SnapshotInstaller implements Installer {
           return path.join(extPath, "chrome-win");
       }
     })();
-    const bin = (() => {
-      switch (this.platform.os) {
-        case OS.DARWIN:
-          return "Chromium.app/Contents/MacOS/Chromium";
-        case OS.LINUX:
-          return "chrome";
-        case OS.WINDOWS:
-          return "chrome.exe";
-      }
-    })();
+    const bin = this.platformChromeBin();
 
     root = await cache.cacheDir(root, "chrome", version);
     core.info(`Successfully Installed chrome to ${root}`);
@@ -105,5 +97,16 @@ export class SnapshotInstaller implements Installer {
     core.info(`Successfully Installed chromedriver to ${root}`);
 
     return { root, bin };
+  }
+
+  platformChromeBin = () => {
+    switch (this.platform.os) {
+      case OS.DARWIN:
+        return "Chromium.app/Contents/MacOS/Chromium";
+      case OS.LINUX:
+        return "chrome";
+      case OS.WINDOWS:
+        return "chrome.exe";
+    }
   }
 }
