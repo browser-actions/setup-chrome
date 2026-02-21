@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.1.0...setup-chrome-v2.1.1) (2026-02-21)
+
+
+### Bug Fixes
+
+* bump runtime node version ([#643](https://github.com/browser-actions/setup-chrome/issues/643)) ([607b246](https://github.com/browser-actions/setup-chrome/commit/607b24644a766ce2bac4d8ce5a98248deb5d612d))
+
 ## [2.1.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.0.0...setup-chrome-v2.1.0) (2025-07-13)
 
 
