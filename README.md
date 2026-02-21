@@ -111,6 +111,34 @@ steps:
 | Specific version (e.g. `120.0.6099`) | ✅        | ✅      | ✅        | ✅      | ❌            |
 | Latest snapshot                      | ✅        | ✅      | ✅        | ✅      | ✅            |
 
+## Contributing
+
+### Local development
+
+```bash
+# Instal dependencies
+pnpm install
+
+# Run tests
+pnpm lint
+pnpm test
+
+# Build and create package in dist/
+pnpm build
+pnpm package
+```
+
+## Release
+
+Releases are automated with Release Please.  All changes must follow [Conventional Commits][], since Release Please derives versions and changelog entries from commit messages.
+
+1. Merge some changes to the main branch.
+2. Release Please opens or updates a release PR with version bumps and changelog updates.
+3. Squash and merge the release PR to the main branch with a commit message that follows [Conventional Commits][].
+4. Create a GitHub release and publish the action to the marketplace.
+
+[Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
+
 ## License
 
 [MIT](LICENSE)
