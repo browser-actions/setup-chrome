@@ -4,11 +4,13 @@ import { resolveLatestVersion } from "./snapshot_bucket";
 import { SnapshotInstaller } from "./snapshot_installer";
 
 export class LatestInstaller implements Installer {
-  private readonly snapshotInstaller = new SnapshotInstaller(this.platform);
+  private readonly snapshotInstaller: SnapshotInstaller;
 
   private latestSnapshotCache: string | undefined;
 
-  constructor(private readonly platform: Platform) {}
+  constructor(private readonly platform: Platform) {
+    this.snapshotInstaller = new SnapshotInstaller(platform);
+  }
 
   async checkInstalledBrowser(
     _version: string,

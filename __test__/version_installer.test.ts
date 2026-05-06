@@ -6,11 +6,14 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
 import { KnownGoodVersionInstaller } from "../src/version_installer";
 
+vi.mock("@actions/tool-cache");
+vi.mock("../src/cache");
+
 const getJsonSpy = vi.spyOn(httpm.HttpClient.prototype, "getJson");
-const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
-const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
-const cacheFindSpy = vi.spyOn(cache, "find");
-const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
+const tcExtractZipSpy = vi.mocked(tc.extractZip);
+const tcDownloadToolSpy = vi.mocked(tc.downloadTool);
+const cacheFindSpy = vi.mocked(cache.find);
+const cacheCacheDirSpy = vi.mocked(cache.cacheDir);
 
 beforeEach(() => {
   const mockDataPath = path.join(

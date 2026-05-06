@@ -4,11 +4,14 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import * as cache from "../src/cache";
 import { WindowsChannelInstaller } from "../src/channel_windows";
 
+vi.mock("@actions/tool-cache");
+vi.mock("../src/cache");
+
 const fsRenameSpy = vi.spyOn(fs.promises, "rename");
-const tcDownloadToolSpy = vi.spyOn(tc, "downloadTool");
-const tcExtractZipSpy = vi.spyOn(tc, "extractZip");
-const cacheFindSpy = vi.spyOn(cache, "find");
-const cacheCacheDirSpy = vi.spyOn(cache, "cacheDir");
+const tcDownloadToolSpy = vi.mocked(tc.downloadTool);
+const tcExtractZipSpy = vi.mocked(tc.extractZip);
+const cacheFindSpy = vi.mocked(cache.find);
+const cacheCacheDirSpy = vi.mocked(cache.cacheDir);
 
 afterEach(() => {
   vi.resetAllMocks();
