@@ -70,8 +70,6 @@ const platformString = (platform: Platform): PlatformString => {
     return "mac-arm64";
   } else if (platform.os === OS.WINDOWS && platform.arch === Arch.AMD64) {
     return "win64";
-  } else if (platform.os === OS.WINDOWS && platform.arch === Arch.I686) {
-    return "win32";
   }
   throw new Error(`Unsupported platform: ${platform.os} ${platform.arch}`);
 };

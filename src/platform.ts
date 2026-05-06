@@ -16,7 +16,6 @@ export type OS = (typeof OS)[keyof typeof OS];
 
 export const Arch = {
   AMD64: "amd64",
-  I686: "i686",
   ARM64: "arm64",
 } as const;
 
@@ -39,8 +38,6 @@ export const getOS = (): OS => {
 export const getArch = (): Arch => {
   const arch = os.arch();
   switch (arch) {
-    case "x32":
-      return Arch.I686;
     case "x64":
       return Arch.AMD64;
     case "arm64":
