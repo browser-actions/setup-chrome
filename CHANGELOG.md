@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.1.1...setup-chrome-v2.1.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* drop 32-bit architecture support ([#648](https://github.com/browser-actions/setup-chrome/issues/648)) ([9532775](https://github.com/browser-actions/setup-chrome/commit/953277500f52e70f60076349a01f5f7c1f5c0de0))
+* migrate to ESM and update all dependencies to latest ([#647](https://github.com/browser-actions/setup-chrome/issues/647)) ([7e4ea99](https://github.com/browser-actions/setup-chrome/commit/7e4ea994e24e9086130ac62b1b58d2ad91ee7f6e))
+
 ## [2.1.1](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.1.0...setup-chrome-v2.1.1) (2026-02-21)
 
 
