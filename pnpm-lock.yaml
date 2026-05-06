@@ -26,8 +26,8 @@ dependencies:
 
 devDependencies:
   '@biomejs/biome':
-    specifier: ^1.7.2
-    version: 1.7.2
+    specifier: ^2.4.14
+    version: registry.npmjs.org/@biomejs/biome@2.4.14
   '@types/node':
     specifier: ^20.6.2
     version: 20.6.2
@@ -49,22 +49,6 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
-    dev: true
-
-  /@biomejs/biome@1.7.2:
-    resolution: {integrity: sha512-6Skx9N47inLQzYi9RKgJ7PBnUnaHnMe/imqX43cOcJjZtfMnQLxEvfM2Eyo7gChkwrZlwc+VbA4huFRjw2fsYA==}
-    engines: {node: '>=14.21.3'}
-    hasBin: true
-    requiresBuild: true
-    optionalDependencies:
-      '@biomejs/cli-darwin-arm64': registry.npmjs.org/@biomejs/cli-darwin-arm64@1.7.2
-      '@biomejs/cli-darwin-x64': registry.npmjs.org/@biomejs/cli-darwin-x64@1.7.2
-      '@biomejs/cli-linux-arm64': registry.npmjs.org/@biomejs/cli-linux-arm64@1.7.2
-      '@biomejs/cli-linux-arm64-musl': registry.npmjs.org/@biomejs/cli-linux-arm64-musl@1.7.2
-      '@biomejs/cli-linux-x64': registry.npmjs.org/@biomejs/cli-linux-x64@1.7.2
-      '@biomejs/cli-linux-x64-musl': registry.npmjs.org/@biomejs/cli-linux-x64-musl@1.7.2
-      '@biomejs/cli-win32-arm64': registry.npmjs.org/@biomejs/cli-win32-arm64@1.7.2
-      '@biomejs/cli-win32-x64': registry.npmjs.org/@biomejs/cli-win32-x64@1.7.2
     dev: true
 
   /@jridgewell/gen-mapping@0.3.5:
@@ -622,10 +606,27 @@ packages:
       semver: registry.npmjs.org/semver@7.7.4
     dev: false
 
-  registry.npmjs.org/@biomejs/cli-darwin-arm64@1.7.2:
-    resolution: {integrity: sha512-CrldIueHivWEWmeTkK8bTXajeX53F8i2Rrkkt8cPZyMtzkrwxf8Riq4a/jz3SQBHkxHFT4TqGbSTNMXe3X1ogA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/biome@2.4.14:
+    resolution: {integrity: sha512-TmAvxOEgrpLypzVGJ8FulIZnlyA9TxrO1hyqYrCz9r+bwma9xXxuLA5IuYnj55XQneFx460KjRbx6SWGLkg3bQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/biome/-/biome-2.4.14.tgz}
+    name: '@biomejs/biome'
+    version: 2.4.14
+    engines: {node: '>=14.21.3'}
+    hasBin: true
+    optionalDependencies:
+      '@biomejs/cli-darwin-arm64': registry.npmjs.org/@biomejs/cli-darwin-arm64@2.4.14
+      '@biomejs/cli-darwin-x64': registry.npmjs.org/@biomejs/cli-darwin-x64@2.4.14
+      '@biomejs/cli-linux-arm64': registry.npmjs.org/@biomejs/cli-linux-arm64@2.4.14
+      '@biomejs/cli-linux-arm64-musl': registry.npmjs.org/@biomejs/cli-linux-arm64-musl@2.4.14
+      '@biomejs/cli-linux-x64': registry.npmjs.org/@biomejs/cli-linux-x64@2.4.14
+      '@biomejs/cli-linux-x64-musl': registry.npmjs.org/@biomejs/cli-linux-x64-musl@2.4.14
+      '@biomejs/cli-win32-arm64': registry.npmjs.org/@biomejs/cli-win32-arm64@2.4.14
+      '@biomejs/cli-win32-x64': registry.npmjs.org/@biomejs/cli-win32-x64@2.4.14
+    dev: true
+
+  registry.npmjs.org/@biomejs/cli-darwin-arm64@2.4.14:
+    resolution: {integrity: sha512-XvgoE9XOawUOQPdmvs4J7wPhi/DLwSCGks3AlPJDmh34O0awRTqCED1HRcRDdpf1Zrp4us4MGOOdIxNpbqNF5Q==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-2.4.14.tgz}
     name: '@biomejs/cli-darwin-arm64'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
@@ -633,10 +634,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-darwin-x64@1.7.2:
-    resolution: {integrity: sha512-UELnLJuJOsTL9meArvn8BtiXDURyPil2Ej9me2uVpEvee8UQdqd/bssP5we400OWShlL1AAML4fn6d2WX5332g==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-darwin-x64/-/cli-darwin-x64-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-darwin-x64@2.4.14:
+    resolution: {integrity: sha512-jE7hKBCFhOx3uUh+ZkWBfOHxAcILPfhFplNkuID/eZeSTLHzfZzoZxW8fbqY9xXRnPi7jGNAf1iPVR+0yWsM/Q==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.4.14.tgz}
     name: '@biomejs/cli-darwin-x64'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
@@ -644,10 +645,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-linux-arm64-musl@1.7.2:
-    resolution: {integrity: sha512-kKYZiem7Sj7wI0dpVxJlK7C+TFQwzO/ctufIGXGJAyEmUe9vEKSzV8CXpv+JIRiTWyqaZJ4K+eHz4SPdPCv05w==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-linux-arm64-musl@2.4.14:
+    resolution: {integrity: sha512-/z+6gqAqqUQTHazwStxSXKHg9b8UvqBmDFRp+c4wYbq2KXhELQDon9EoC9RpmQ8JWkqQx/lIUy/cs+MhzDZp6A==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.4.14.tgz}
     name: '@biomejs/cli-linux-arm64-musl'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
@@ -655,10 +656,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-linux-arm64@1.7.2:
-    resolution: {integrity: sha512-Z1CSGQE6fHz55gkiFHv9E8wEAaSUd7dHSRaxSCBa7utonHqpIeMbvj3Evm1w0WfGLFDtRXLV1fTfEdM0FMTOhA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-arm64/-/cli-linux-arm64-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-linux-arm64@2.4.14:
+    resolution: {integrity: sha512-2TELhZnW5RSLL063l9rc5xLpA0ZIw0Ccwy/0q384rvNAgFw3yI76bd59547yxowdQr5MNPET/xDLrLuvgSeeWQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-arm64/-/cli-linux-arm64-2.4.14.tgz}
     name: '@biomejs/cli-linux-arm64'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
@@ -666,10 +667,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-linux-x64-musl@1.7.2:
-    resolution: {integrity: sha512-x10LpGMepDrLS+h2TZ6/T7egpHjGKtiI4GuShNylmBQJWfTotbFf9eseHggrqJ4WZf9yrGoVYrtbxXftuB95sQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-linux-x64-musl@2.4.14:
+    resolution: {integrity: sha512-R6BWgJdQOwW9ulJatuTVrQkjnODjqHZkKNOqb1sz++3Noe5LYd0i3PchnOBUCYAPHoPWHhjJqbdZlHEu0hpjdA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-2.4.14.tgz}
     name: '@biomejs/cli-linux-x64-musl'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
@@ -677,10 +678,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-linux-x64@1.7.2:
-    resolution: {integrity: sha512-vXXyox8/CQijBxAu0+r8FfSO7JlC4tob3PbaFda8gPJFRz2uFJw39HtxVUwbTV1EcU6wSPh4SiRu5sZfP1VHrQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-x64/-/cli-linux-x64-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-linux-x64@2.4.14:
+    resolution: {integrity: sha512-zHrlQZDBDUz4OLAraYpWKcnLS6HOewBFWYOzY91d1ZjdqZwibOyb6BEu6WuWLugyo0P3riCmsbV9UqV1cSXwQg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-x64/-/cli-linux-x64-2.4.14.tgz}
     name: '@biomejs/cli-linux-x64'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
@@ -688,10 +689,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-win32-arm64@1.7.2:
-    resolution: {integrity: sha512-kRXdlKzcU7INf6/ldu0nVmkOgt7bKqmyXRRCUqqaJfA32+9InTbkD8tGrHZEVYIWr+eTuKcg16qZVDsPSDFZ8g==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-win32-arm64/-/cli-win32-arm64-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-win32-arm64@2.4.14:
+    resolution: {integrity: sha512-M3EH5hqOI/F/FUA2u4xcLoUgmxd218mvuj/6JL7Hv2toQvr2/AdOvKSpGkoRuWFCtQPVa+ZqkEV3Q5xBA9+XSA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-win32-arm64/-/cli-win32-arm64-2.4.14.tgz}
     name: '@biomejs/cli-win32-arm64'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
@@ -699,10 +700,10 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@biomejs/cli-win32-x64@1.7.2:
-    resolution: {integrity: sha512-qHTtpAs+CNglAAuaTy09htoqUhrQyd3nd0aGTuLNqD10h1llMVi8WFZfoa+e5MuDSfYtMK6nW2Tbf6WgzzR1Qw==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-win32-x64/-/cli-win32-x64-1.7.2.tgz}
+  registry.npmjs.org/@biomejs/cli-win32-x64@2.4.14:
+    resolution: {integrity: sha512-WL0EG5qE+EAKomGXbf2g6VnSKJhTL3tXC0QRzWRwA5VpjxNYa6H4P7ZWfymbGE4IhZZQi1KXQ2R0YjwInmz2fA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-win32-x64/-/cli-win32-x64-2.4.14.tgz}
     name: '@biomejs/cli-win32-x64'
-    version: 1.7.2
+    version: 2.4.14
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]

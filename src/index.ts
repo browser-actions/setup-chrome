@@ -7,7 +7,7 @@ import { WindowsChannelInstaller } from "./channel_windows";
 import { installDependencies } from "./dependencies";
 import type { Installer } from "./installer";
 import { LatestInstaller } from "./latest_installer";
-import { OS, type Platform, getPlatform } from "./platform";
+import { getPlatform, OS, type Platform } from "./platform";
 import { SnapshotInstaller } from "./snapshot_installer";
 import { parse } from "./version";
 import { KnownGoodVersionInstaller } from "./version_installer";

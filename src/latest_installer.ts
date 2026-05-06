@@ -1,4 +1,4 @@
-import type { DownloadResult, InstallResult, Installer } from "./installer";
+import type { DownloadResult, Installer, InstallResult } from "./installer";
 import type { Platform } from "./platform";
 import { resolveLatestVersion } from "./snapshot_bucket";
 import { SnapshotInstaller } from "./snapshot_installer";

@@ -2,7 +2,7 @@ import * as path from "node:path";
 import * as core from "@actions/core";
 import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
-import type { DownloadResult, InstallResult, Installer } from "./installer";
+import type { DownloadResult, Installer, InstallResult } from "./installer";
 import { Arch, OS, type Platform } from "./platform";
 import { browserDownloadURL, driverDownloadURL } from "./snapshot_bucket";
 

@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 import * as tc from "@actions/tool-cache";
 import * as cache from "./cache";
 import { KnownGoodVersionResolver } from "./chrome_for_testing";
-import type { DownloadResult, InstallResult, Installer } from "./installer";
+import type { DownloadResult, Installer, InstallResult } from "./installer";
 import { OS, type Platform } from "./platform";
 
 export class KnownGoodVersionInstaller implements Installer {

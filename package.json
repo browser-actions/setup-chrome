@@ -17,7 +17,7 @@
     "actions-swing": "^0.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.2",
+    "@biomejs/biome": "^2.4.14",
     "@types/node": "^20.6.2",
     "@vercel/ncc": "^0.38.4",
     "typescript": "^6.0.3",
@@ -29,7 +29,7 @@
     "package": "cp action.yml README.md dist/",
     "test": "vitest",
     "lint": "biome ci .",
-    "lint:fix": "biome check --apply ."
+    "lint:fix": "biome check --write ."
   },
   "repository": {
     "type": "git",
