@@ -4,9 +4,9 @@
 
 # setup-chrome
 
-This action sets-up Google Chrome/Chromium for GitHub Actions. This action supports the following features:
+This action sets up Google Chrome/Chromium for GitHub Actions. This action supports the following features:
 
-- Install and setup the Google Chrome onto the runner.
+- Install and set up Google Chrome onto the runner.
 - Install a specific version of Google Chrome/Chromium by the version number, commit position, and release channel.
 - Cross-platform runner support (Windows, macOS, Linux) and self-hosted runner support.
 - Install the compatible versions of ChromeDriver with the browser.
@@ -80,6 +80,15 @@ steps:
       ${{ steps.setup-chrome.outputs.chrome-path }} --version
 ```
 
+## Supported platforms
+
+|                   | Linux x64 | Linux ARM32 | Linux ARM64 | macOS x64 | macOS ARM64 | Windows x64 | Windows ARM64 |
+| ---               | ---       | ---         | ---         | ---       | ---         | ---         | ---           |
+| Channel name      | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ❌            |
+| Commit position   | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ✅            |
+| Specific version  | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ❌            |
+| Latest snapshot   | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ✅            |
+
 ## Parameters
 
 ### Inputs
@@ -101,15 +110,6 @@ steps:
 - `chromedriver-version`: The installed ChromeDriver version.
 
 [snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
-
-## Supported platforms
-
-|                                      | Linux x64 | Mac x64 | Mac Arm64 | Windows | Windows Arm64 |
-| ---                                  | ---       | ---     | ---       | ---     | ---           |
-| Channel name (e.g. `stable`)         | ✅        | ✅      | ✅        | ✅      | ❌            |
-| Commit position (e.g. `1295939`)     | ✅        | ✅      | ✅        | ✅      | ✅            |
-| Specific version (e.g. `120.0.6099`) | ✅        | ✅      | ✅        | ✅      | ❌            |
-| Latest snapshot                      | ✅        | ✅      | ✅        | ✅      | ✅            |
 
 ## Contributing
 
