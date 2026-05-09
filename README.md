@@ -56,14 +56,17 @@ steps:
 
 ### Supported version formats
 
-The action supports the following version formats:
+| Version format | Example | Download source |
+| --- | --- | --- |
+| Channel name | `stable` (default), `beta`, `dev`, `canary` | [Chrome for Testing][] |
+| Commit position | `1295939` | [Chromium Snapshots][] |
+| Specific version | `119`, `120.0.6099`, `121.0.6100.0` | [Chrome for Testing][] |
+| Latest snapshot | `latest` | [Chromium Snapshots][] |
 
-- The latest snapshot `latest`.
-- Commit positions like `1295939`.  You can find commit positions from [here][snapshots].
-- Google Chrome release channels: `stable` (default), `beta`, `dev` and `canary`
-- Specific versions: `119`, `120.0.6099`, `121.0.6100.0`.  The version are resolved by [Chrome for Testing][].
+You can find Chromium commit positions from [here][Chromium Snapshots].
 
 [Chrome for Testing]: https://googlechromelabs.github.io/chrome-for-testing/
+[Chromium Snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
 ### Installed path
 
@@ -108,9 +111,6 @@ steps:
 - `chrome-version`: The installed Google Chrome/Chromium version.
 - `chromedriver-path`: The installed ChromeDriver binary path.
 - `chromedriver-version`: The installed ChromeDriver version.
-
-[snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, workflow, and release process.
