@@ -9,6 +9,7 @@ const LAST_KNOWN_GOOD_VERSION =
   "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json";
 
 export type PlatformString =
+  | "linux-arm64"
   | "linux64"
   | "mac-arm64"
   | "mac-x64"
@@ -64,6 +65,8 @@ export type KnownGoodVersion = {
 const platformString = (platform: Platform): PlatformString => {
   if (platform.os === OS.LINUX && platform.arch === Arch.AMD64) {
     return "linux64";
+  } else if (platform.os === OS.LINUX && platform.arch === Arch.ARM64) {
+    return "linux-arm64";
   } else if (platform.os === OS.DARWIN && platform.arch === Arch.AMD64) {
     return "mac-x64";
   } else if (platform.os === OS.DARWIN && platform.arch === Arch.ARM64) {
