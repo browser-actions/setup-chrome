@@ -52,6 +52,7 @@ jobs:
         uses: ./
         with:
           chrome-version: ${{ inputs.chrome-version }}
+          install-chromedriver: true
         id: setup-chrome
       - if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
