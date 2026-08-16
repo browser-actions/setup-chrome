@@ -4,9 +4,9 @@
 
 # setup-chrome
 
-This action sets-up Google Chrome/Chromium for GitHub Actions. This action supports the following features:
+This action sets up Google Chrome/Chromium for GitHub Actions. This action supports the following features:
 
-- Install and setup the Google Chrome onto the runner.
+- Install and set up Google Chrome onto the runner.
 - Install a specific version of Google Chrome/Chromium by the version number, commit position, and release channel.
 - Cross-platform runner support (Windows, macOS, Linux) and self-hosted runner support.
 - Install the compatible versions of ChromeDriver with the browser.
@@ -56,14 +56,17 @@ steps:
 
 ### Supported version formats
 
-The action supports the following version formats:
+| Version format | Example | Download source |
+| --- | --- | --- |
+| Channel name | `stable` (default), `beta`, `dev`, `canary` | [Chrome for Testing][] |
+| Commit position | `1295939` | [Chromium Snapshots][] |
+| Specific version | `119`, `120.0.6099`, `121.0.6100.0` | [Chrome for Testing][] |
+| Latest snapshot | `latest` | [Chromium Snapshots][] |
 
-- The latest snapshot `latest`.
-- Commit positions like `1295939`.  You can find commit positions from [here][snapshots].
-- Google Chrome release channels: `stable` (default), `beta`, `dev` and `canary`
-- Specific versions: `119`, `120.0.6099`, `121.0.6100.0`.  The version are resolved by [Chrome for Testing][].
+You can find Chromium commit positions from [here][Chromium Snapshots].
 
 [Chrome for Testing]: https://googlechromelabs.github.io/chrome-for-testing/
+[Chromium Snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
 
 ### Installed path
 
@@ -79,6 +82,15 @@ steps:
   - run: |
       ${{ steps.setup-chrome.outputs.chrome-path }} --version
 ```
+
+## Supported platforms
+
+|                   | Linux x64 | Linux ARM32 | Linux ARM64 | macOS x64 | macOS ARM64 | Windows x64 | Windows ARM64 |
+| ---               | ---       | ---         | ---         | ---       | ---         | ---         | ---           |
+| Channel name      | ✅        | ❌          | ✅          | ✅        | ✅          | ✅          | ❌            |
+| Commit position   | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ✅            |
+| Specific version  | ✅        | ❌          | ✅          | ✅        | ✅          | ✅          | ❌            |
+| Latest snapshot   | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ✅            |
 
 ## Parameters
 
@@ -99,18 +111,6 @@ steps:
 - `chrome-version`: The installed Google Chrome/Chromium version.
 - `chromedriver-path`: The installed ChromeDriver binary path.
 - `chromedriver-version`: The installed ChromeDriver version.
-
-[snapshots]: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
-
-## Supported platforms
-
-|                                      | Linux x64 | Mac x64 | Mac Arm64 | Windows | Windows Arm64 |
-| ---                                  | ---       | ---     | ---       | ---     | ---           |
-| Channel name (e.g. `stable`)         | ✅        | ✅      | ✅        | ✅      | ❌            |
-| Commit position (e.g. `1295939`)     | ✅        | ✅      | ✅        | ✅      | ✅            |
-| Specific version (e.g. `120.0.6099`) | ✅        | ✅      | ✅        | ✅      | ❌            |
-| Latest snapshot                      | ✅        | ✅      | ✅        | ✅      | ✅            |
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, workflow, and release process.
