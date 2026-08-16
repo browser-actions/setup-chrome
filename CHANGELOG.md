@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.1.2...setup-chrome-v2.2.0) (2026-08-16)
+
+
+### Features
+
+* Linux arm64 support ([#655](https://github.com/browser-actions/setup-chrome/issues/655)) ([e85e55d](https://github.com/browser-actions/setup-chrome/commit/e85e55dd7e2227e0844c07c57f52720fb1266334))
+
 ## [2.1.2](https://github.com/browser-actions/setup-chrome/compare/setup-chrome-v2.1.1...setup-chrome-v2.1.2) (2026-05-06)
 
 
