@@ -75,7 +75,7 @@ describe("KnownGoodVersionInstaller", () => {
     expect(cacheCacheDirSpy).toHaveBeenCalledWith(
       "/tmp/extracted/chrome-linux64",
       "chrome",
-      "120.0.6099.56",
+      "120.0.6099.109",
     );
   });
 
@@ -134,7 +134,7 @@ describe("KnownGoodVersionInstaller", () => {
     expect(cacheCacheDirSpy).toHaveBeenCalledWith(
       "/tmp/extracted/chromedriver-linux64",
       "chromedriver",
-      "120.0.6099.56",
+      "120.0.6099.109",
     );
   });
 
