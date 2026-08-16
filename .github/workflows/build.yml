@@ -29,9 +29,9 @@ jobs:
     needs: [build]
     strategy:
       matrix:
-        os: [ubuntu, macos, windows]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
         version: ["", 1295939, 120, dev, latest]
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/download-artifact@v4
         with:
