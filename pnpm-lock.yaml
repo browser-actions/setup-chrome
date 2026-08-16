@@ -26,14 +26,14 @@ dependencies:
 
 devDependencies:
   '@biomejs/biome':
-    specifier: ^2.4.14
-    version: registry.npmjs.org/@biomejs/biome@2.4.14
+    specifier: ^2.5.8
+    version: 2.5.8
   '@types/node':
     specifier: ^25.6.0
     version: registry.npmjs.org/@types/node@25.6.0
   '@vercel/ncc':
-    specifier: ^0.38.4
-    version: registry.npmjs.org/@vercel/ncc@0.38.4
+    specifier: ^0.45.0
+    version: 0.45.0
   typescript:
     specifier: ^6.0.3
     version: registry.npmjs.org/typescript@6.0.3
@@ -42,6 +42,119 @@ devDependencies:
     version: registry.npmjs.org/vitest@4.1.5(@types/node@25.6.0)(vite@8.0.10)
 
 packages:
+
+  /@biomejs/biome@2.5.8:
+    resolution: {integrity: sha512-aeAeeJB9fSDc7Gq+2GqpQxA0qBj6gj1k2R6L1cYqGePKP/baIq1WX8y6B+D+nRsO5ViQL22K/8IwbqERW0q1nw==}
+    engines: {node: '>=14.21.3'}
+    hasBin: true
+    optionalDependencies:
+      '@biomejs/cli-darwin-arm64': 2.5.8
+      '@biomejs/cli-darwin-x64': 2.5.8
+      '@biomejs/cli-linux-arm64': 2.5.8
+      '@biomejs/cli-linux-arm64-musl': 2.5.8
+      '@biomejs/cli-linux-x64': 2.5.8
+      '@biomejs/cli-linux-x64-musl': 2.5.8
+      '@biomejs/cli-win32-arm64': 2.5.8
+      '@biomejs/cli-win32-x64': 2.5.8
+    dev: true
+
+  /@biomejs/cli-darwin-arm64@2.5.8:
+    resolution: {integrity: sha512-mk1QON9PHllvvLN5gU3f4rMxeh4syK5p9OvKyWH6/W8ueh04uaC8TUXXByhGufWf/y5mQc03ZLM45zU+cmqMjA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-darwin-x64@2.5.8:
+    resolution: {integrity: sha512-bsGwFMBNyHPyiLSsQcZJxdoRrg1V4JL+d7wEsvUBczlP9U9lwM+7mzQHxI4o1mhBsTmdOBbAb6fHU3Z3snN45w==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-linux-arm64-musl@2.5.8:
+    resolution: {integrity: sha512-VcJNbstduTHx83NGAdhp78/JOcP45BZHXL7yNsfI1uGzdUgegAz2s+mSoT7wK6PBNzLoqG0zDOXaz/RQYVtSiw==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-linux-arm64@2.5.8:
+    resolution: {integrity: sha512-XmFiA0WPYFC+uiUDC8WRFzAIH9bo7vwQLav38Uoq4ETC+T/+uBi0TsYGJECkugY3r8USl3jc+Ae2/irAF6F2lQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-linux-x64-musl@2.5.8:
+    resolution: {integrity: sha512-kKmiyokeISRGq2FLwvr+TzsgBusfxaZ0FZNLcOYOpCK/78tRrEjeEBLvq3xLZMpqbANgJdRPI7vZX8ZL37u9/w==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-linux-x64@2.5.8:
+    resolution: {integrity: sha512-S5wcm9OBDvLHodD4PUaN488hCpco9QD/9ZxuYJiw4euWtr/oQvLR72z2ixItH8Wd5BCm6FZaeb+YNvOoM1xHtQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-win32-arm64@2.5.8:
+    resolution: {integrity: sha512-nILH0mzm3Hi3iEdd7o7GpB8kBR/mSQwfQG/tyBqyNrY2GFtcgwfV9nV8xLmbtUpMNY/Oi0Ml1XgfR4flOdq+AA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@biomejs/cli-win32-x64@2.5.8:
+    resolution: {integrity: sha512-I2czzXTY61f3nFJxXoMDq80t7MivxDEnCjE+8sDKoFfcKMaoQdkqhIFQ3KyY0XLzeSpUBYeNAXgD+iOV/BU0VA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
+    resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
+    requiresBuild: true
+    peerDependencies:
+      '@emnapi/core': ^1.7.1
+      '@emnapi/runtime': ^1.7.1
+    dependencies:
+      '@emnapi/core': registry.npmjs.org/@emnapi/core@1.10.0
+      '@emnapi/runtime': registry.npmjs.org/@emnapi/runtime@1.10.0
+      '@tybys/wasm-util': 0.10.2
+    dev: true
+    optional: true
+
+  /@tybys/wasm-util@0.10.2:
+    resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==}
+    requiresBuild: true
+    dependencies:
+      tslib: 2.8.1
+    dev: true
+    optional: true
+
+  /@vercel/ncc@0.45.0:
+    resolution: {integrity: sha512-8zPi1yO2mHpoKTD+e+Bf0ZT3e+sWHSOyGapm9s7b5R0gxJi3CiFTqmeQiMEyu6ejrz2s09M8JkEoUaTWjBJPQQ==}
+    hasBin: true
+    dev: true
 
   /actions-swing@0.0.6(@actions/core@3.0.1)(@actions/exec@3.0.0):
     resolution: {integrity: sha512-2p76nGHdCWUrOyktggBGn/gH/rUvZWsluLmifOw8C4syrTh8FFjfb95bmhZ6ScHPphNEuBak8UHXjErDPKTOgg==}
@@ -53,6 +166,146 @@ packages:
       '@actions/core': registry.npmjs.org/@actions/core@3.0.1
       '@actions/exec': registry.npmjs.org/@actions/exec@3.0.0
     dev: false
+
+  /detect-libc@2.1.2:
+    resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
+    engines: {node: '>=8'}
+    dev: true
+
+  /fdir@6.5.0(picomatch@4.0.4):
+    resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      picomatch: ^3 || ^4
+    peerDependenciesMeta:
+      picomatch:
+        optional: true
+    dependencies:
+      picomatch: 4.0.4
+    dev: true
+
+  /fsevents@2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss@1.32.0:
+    resolution: {integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==}
+    engines: {node: '>= 12.0.0'}
+    dependencies:
+      detect-libc: 2.1.2
+    optionalDependencies:
+      lightningcss-android-arm64: registry.npmjs.org/lightningcss-android-arm64@1.32.0
+      lightningcss-darwin-arm64: registry.npmjs.org/lightningcss-darwin-arm64@1.32.0
+      lightningcss-darwin-x64: registry.npmjs.org/lightningcss-darwin-x64@1.32.0
+      lightningcss-freebsd-x64: registry.npmjs.org/lightningcss-freebsd-x64@1.32.0
+      lightningcss-linux-arm-gnueabihf: registry.npmjs.org/lightningcss-linux-arm-gnueabihf@1.32.0
+      lightningcss-linux-arm64-gnu: registry.npmjs.org/lightningcss-linux-arm64-gnu@1.32.0
+      lightningcss-linux-arm64-musl: registry.npmjs.org/lightningcss-linux-arm64-musl@1.32.0
+      lightningcss-linux-x64-gnu: registry.npmjs.org/lightningcss-linux-x64-gnu@1.32.0
+      lightningcss-linux-x64-musl: registry.npmjs.org/lightningcss-linux-x64-musl@1.32.0
+      lightningcss-win32-arm64-msvc: registry.npmjs.org/lightningcss-win32-arm64-msvc@1.32.0
+      lightningcss-win32-x64-msvc: registry.npmjs.org/lightningcss-win32-x64-msvc@1.32.0
+    dev: true
+
+  /nanoid@3.3.12:
+    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: true
+
+  /picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+    dev: true
+
+  /picomatch@4.0.4:
+    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
+    engines: {node: '>=12'}
+    dev: true
+
+  /postcss@8.5.14:
+    resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.12
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+    dev: true
+
+  /source-map-js@1.2.1:
+    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
+    engines: {node: '>=0.10.0'}
+    dev: true
+
+  /tinyglobby@0.2.16:
+    resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+    dev: true
+
+  /tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /vite@8.0.10(@types/node@25.6.0):
+    resolution: {integrity: sha512-rZuUu9j6J5uotLDs+cAA4O5H4K1SfPliUlQwqa6YEwSrWDZzP4rhm00oJR5snMewjxF5V/K3D4kctsUTsIU9Mw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      '@vitejs/devtools': ^0.1.0
+      esbuild: ^0.27.0 || ^0.28.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      '@vitejs/devtools':
+        optional: true
+      esbuild:
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+    dependencies:
+      '@types/node': registry.npmjs.org/@types/node@25.6.0
+      lightningcss: 1.32.0
+      picomatch: 4.0.4
+      postcss: 8.5.14
+      rolldown: registry.npmjs.org/rolldown@1.0.0-rc.17
+      tinyglobby: 0.2.16
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   registry.npmjs.org/@actions/core@3.0.1:
     resolution: {integrity: sha512-a6d/Nwahm9fliVGRhdhofo40HjHQasUPusmc7vBfyky+7Z+P2A1J68zyFVaNcEclc/Se+eO595oAr5nwEIoIUA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz}
@@ -98,111 +351,6 @@ packages:
       semver: registry.npmjs.org/semver@7.7.4
     dev: false
 
-  registry.npmjs.org/@biomejs/biome@2.4.14:
-    resolution: {integrity: sha512-TmAvxOEgrpLypzVGJ8FulIZnlyA9TxrO1hyqYrCz9r+bwma9xXxuLA5IuYnj55XQneFx460KjRbx6SWGLkg3bQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/biome/-/biome-2.4.14.tgz}
-    name: '@biomejs/biome'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    hasBin: true
-    optionalDependencies:
-      '@biomejs/cli-darwin-arm64': registry.npmjs.org/@biomejs/cli-darwin-arm64@2.4.14
-      '@biomejs/cli-darwin-x64': registry.npmjs.org/@biomejs/cli-darwin-x64@2.4.14
-      '@biomejs/cli-linux-arm64': registry.npmjs.org/@biomejs/cli-linux-arm64@2.4.14
-      '@biomejs/cli-linux-arm64-musl': registry.npmjs.org/@biomejs/cli-linux-arm64-musl@2.4.14
-      '@biomejs/cli-linux-x64': registry.npmjs.org/@biomejs/cli-linux-x64@2.4.14
-      '@biomejs/cli-linux-x64-musl': registry.npmjs.org/@biomejs/cli-linux-x64-musl@2.4.14
-      '@biomejs/cli-win32-arm64': registry.npmjs.org/@biomejs/cli-win32-arm64@2.4.14
-      '@biomejs/cli-win32-x64': registry.npmjs.org/@biomejs/cli-win32-x64@2.4.14
-    dev: true
-
-  registry.npmjs.org/@biomejs/cli-darwin-arm64@2.4.14:
-    resolution: {integrity: sha512-XvgoE9XOawUOQPdmvs4J7wPhi/DLwSCGks3AlPJDmh34O0awRTqCED1HRcRDdpf1Zrp4us4MGOOdIxNpbqNF5Q==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-2.4.14.tgz}
-    name: '@biomejs/cli-darwin-arm64'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-darwin-x64@2.4.14:
-    resolution: {integrity: sha512-jE7hKBCFhOx3uUh+ZkWBfOHxAcILPfhFplNkuID/eZeSTLHzfZzoZxW8fbqY9xXRnPi7jGNAf1iPVR+0yWsM/Q==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.4.14.tgz}
-    name: '@biomejs/cli-darwin-x64'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-linux-arm64-musl@2.4.14:
-    resolution: {integrity: sha512-/z+6gqAqqUQTHazwStxSXKHg9b8UvqBmDFRp+c4wYbq2KXhELQDon9EoC9RpmQ8JWkqQx/lIUy/cs+MhzDZp6A==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.4.14.tgz}
-    name: '@biomejs/cli-linux-arm64-musl'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-linux-arm64@2.4.14:
-    resolution: {integrity: sha512-2TELhZnW5RSLL063l9rc5xLpA0ZIw0Ccwy/0q384rvNAgFw3yI76bd59547yxowdQr5MNPET/xDLrLuvgSeeWQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-arm64/-/cli-linux-arm64-2.4.14.tgz}
-    name: '@biomejs/cli-linux-arm64'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-linux-x64-musl@2.4.14:
-    resolution: {integrity: sha512-R6BWgJdQOwW9ulJatuTVrQkjnODjqHZkKNOqb1sz++3Noe5LYd0i3PchnOBUCYAPHoPWHhjJqbdZlHEu0hpjdA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-2.4.14.tgz}
-    name: '@biomejs/cli-linux-x64-musl'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-linux-x64@2.4.14:
-    resolution: {integrity: sha512-zHrlQZDBDUz4OLAraYpWKcnLS6HOewBFWYOzY91d1ZjdqZwibOyb6BEu6WuWLugyo0P3riCmsbV9UqV1cSXwQg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-linux-x64/-/cli-linux-x64-2.4.14.tgz}
-    name: '@biomejs/cli-linux-x64'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-win32-arm64@2.4.14:
-    resolution: {integrity: sha512-M3EH5hqOI/F/FUA2u4xcLoUgmxd218mvuj/6JL7Hv2toQvr2/AdOvKSpGkoRuWFCtQPVa+ZqkEV3Q5xBA9+XSA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-win32-arm64/-/cli-win32-arm64-2.4.14.tgz}
-    name: '@biomejs/cli-win32-arm64'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@biomejs/cli-win32-x64@2.4.14:
-    resolution: {integrity: sha512-WL0EG5qE+EAKomGXbf2g6VnSKJhTL3tXC0QRzWRwA5VpjxNYa6H4P7ZWfymbGE4IhZZQi1KXQ2R0YjwInmz2fA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@biomejs/cli-win32-x64/-/cli-win32-x64-2.4.14.tgz}
-    name: '@biomejs/cli-win32-x64'
-    version: 2.4.14
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   registry.npmjs.org/@emnapi/core@1.10.0:
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@emnapi/core/-/core-1.10.0.tgz}
     name: '@emnapi/core'
@@ -210,7 +358,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@emnapi/wasi-threads': registry.npmjs.org/@emnapi/wasi-threads@1.2.1
-      tslib: registry.npmjs.org/tslib@2.8.1
+      tslib: 2.8.1
     dev: true
     optional: true
 
@@ -220,7 +368,7 @@ packages:
     version: 1.10.0
     requiresBuild: true
     dependencies:
-      tslib: registry.npmjs.org/tslib@2.8.1
+      tslib: 2.8.1
     dev: true
     optional: true
 
@@ -230,7 +378,7 @@ packages:
     version: 1.2.1
     requiresBuild: true
     dependencies:
-      tslib: registry.npmjs.org/tslib@2.8.1
+      tslib: 2.8.1
     dev: true
     optional: true
 
@@ -239,22 +387,6 @@ packages:
     name: '@jridgewell/sourcemap-codec'
     version: 1.5.5
     dev: true
-
-  registry.npmjs.org/@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
-    resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@napi-rs/wasm-runtime/-/wasm-runtime-1.1.4.tgz}
-    id: registry.npmjs.org/@napi-rs/wasm-runtime/1.1.4
-    name: '@napi-rs/wasm-runtime'
-    version: 1.1.4
-    requiresBuild: true
-    peerDependencies:
-      '@emnapi/core': ^1.7.1
-      '@emnapi/runtime': ^1.7.1
-    dependencies:
-      '@emnapi/core': registry.npmjs.org/@emnapi/core@1.10.0
-      '@emnapi/runtime': registry.npmjs.org/@emnapi/runtime@1.10.0
-      '@tybys/wasm-util': registry.npmjs.org/@tybys/wasm-util@0.10.2
-    dev: true
-    optional: true
 
   registry.npmjs.org/@oxc-project/types@0.127.0:
     resolution: {integrity: sha512-aIYXQBo4lCbO4z0R3FHeucQHpF46l2LbMdxRvqvuRuW2OxdnSkcng5B8+K12spgLDj93rtN3+J2Vac/TIO+ciQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@oxc-project/types/-/types-0.127.0.tgz}
@@ -404,7 +536,7 @@ packages:
     dependencies:
       '@emnapi/core': registry.npmjs.org/@emnapi/core@1.10.0
       '@emnapi/runtime': registry.npmjs.org/@emnapi/runtime@1.10.0
-      '@napi-rs/wasm-runtime': registry.npmjs.org/@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     dev: true
     optional: true
 
@@ -442,16 +574,6 @@ packages:
     version: 1.1.0
     dev: true
 
-  registry.npmjs.org/@tybys/wasm-util@0.10.2:
-    resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@tybys/wasm-util/-/wasm-util-0.10.2.tgz}
-    name: '@tybys/wasm-util'
-    version: 0.10.2
-    requiresBuild: true
-    dependencies:
-      tslib: registry.npmjs.org/tslib@2.8.1
-    dev: true
-    optional: true
-
   registry.npmjs.org/@types/chai@5.2.3:
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@types/chai/-/chai-5.2.3.tgz}
     name: '@types/chai'
@@ -479,13 +601,6 @@ packages:
     version: 25.6.0
     dependencies:
       undici-types: registry.npmjs.org/undici-types@7.19.2
-    dev: true
-
-  registry.npmjs.org/@vercel/ncc@0.38.4:
-    resolution: {integrity: sha512-8LwjnlP39s08C08J5NstzriPvW1SP8Zfpp1BvC2sI35kPeZnHfxVkCwu4/+Wodgnd60UtT1n8K8zw+Mp7J9JmQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/@vercel/ncc/-/ncc-0.38.4.tgz}
-    name: '@vercel/ncc'
-    version: 0.38.4
-    hasBin: true
     dev: true
 
   registry.npmjs.org/@vitest/expect@4.1.5:
@@ -518,7 +633,7 @@ packages:
       '@vitest/spy': registry.npmjs.org/@vitest/spy@4.1.5
       estree-walker: registry.npmjs.org/estree-walker@3.0.3
       magic-string: registry.npmjs.org/magic-string@0.30.21
-      vite: registry.npmjs.org/vite@8.0.10(@types/node@25.6.0)
+      vite: 8.0.10(@types/node@25.6.0)
     dev: true
 
   registry.npmjs.org/@vitest/pretty-format@4.1.5:
@@ -585,13 +700,6 @@ packages:
     version: 2.0.0
     dev: true
 
-  registry.npmjs.org/detect-libc@2.1.2:
-    resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz}
-    name: detect-libc
-    version: 2.1.2
-    engines: {node: '>=8'}
-    dev: true
-
   registry.npmjs.org/es-module-lexer@2.1.0:
     resolution: {integrity: sha512-n27zTYMjYu1aj4MjCWzSP7G9r75utsaoc8m61weK+W8JMBGGQybd43GstCXZ3WNmSFtGT9wi59qQTW6mhTR5LQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/es-module-lexer/-/es-module-lexer-2.1.0.tgz}
     name: es-module-lexer
@@ -627,16 +735,6 @@ packages:
     dependencies:
       picomatch: registry.npmjs.org/picomatch@4.0.4
     dev: true
-
-  registry.npmjs.org/fsevents@2.3.3:
-    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz}
-    name: fsevents
-    version: 2.3.3
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
 
   registry.npmjs.org/lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/lightningcss-android-arm64/-/lightningcss-android-arm64-1.32.0.tgz}
@@ -759,41 +857,12 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/lightningcss@1.32.0:
-    resolution: {integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/lightningcss/-/lightningcss-1.32.0.tgz}
-    name: lightningcss
-    version: 1.32.0
-    engines: {node: '>= 12.0.0'}
-    dependencies:
-      detect-libc: registry.npmjs.org/detect-libc@2.1.2
-    optionalDependencies:
-      lightningcss-android-arm64: registry.npmjs.org/lightningcss-android-arm64@1.32.0
-      lightningcss-darwin-arm64: registry.npmjs.org/lightningcss-darwin-arm64@1.32.0
-      lightningcss-darwin-x64: registry.npmjs.org/lightningcss-darwin-x64@1.32.0
-      lightningcss-freebsd-x64: registry.npmjs.org/lightningcss-freebsd-x64@1.32.0
-      lightningcss-linux-arm-gnueabihf: registry.npmjs.org/lightningcss-linux-arm-gnueabihf@1.32.0
-      lightningcss-linux-arm64-gnu: registry.npmjs.org/lightningcss-linux-arm64-gnu@1.32.0
-      lightningcss-linux-arm64-musl: registry.npmjs.org/lightningcss-linux-arm64-musl@1.32.0
-      lightningcss-linux-x64-gnu: registry.npmjs.org/lightningcss-linux-x64-gnu@1.32.0
-      lightningcss-linux-x64-musl: registry.npmjs.org/lightningcss-linux-x64-musl@1.32.0
-      lightningcss-win32-arm64-msvc: registry.npmjs.org/lightningcss-win32-arm64-msvc@1.32.0
-      lightningcss-win32-x64-msvc: registry.npmjs.org/lightningcss-win32-x64-msvc@1.32.0
-    dev: true
-
   registry.npmjs.org/magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/magic-string/-/magic-string-0.30.21.tgz}
     name: magic-string
     version: 0.30.21
     dependencies:
       '@jridgewell/sourcemap-codec': registry.npmjs.org/@jridgewell/sourcemap-codec@1.5.5
-    dev: true
-
-  registry.npmjs.org/nanoid@3.3.12:
-    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/nanoid/-/nanoid-3.3.12.tgz}
-    name: nanoid
-    version: 3.3.12
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
     dev: true
 
   registry.npmjs.org/obug@2.1.1:
@@ -808,28 +877,11 @@ packages:
     version: 2.0.3
     dev: true
 
-  registry.npmjs.org/picocolors@1.1.1:
-    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz}
-    name: picocolors
-    version: 1.1.1
-    dev: true
-
   registry.npmjs.org/picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/picomatch/-/picomatch-4.0.4.tgz}
     name: picomatch
     version: 4.0.4
     engines: {node: '>=12'}
-    dev: true
-
-  registry.npmjs.org/postcss@8.5.14:
-    resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/postcss/-/postcss-8.5.14.tgz}
-    name: postcss
-    version: 8.5.14
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: registry.npmjs.org/nanoid@3.3.12
-      picocolors: registry.npmjs.org/picocolors@1.1.1
-      source-map-js: registry.npmjs.org/source-map-js@1.2.1
     dev: true
 
   registry.npmjs.org/rolldown@1.0.0-rc.17:
@@ -871,13 +923,6 @@ packages:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/siginfo/-/siginfo-2.0.0.tgz}
     name: siginfo
     version: 2.0.0
-    dev: true
-
-  registry.npmjs.org/source-map-js@1.2.1:
-    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz}
-    name: source-map-js
-    version: 1.2.1
-    engines: {node: '>=0.10.0'}
     dev: true
 
   registry.npmjs.org/stackback@0.0.2:
@@ -922,14 +967,6 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: true
 
-  registry.npmjs.org/tslib@2.8.1:
-    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz}
-    name: tslib
-    version: 2.8.1
-    requiresBuild: true
-    dev: true
-    optional: true
-
   registry.npmjs.org/tunnel@0.0.6:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/tunnel/-/tunnel-0.0.6.tgz}
     name: tunnel
@@ -957,62 +994,6 @@ packages:
     version: 6.25.0
     engines: {node: '>=18.17'}
     dev: false
-
-  registry.npmjs.org/vite@8.0.10(@types/node@25.6.0):
-    resolution: {integrity: sha512-rZuUu9j6J5uotLDs+cAA4O5H4K1SfPliUlQwqa6YEwSrWDZzP4rhm00oJR5snMewjxF5V/K3D4kctsUTsIU9Mw==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/vite/-/vite-8.0.10.tgz}
-    id: registry.npmjs.org/vite/8.0.10
-    name: vite
-    version: 8.0.10
-    engines: {node: ^20.19.0 || >=22.12.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
-      '@vitejs/devtools': ^0.1.0
-      esbuild: ^0.27.0 || ^0.28.0
-      jiti: '>=1.21.0'
-      less: ^4.0.0
-      sass: ^1.70.0
-      sass-embedded: ^1.70.0
-      stylus: '>=0.54.8'
-      sugarss: ^5.0.0
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      '@vitejs/devtools':
-        optional: true
-      esbuild:
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-    dependencies:
-      '@types/node': registry.npmjs.org/@types/node@25.6.0
-      lightningcss: registry.npmjs.org/lightningcss@1.32.0
-      picomatch: registry.npmjs.org/picomatch@4.0.4
-      postcss: registry.npmjs.org/postcss@8.5.14
-      rolldown: registry.npmjs.org/rolldown@1.0.0-rc.17
-      tinyglobby: registry.npmjs.org/tinyglobby@0.2.16
-    optionalDependencies:
-      fsevents: registry.npmjs.org/fsevents@2.3.3
-    dev: true
 
   registry.npmjs.org/vitest@4.1.5(@types/node@25.6.0)(vite@8.0.10):
     resolution: {integrity: sha512-9Xx1v3/ih3m9hN+SbfkUyy0JAs72ap3r7joc87XL6jwF0jGg6mFBvQ1SrwaX+h8BlkX6Hz9shdd1uo6AF+ZGpg==, registry: https://npm.flatt.tech/, tarball: https://registry.npmjs.org/vitest/-/vitest-4.1.5.tgz}
@@ -1077,7 +1058,7 @@ packages:
       tinyexec: registry.npmjs.org/tinyexec@1.1.2
       tinyglobby: registry.npmjs.org/tinyglobby@0.2.16
       tinyrainbow: registry.npmjs.org/tinyrainbow@3.1.0
-      vite: registry.npmjs.org/vite@8.0.10(@types/node@25.6.0)
+      vite: 8.0.10(@types/node@25.6.0)
       why-is-node-running: registry.npmjs.org/why-is-node-running@2.3.0
     transitivePeerDependencies:
       - msw
