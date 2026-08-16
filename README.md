@@ -87,9 +87,9 @@ steps:
 
 |                   | Linux x64 | Linux ARM32 | Linux ARM64 | macOS x64 | macOS ARM64 | Windows x64 | Windows ARM64 |
 | ---               | ---       | ---         | ---         | ---       | ---         | ---         | ---           |
-| Channel name      | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ❌            |
+| Channel name      | ✅        | ❌          | ✅          | ✅        | ✅          | ✅          | ❌            |
 | Commit position   | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ✅            |
-| Specific version  | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ❌            |
+| Specific version  | ✅        | ❌          | ✅          | ✅        | ✅          | ✅          | ❌            |
 | Latest snapshot   | ✅        | ❌          | ❌          | ✅        | ✅          | ✅          | ✅            |
 
 ## Parameters

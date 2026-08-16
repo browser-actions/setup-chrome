@@ -30,10 +30,10 @@ describe("KnownGoodVersionResolver", () => {
   });
 
   test.each`
-    spec               | version            | browserURL                                                                                                | driverURL
-    ${"120.0.6099.5"}  | ${"120.0.6099.5"}  | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.5/linux64/chrome-linux64.zip"}  | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.5/linux64/chromedriver-linux64.zip"}
-    ${"120.0.6099.x"}  | ${"120.0.6099.56"} | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.56/linux64/chrome-linux64.zip"} | ${"https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.56/linux64/chromedriver-linux64.zip"}
-    ${"1234.0.6099.x"} | ${undefined}       | ${undefined}                                                                                              | ${undefined}
+    spec               | version             | browserURL                                                                                              | driverURL
+    ${"120.0.6099.5"}  | ${"120.0.6099.5"}   | ${"https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.5/linux64/chrome-linux64.zip"}   | ${"https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.5/linux64/chromedriver-linux64.zip"}
+    ${"120.0.6099.x"}  | ${"120.0.6099.109"} | ${"https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.109/linux64/chrome-linux64.zip"} | ${"https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.109/linux64/chromedriver-linux64.zip"}
+    ${"1234.0.6099.x"} | ${undefined}        | ${undefined}                                                                                            | ${undefined}
   `(
     "should resolve known good versions for $spec",
     async ({ spec, version, browserURL, driverURL }) => {
@@ -70,7 +70,22 @@ describe("KnownGoodVersionResolver", () => {
     const resolved2 = await resolver.resolveBrowserOnly("113.0.5672.0");
     expect(resolved2?.version).toEqual("113.0.5672.0");
     expect(resolved2?.browserDownloadURL).toEqual(
-      "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/113.0.5672.0/linux64/chrome-linux64.zip",
+      "https://storage.googleapis.com/chrome-for-testing-public/113.0.5672.0/linux64/chrome-linux64.zip",
+    );
+  });
+
+  test("should resolve known good versions for linux arm64", async () => {
+    const resolver = new KnownGoodVersionResolver({
+      os: "linux",
+      arch: "arm64",
+    });
+    const resolved = await resolver.resolveBrowserAndDriver("153.0.8001.0");
+    expect(resolved?.version).toEqual("153.0.8001.0");
+    expect(resolved?.browserDownloadURL).toEqual(
+      "https://storage.googleapis.com/chrome-for-testing-public/153.0.8001.0/linux-arm64/chrome-linux-arm64.zip",
+    );
+    expect(resolved?.driverDownloadURL).toEqual(
+      "https://storage.googleapis.com/chrome-for-testing-public/153.0.8001.0/linux-arm64/chromedriver-linux-arm64.zip",
     );
   });
 
@@ -107,10 +122,24 @@ describe("LastKnownGoodVersionResolver", () => {
     });
     const resolved = await resolver.resolve("stable");
     expect(resolved?.browserDownloadURL).toEqual(
-      "https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.78/linux64/chrome-linux64.zip",
+      "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/linux64/chrome-linux64.zip",
     );
     expect(resolved?.driverDownloadURL).toEqual(
-      "https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.78/linux64/chromedriver-linux64.zip",
+      "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.42/linux64/chromedriver-linux64.zip",
+    );
+  });
+
+  test("should resolve last known good versions for linux arm64", async () => {
+    const resolver = new LastKnownGoodVersionResolver({
+      os: "linux",
+      arch: "arm64",
+    });
+    const resolved = await resolver.resolve("canary");
+    expect(resolved?.browserDownloadURL).toEqual(
+      "https://storage.googleapis.com/chrome-for-testing-public/153.0.8009.0/linux-arm64/chrome-linux-arm64.zip",
+    );
+    expect(resolved?.driverDownloadURL).toEqual(
+      "https://storage.googleapis.com/chrome-for-testing-public/153.0.8009.0/linux-arm64/chromedriver-linux-arm64.zip",
     );
   });
 
