@@ -19,8 +19,6 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/download-artifact@v8.0.2'
         - 'googleapis/release-please-action@v5.0.0'
-    '.github/workflows/verify-lockfile.yml':
-        - 'actions/checkout@v7.0.1'
 dependencies:
     'actions/checkout@v7.0.1':
         ref: 'v7.0.1'

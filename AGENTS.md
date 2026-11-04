@@ -81,4 +81,4 @@ Tests live in `__test__/` and use [Vitest](https://vitest.dev/). Test files mirr
 
 Workflow dependencies are tracked in `.github/workflows/actions.lock`. After changing any workflow action reference, run `gh actions-lock` and commit the updated workflows and lockfile together. Install the CLI extension with `gh extension install github/gh-actions-lock --pin v0.4.1` if needed.
 
-Run `gh actions-lock --verify-local` for an offline coverage check and `gh actions-lock --verify` to verify upstream references. The verification workflow runs the upstream check on pushes and pull requests.
+Run `gh actions-lock --verify-local` for an offline coverage check and `gh actions-lock --verify` to verify upstream references.
