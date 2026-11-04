@@ -10,22 +10,22 @@ importers:
     dependencies:
       '@actions/core':
         specifier: ^3.0.1
-        version: https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz
+        version: 3.0.1
       '@actions/exec':
         specifier: ^3.0.0
-        version: https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz
+        version: 3.0.0
       '@actions/http-client':
         specifier: ^4.0.1
-        version: https://registry.npmjs.org/@actions/http-client/-/http-client-4.0.1.tgz
+        version: 4.0.1
       '@actions/io':
         specifier: ^3.0.2
-        version: https://registry.npmjs.org/@actions/io/-/io-3.0.2.tgz
+        version: 3.0.2
       '@actions/tool-cache':
         specifier: ^4.0.0
-        version: https://registry.npmjs.org/@actions/tool-cache/-/tool-cache-4.0.0.tgz
+        version: 4.0.0
       actions-swing:
         specifier: ^0.0.6
-        version: 0.0.6(@actions/core@https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz)(@actions/exec@https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz)
+        version: 0.0.6(@actions/core@3.0.1)(@actions/exec@3.0.0)
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.6.4
@@ -45,25 +45,20 @@ importers:
 
 packages:
 
-  '@actions/core@https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz':
+  '@actions/core@3.0.1':
     resolution: {integrity: sha512-a6d/Nwahm9fliVGRhdhofo40HjHQasUPusmc7vBfyky+7Z+P2A1J68zyFVaNcEclc/Se+eO595oAr5nwEIoIUA==}
-    version: 3.0.1
 
-  '@actions/exec@https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz':
+  '@actions/exec@3.0.0':
     resolution: {integrity: sha512-6xH/puSoNBXb72VPlZVm7vQ+svQpFyA96qdDBvhB8eNZOE8LtPf9L4oAsfzK/crCL8YZ+19fKYVnM63Sl+Xzlw==}
-    version: 3.0.0
 
-  '@actions/http-client@https://registry.npmjs.org/@actions/http-client/-/http-client-4.0.1.tgz':
+  '@actions/http-client@4.0.1':
     resolution: {integrity: sha512-+Nvd1ImaOZBSoPbsUtEhv+1z99H12xzncCkz0a3RuehINE81FZSe2QTj3uvAPTcJX/SCzUQHQ0D1GrPMbrPitg==}
-    version: 4.0.1
 
-  '@actions/io@https://registry.npmjs.org/@actions/io/-/io-3.0.2.tgz':
+  '@actions/io@3.0.2':
     resolution: {integrity: sha512-nRBchcMM+QK1pdjO7/idu86rbJI5YHUKCvKs0KxnSYbVe3F51UfGxuZX4Qy/fWlp6l7gWFwIkrOzN+oUK03kfw==}
-    version: 3.0.2
 
-  '@actions/tool-cache@https://registry.npmjs.org/@actions/tool-cache/-/tool-cache-4.0.0.tgz':
+  '@actions/tool-cache@4.0.0':
     resolution: {integrity: sha512-L8P9HbXvpvqjZDveb/fdsa55IVC0trfPgQ4ZwGo6r5af6YDVdM9vMGPZ7rgY2fAT9gGj4PSYd6bYlg3p3jD78A==}
-    version: 4.0.0
 
   '@biomejs/biome@2.6.4':
     resolution: {integrity: sha512-8sKKwaNW4ot22awZ3lBjwWLHnUFXgXnrBPYS2gNlBAXRbDC++7kqjK2H7dR/FgCDtPvO1xfKpgEhJkGxAKYkxA==}
@@ -296,7 +291,6 @@ packages:
 
   actions-swing@0.0.6:
     resolution: {integrity: sha512-2p76nGHdCWUrOyktggBGn/gH/rUvZWsluLmifOw8C4syrTh8FFjfb95bmhZ6ScHPphNEuBak8UHXjErDPKTOgg==}
-    version: 0.0.6
     engines: {node: '>=18'}
     peerDependencies:
       '@actions/core': '>=1'
@@ -440,9 +434,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  semver@https://registry.npmjs.org/semver/-/semver-7.7.4.tgz:
-    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
-    version: 7.7.4
+  semver@7.8.6:
+    resolution: {integrity: sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -468,9 +461,8 @@ packages:
   tslib@2.9.1:
     resolution: {integrity: sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==}
 
-  tunnel@https://registry.npmjs.org/tunnel/-/tunnel-0.0.6.tgz:
+  tunnel@0.0.6:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
-    version: 0.0.6
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
   typescript@6.0.3:
@@ -481,9 +473,8 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  undici@https://registry.npmjs.org/undici/-/undici-6.25.0.tgz:
-    resolution: {integrity: sha512-ZgpWDC5gmNiuY9CnLVXEH8rl50xhRCuLNA97fAUnKi8RRuV4E6KG31pDTsLVUKnohJE0I3XDrTeEydAXRw47xg==}
-    version: 6.25.0
+  undici@6.29.1:
+    resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
 
   vite@8.0.10:
@@ -577,29 +568,29 @@ packages:
 
 snapshots:
 
-  '@actions/core@https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz':
+  '@actions/core@3.0.1':
     dependencies:
-      '@actions/exec': https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz
-      '@actions/http-client': https://registry.npmjs.org/@actions/http-client/-/http-client-4.0.1.tgz
+      '@actions/exec': 3.0.0
+      '@actions/http-client': 4.0.1
 
-  '@actions/exec@https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz':
+  '@actions/exec@3.0.0':
     dependencies:
-      '@actions/io': https://registry.npmjs.org/@actions/io/-/io-3.0.2.tgz
+      '@actions/io': 3.0.2
 
-  '@actions/http-client@https://registry.npmjs.org/@actions/http-client/-/http-client-4.0.1.tgz':
+  '@actions/http-client@4.0.1':
     dependencies:
-      tunnel: https://registry.npmjs.org/tunnel/-/tunnel-0.0.6.tgz
-      undici: https://registry.npmjs.org/undici/-/undici-6.25.0.tgz
+      tunnel: 0.0.6
+      undici: 6.29.1
 
-  '@actions/io@https://registry.npmjs.org/@actions/io/-/io-3.0.2.tgz': {}
+  '@actions/io@3.0.2': {}
 
-  '@actions/tool-cache@https://registry.npmjs.org/@actions/tool-cache/-/tool-cache-4.0.0.tgz':
+  '@actions/tool-cache@4.0.0':
     dependencies:
-      '@actions/core': https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz
-      '@actions/exec': https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz
-      '@actions/http-client': https://registry.npmjs.org/@actions/http-client/-/http-client-4.0.1.tgz
-      '@actions/io': https://registry.npmjs.org/@actions/io/-/io-3.0.2.tgz
-      semver: https://registry.npmjs.org/semver/-/semver-7.7.4.tgz
+      '@actions/core': 3.0.1
+      '@actions/exec': 3.0.0
+      '@actions/http-client': 4.0.1
+      '@actions/io': 3.0.2
+      semver: 7.8.6
 
   '@biomejs/biome@2.6.4':
     optionalDependencies:
@@ -760,10 +751,10 @@ snapshots:
 
   '@vitest/spy@5.1.0': {}
 
-  actions-swing@0.0.6(@actions/core@https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz)(@actions/exec@https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz):
+  actions-swing@0.0.6(@actions/core@3.0.1)(@actions/exec@3.0.0):
     dependencies:
-      '@actions/core': https://registry.npmjs.org/@actions/core/-/core-3.0.1.tgz
-      '@actions/exec': https://registry.npmjs.org/@actions/exec/-/exec-3.0.0.tgz
+      '@actions/core': 3.0.1
+      '@actions/exec': 3.0.0
 
   assertion-error@2.0.1: {}
 
@@ -874,7 +865,7 @@ snapshots:
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-rc.17
       '@rolldown/binding-win32-x64-msvc': 1.0.0-rc.17
 
-  semver@https://registry.npmjs.org/semver/-/semver-7.7.4.tgz: {}
+  semver@7.8.6: {}
 
   source-map-js@1.2.2: {}
 
@@ -892,13 +883,13 @@ snapshots:
   tslib@2.9.1:
     optional: true
 
-  tunnel@https://registry.npmjs.org/tunnel/-/tunnel-0.0.6.tgz: {}
+  tunnel@0.0.6: {}
 
   typescript@6.0.3: {}
 
   undici-types@8.9.0: {}
 
-  undici@https://registry.npmjs.org/undici/-/undici-6.25.0.tgz: {}
+  undici@6.29.1: {}
 
   vite@8.0.10(@types/node@26.6.6):
     dependencies:
