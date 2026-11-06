@@ -1,6 +1,14 @@
 {
   "files": {
-    "includes": ["**", "!dist", "!__test__/data", "!package.json"]
+    "includes": [
+      "**",
+      "!__test__/data",
+      "!package.json",
+      "!!**/dist",
+      "!**/*.md",
+      "!**/*.yml",
+      "!**/*.yaml"
+    ]
   },
   "linter": {
     "enabled": true,

@@ -60,7 +60,7 @@ describe("WindowsChannelInstaller", () => {
 
   describe("installBrowser", () => {
     test("throws an error if the version is not a release channel name", async () => {
-      expect(() =>
+      await expect(() =>
         installer.installBrowser(
           "foo",
           "C:\\path\\to\\downloaded\\installer.exe",

@@ -4,7 +4,7 @@
   "description": "Set up your GitHub Actions workflow with a specific version of chromium",
   "type": "module",
   "main": "dist/index.js",
-  "packageManager": "pnpm@8.7.5",
+  "packageManager": "pnpm@10.34.9",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -17,11 +17,11 @@
     "actions-swing": "^0.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.8",
-    "@types/node": "^26.2.0",
+    "@biomejs/biome": "^2.6.4",
+    "@types/node": "^26.6.6",
     "@vercel/ncc": "^0.45.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^5.1.0"
   },
   "scripts": {
     "build": "ncc build src/index.ts",

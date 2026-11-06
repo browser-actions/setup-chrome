@@ -114,7 +114,7 @@ describe("KnownGoodVersionInstaller", () => {
       },
       { resolveBrowserVersionOnly: true },
     );
-    expect(installer.downloadDriver("120.0.6099.x")).rejects.toThrowError(
+    await expect(installer.downloadDriver("120.0.6099.x")).rejects.toThrowError(
       "Unexpectedly trying to download chromedriver",
     );
   });
@@ -146,7 +146,7 @@ describe("KnownGoodVersionInstaller", () => {
       },
       { resolveBrowserVersionOnly: true },
     );
-    expect(
+    await expect(
       installer.installDriver("120.0.6099.x", "/tmp/chromedriver.zip"),
     ).rejects.toThrowError("Unexpectedly trying to install chromedriver");
   });
